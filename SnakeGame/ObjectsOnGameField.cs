@@ -1,41 +1,69 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace SnakeGame
 {
-    class FoodInformation
-    {
-        // Singleton
-        private FoodInformation() { }
-        private static FoodInformation instance;
-        public static FoodInformation Get()
+    
+        public static class FoodInformation
         {
-            if (instance == null)
+
+            private static List<Food> foodList = new List<Food>();
+
+            static public void Add(Food food)
             {
-                instance = new FoodInformation();
+                foodList.Add(food);
             }
-            return instance;
-        }
-        
-        
-        private List<Food> foodList = new List<Food>();
-        public void Add(Food food)
-        {
-            foodList.Add(food);
+
+            public static List<Food> GetFoodList()
+            {
+                return foodList;
+            }
+
+            static public void Delete(Food food)
+            {
+                food.Remove();
+                foodList.Remove(food);
+
+                Add(new Food());
+            }
+
         }
 
-        public List<Food> GetFoodList()
+        public static class SnakeInformation
         {
-            return foodList;
-        }
-        
-        public void Delete(Food food)
-        {
-            food.Remove();
-            foodList.Remove(food);
+            private static List<Snake> snakeList = new List<Snake>();
+
+            static public void Add(Snake snake)
+            {
+                snakeList.Add(snake);
+            }
+
+            public static List<Snake> GetSnakeList()
+            {
+                return snakeList;
+            }
+
+            public static List<Point> GetSnakePoints()
+            {
+                List<Point> result = new List<Point>();
+                foreach (var snake in snakeList)
+                {
+                    result.AddRange(snake.GetPoints());    
+                }
+
+                return result;
+            }
+
+            static public void Dead(Snake snake)
+            {
+                foreach (var point in snake.GetPoints())
+                {
+                    FoodInformation.Add(new Food(point.X, point.Y));
+                }
+                snakeList.Remove(snake);
+            }
             
-            Add(new Food());
+            
         }
-
-    }
 }

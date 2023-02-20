@@ -2,9 +2,9 @@ namespace SnakeGame
 {
     public enum Direction : byte
     {
-        Rigth,
+        Right,
         Down,
-        Lef,
+        Left,
         Up
     };
 }

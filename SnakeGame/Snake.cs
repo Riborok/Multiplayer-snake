@@ -5,17 +5,25 @@ using System.Linq;
 namespace SnakeGame
 {
     // Сlass for the snake
-    class Snake
+    public class Snake
     {
         // List of points that composed a snake
         private List<Point> snakePoints = new List<Point>();
 
+        public List<Point> GetPoints()
+        {
+            return snakePoints;
+        }
+        
         // The direction of the snake
         private Direction direction;
 
-        public Snake(int x, int y)
+        private MovementKeys movementKeys;
+
+        public Snake(int x, int y, MovementKeys movementKeys)
         {
             snakePoints.Add(new SnakePoint(x, y));
+            this.movementKeys = movementKeys;
         }
 
         // Movement of the snake
@@ -25,13 +33,13 @@ namespace SnakeGame
             Point head = new SnakePoint(snakePoints.Last().X, snakePoints.Last().Y);
             switch (direction)
             {
-                case Direction.Rigth:
+                case Direction.Right:
                     head.X++;
                     break;
                 case Direction.Down:
                     head.Y++;
                     break;
-                case Direction.Lef:
+                case Direction.Left:
                     head.X--;
                     break;
                 case Direction.Up:
@@ -41,19 +49,20 @@ namespace SnakeGame
 
             // Checking if the snake has collided with a wall, its own body, or another snake
             if (head.X < 1 || head.X > Console.WindowWidth - 1 || head.Y < 1 || head.Y > Console.WindowHeight - 1 ||
-                snakePoints.Any(point => point.IsEquals(head)))
+                SnakeInformation.GetSnakePoints().Any(point => point.IsEquals(head)))
             {
-                Program.GameOver(this);
+                //Program.GameOver(this);
+                SnakeInformation.Dead(this);
             }
             
             // Adding a new snake head
             snakePoints.Add(head);
             
             // Checking if the snake has eaten food
-            Food isEaten = foodInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(head));
+            Food isEaten = FoodInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(head));
             if (isEaten != null)
             {
-                foodInformation.Delete(isEaten);
+                FoodInformation.Delete(isEaten);
                 score++;
                 
                 snakePoints.Add(isEaten);
@@ -73,28 +82,9 @@ namespace SnakeGame
         // Turning the snake
         public void Turn(ConsoleKey key)
         {
-            switch (key)
-            {
-                case ConsoleKey.RightArrow:
-                    if (direction != Direction.Lef)
-                        direction = Direction.Rigth;
-                    break;
-                
-                case ConsoleKey.DownArrow:
-                    if (direction != Direction.Up)
-                        direction = Direction.Down;
-                    break;
-                
-                case ConsoleKey.LeftArrow:
-                    if (direction != Direction.Rigth)
-                        direction = Direction.Lef;
-                    break;
-                
-                case ConsoleKey.UpArrow:
-                    if (direction != Direction.Down)
-                        direction = Direction.Up;
-                    break;
-            }
+            Direction? trydirection = movementKeys.MovementDirection(key);
+            if (trydirection.HasValue && Math.Abs((byte)direction - (byte)trydirection) != 2)
+                direction = trydirection.Value;
         }
 
         // Snake score
@@ -105,8 +95,6 @@ namespace SnakeGame
         {
             return score;
         }
-
-        // Information about other objects on the game field
-        private FoodInformation foodInformation = FoodInformation.Get();
+        
     }
 }

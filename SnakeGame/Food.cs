@@ -4,20 +4,23 @@ namespace SnakeGame
 {
     
     // Class for food
-    class Food : Point
+    public class Food : Point
     {
-        public Food() : base(0, 0)
+        public Food() : base(Generate())
         {
-            Generate();
+            Draw();
+        }
+        
+        public Food(int x, int y) : base((x, y))
+        {
             Draw();
         }
 
         // Generate a new position for food
-        private void Generate()
+        private static (int x, int y) Generate()
         {
             Random random = new Random();
-            X = random.Next(2, Console.WindowWidth - 2);
-            Y = random.Next(2, Console.WindowHeight - 2);
+            return (x: random.Next(2, Console.WindowWidth - 2), y: random.Next(2, Console.WindowHeight - 2));
         }
         
         // Draw the food
