@@ -1,0 +1,7 @@
+D:\JetBrains\projects\SnakeGame\SnakeGame\bin\Debug\SnakeGame.exe
+D:\JetBrains\projects\SnakeGame\SnakeGame\bin\Debug\SnakeGame.pdb
+D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.csproj.AssemblyReference.cache
+D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.csproj.SuggestedBindingRedirects.cache
+D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.csproj.CoreCompileInputs.cache
+D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.exe
+D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.pdb
