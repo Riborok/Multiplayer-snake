@@ -20,8 +20,10 @@ namespace SnakeGame
         private static (int x, int y) Generate()
         {
             Random random = new Random();
+            
+            // Checking that the food is in an even position on the x coordinate
             int randomX = random.Next(2, Console.WindowWidth - 2); 
-            return (x: randomX % 2 == 1 ? randomX + 1:randomX, y: random.Next(2, Console.WindowHeight - 2));
+            return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(2, Console.WindowHeight - 2));
         }
         
         // Draw the food

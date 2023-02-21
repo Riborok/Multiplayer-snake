@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 
@@ -23,15 +24,26 @@ namespace SnakeGame
             {
                 food.Remove();
                 foodList.Remove(food);
-
+                
                 Add(new Food());
+            }
+
+            static public void Fill(int amount)
+            {
+                for (int i = 0; i < amount; i++)
+                {
+                    Add(new Food());
+                    System.Threading.Thread.Sleep(1);
+                }
             }
 
         }
 
         public static class SnakesInformation
         {
-            private static List<Snake> snakeList = new(10);
+            private static readonly List<Snake> snakeList = new(10);
+
+            private static readonly IMovementKeys[] movementKeys = {new Arrows(), new WASD(), new UHJK()};
 
             static public void Add(Snake snake)
             {
@@ -47,22 +59,29 @@ namespace SnakeGame
             {
                 List<Point> result = new (300);
                 foreach (var snake in snakeList)
-                {
                     result.AddRange(snake.GetPoints());    
-                }
+                
 
                 return result;
             }
 
-            static public void Dead(Snake snake)
+            public static void Dead(Snake snake)
             {
                 foreach (var point in snake.GetPoints())
-                {
                     FoodsInformation.Add(new Food(point.X, point.Y));
-                }
+                
+                
+                Console.SetCursorPosition(snake.head.X, snake.head.Y);
+                Console.Write('†');
+                
                 snakeList.Remove(snake);
             }
-            
+
+            public static void Fill(int amount)
+            {
+                for (int i = 0; i < amount; i++)
+                    Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5 * i, movementKeys[i]) );
+            }
             
         }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace SnakeGame
 {
-
+    
     public interface IMovementKeys
     {
         Direction? MovementDirection(ConsoleKey key);

@@ -19,38 +19,31 @@ namespace SnakeGame
         }
 
         static void Main(string[] args)
-        {
+        { 
+            
+            // Filling the field with food
+            const int amountFood = 200;
+            FoodsInformation.Fill(amountFood);
 
             // Create a snake
-            SnakesInformation.Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5, new Arrows() ));
-            SnakesInformation.Add(new Snake(Console.WindowWidth / 2, Console.WindowHeight / 2 + 5, new WASD() ));
-            SnakesInformation.Add(new Snake(Console.WindowWidth / 2, Console.WindowHeight / 2 + 10, new UHJK() ));
+            const int amountSnaiks = 3;
+            SnakesInformation.Fill(amountSnaiks);
 
-            for (int i = 0; i < 150; i++)
-            {
-                FoodsInformation.Add(new Food()); 
-                System.Threading.Thread.Sleep(1);
-            }
-
-            // The main game loop
+            // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakesInformation.GetSnakeList().Count != 0)
             {
-
+                
                 // Processing user input
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     foreach (var snake in SnakesInformation.GetSnakeList())
-                    {
                         snake.Turn(key);
-                    }
-                    
                 }
 
+                // Moving snakes
                 for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                {
-                    SnakesInformation.GetSnakeList()[i].Move();    
-                }
+                    SnakesInformation.GetSnakeList()[i].Move();
 
                 // Interframe delay
                 System.Threading.Thread.Sleep(60);
