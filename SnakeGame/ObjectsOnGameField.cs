@@ -1,14 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Configuration;
+
 
 namespace SnakeGame
 {
     
-        public static class FoodInformation
+        public static class FoodsInformation
         {
 
-            private static List<Food> foodList = new List<Food>();
+            private static List<Food> foodList = new(300);
 
             static public void Add(Food food)
             {
@@ -30,9 +29,9 @@ namespace SnakeGame
 
         }
 
-        public static class SnakeInformation
+        public static class SnakesInformation
         {
-            private static List<Snake> snakeList = new List<Snake>();
+            private static List<Snake> snakeList = new(10);
 
             static public void Add(Snake snake)
             {
@@ -46,7 +45,7 @@ namespace SnakeGame
 
             public static List<Point> GetSnakePoints()
             {
-                List<Point> result = new List<Point>();
+                List<Point> result = new (300);
                 foreach (var snake in snakeList)
                 {
                     result.AddRange(snake.GetPoints());    
@@ -59,7 +58,7 @@ namespace SnakeGame
             {
                 foreach (var point in snake.GetPoints())
                 {
-                    FoodInformation.Add(new Food(point.X, point.Y));
+                    FoodsInformation.Add(new Food(point.X, point.Y));
                 }
                 snakeList.Remove(snake);
             }

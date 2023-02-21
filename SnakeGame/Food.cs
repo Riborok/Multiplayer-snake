@@ -20,7 +20,8 @@ namespace SnakeGame
         private static (int x, int y) Generate()
         {
             Random random = new Random();
-            return (x: random.Next(2, Console.WindowWidth - 2), y: random.Next(2, Console.WindowHeight - 2));
+            int randomX = random.Next(2, Console.WindowWidth - 2); 
+            return (x: randomX % 2 == 1 ? randomX + 1:randomX, y: random.Next(2, Console.WindowHeight - 2));
         }
         
         // Draw the food

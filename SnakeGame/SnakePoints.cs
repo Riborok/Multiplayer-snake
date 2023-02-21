@@ -2,15 +2,29 @@ using System;
 
 namespace SnakeGame
 {
-    public class SnakePoint : Point
+    public class SnakeBodyPoint : Point
     {
-        public SnakePoint(int x, int y) : base((x, y))
+        public SnakeBodyPoint(int x, int y) : base((x, y))
         {
         }
         public override void Draw()
         {
             Console.SetCursorPosition(X, Y);
-            Console.Write('*');   
+            Console.Write('■');   
         }
     }
+    
+    public class SnakeHEADPoint : Point
+    {
+        public SnakeHEADPoint(int x, int y) : base((x, y))
+        {
+        }
+        public override void Draw()
+        {
+            Console.SetCursorPosition(X, Y);
+            Console.Write('☻');   
+        }
+    }
+    
+    
 }

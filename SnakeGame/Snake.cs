@@ -8,21 +8,21 @@ namespace SnakeGame
     public class Snake
     {
         // List of points that composed a snake
-        private List<Point> snakePoints = new List<Point>();
+        private List<Point> snakeBodyPoints = new(100);
 
         public List<Point> GetPoints()
         {
-            return snakePoints;
+            return snakeBodyPoints;
         }
         
         // The direction of the snake
         private Direction direction;
 
-        private MovementKeys movementKeys;
+        private IMovementKeys movementKeys;
 
-        public Snake(int x, int y, MovementKeys movementKeys)
+        public Snake(int x, int y, IMovementKeys movementKeys)
         {
-            snakePoints.Add(new SnakePoint(x, y));
+            snakeBodyPoints.Add(new SnakeHEADPoint(x, y));
             this.movementKeys = movementKeys;
         }
 
@@ -30,17 +30,17 @@ namespace SnakeGame
         public void Move()
         {
             // Defining a new head for the snake
-            Point head = new SnakePoint(snakePoints.Last().X, snakePoints.Last().Y);
+            SnakeHEADPoint head = new SnakeHEADPoint(snakeBodyPoints.Last().X, snakeBodyPoints.Last().Y);
             switch (direction)
             {
                 case Direction.Right:
-                    head.X++;
+                    head.X+=2;
                     break;
                 case Direction.Down:
                     head.Y++;
                     break;
                 case Direction.Left:
-                    head.X--;
+                    head.X-=2;
                     break;
                 case Direction.Up:
                     head.Y--;
@@ -48,33 +48,35 @@ namespace SnakeGame
             }
 
             // Checking if the snake has collided with a wall, its own body, or another snake
-            if (head.X < 1 || head.X > Console.WindowWidth - 1 || head.Y < 1 || head.Y > Console.WindowHeight - 1 ||
-                SnakeInformation.GetSnakePoints().Any(point => point.IsEquals(head)))
+            if (head.X < 1 || head.X > Console.WindowWidth - 2 || head.Y < 1 || head.Y > Console.WindowHeight - 1 ||
+                SnakesInformation.GetSnakePoints().Any(point => point.IsEquals(head)))
             {
                 //Program.GameOver(this);
-                SnakeInformation.Dead(this);
+                SnakesInformation.Dead(this);
             }
             
-            // Adding a new snake head
-            snakePoints.Add(head);
+            // Draw the last point of the body 
+            snakeBodyPoints.Last().Draw();
             
+            // Adding a new body point
+            snakeBodyPoints.Add( new SnakeBodyPoint(head.X, head.Y) );
+
             // Checking if the snake has eaten food
-            Food isEaten = FoodInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(head));
-            if (isEaten != null)
+            Food food = FoodsInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(head));
+            if (food != null)
             {
-                FoodInformation.Delete(isEaten);
+                FoodsInformation.Delete(food);
                 score++;
                 
-                snakePoints.Add(isEaten);
-                head = isEaten;
+                snakeBodyPoints.Add(food);
             }
 
             // Draw the head
             head.Draw();
 
             // Removing the tail of the snake
-            snakePoints[0].Remove();
-            snakePoints.RemoveAt(0);
+            snakeBodyPoints[0].Remove();
+            snakeBodyPoints.RemoveAt(0);
         }
 
 

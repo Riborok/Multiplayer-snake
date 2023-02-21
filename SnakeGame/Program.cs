@@ -20,40 +20,40 @@ namespace SnakeGame
 
         static void Main(string[] args)
         {
-            
-            // Create a snake
-            SnakeInformation.Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5, new Arrows() ));
-            SnakeInformation.Add(new Snake(Console.WindowWidth / 2, Console.WindowHeight / 2 + 5, new WASD() ));
-            
 
-            for (int i = 0; i < 10; i++)
+            // Create a snake
+            SnakesInformation.Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5, new Arrows() ));
+            SnakesInformation.Add(new Snake(Console.WindowWidth / 2, Console.WindowHeight / 2 + 5, new WASD() ));
+            SnakesInformation.Add(new Snake(Console.WindowWidth / 2, Console.WindowHeight / 2 + 10, new UHJK() ));
+
+            for (int i = 0; i < 150; i++)
             {
-                FoodInformation.Add(new Food()); 
-                System.Threading.Thread.Sleep(50);
+                FoodsInformation.Add(new Food()); 
+                System.Threading.Thread.Sleep(1);
             }
 
             // The main game loop
-            while (SnakeInformation.GetSnakeList().Count != 0)
+            while (SnakesInformation.GetSnakeList().Count != 0)
             {
 
                 // Processing user input
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
-                    foreach (var snake in SnakeInformation.GetSnakeList())
+                    foreach (var snake in SnakesInformation.GetSnakeList())
                     {
                         snake.Turn(key);
                     }
                     
                 }
 
-                for (int i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
+                for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
                 {
-                    SnakeInformation.GetSnakeList()[i].Move();    
+                    SnakesInformation.GetSnakeList()[i].Move();    
                 }
 
                 // Interframe delay
-                System.Threading.Thread.Sleep(80);
+                System.Threading.Thread.Sleep(60);
                 Console.CursorVisible = false;
             }
 
