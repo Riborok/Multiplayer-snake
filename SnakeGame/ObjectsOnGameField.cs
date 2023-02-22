@@ -25,14 +25,15 @@ namespace SnakeGame
                 food.Remove();
                 foodList.Remove(food);
                 
-                Add(new Food());
+                // Bad
+                Add(new SimpleFood());
             }
 
             static public void Fill(int amount)
             {
                 for (int i = 0; i < amount; i++)
                 {
-                    Add(new Food());
+                    Add(new SimpleFood());
                     System.Threading.Thread.Sleep(1);
                 }
             }
@@ -68,12 +69,10 @@ namespace SnakeGame
             public static void Dead(Snake snake)
             {
                 foreach (var point in snake.GetPoints())
-                    FoodsInformation.Add(new Food(point.X, point.Y));
+                    FoodsInformation.Add(new SimpleFood(point.X, point.Y));
                 
-                
-                Console.SetCursorPosition(snake.head.X, snake.head.Y);
-                Console.Write('†');
-                
+                FoodsInformation.Add(new SnakeHeadFood(snake.head));
+
                 snakeList.Remove(snake);
             }
 

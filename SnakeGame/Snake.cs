@@ -62,7 +62,6 @@ namespace SnakeGame
             {
                 //Program.GameOver(this);
                 SnakesInformation.Dead(this);
-                
             }
             else
             {
@@ -75,12 +74,7 @@ namespace SnakeGame
                 // Checking if the snake has eaten food
                 Food food = FoodsInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(head));
                 if (food != null)
-                {
-                    FoodsInformation.Delete(food);
-                    score++;
-
-                    snakePoints.Add(food);
-                }
+                    snakePoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
 
                 // Draw the head
                 head.Draw();
@@ -90,9 +84,7 @@ namespace SnakeGame
             snakePoints[0].Remove();
             snakePoints.RemoveAt(0);
         }
-
-
-
+        
         // Turning the snake
         public void Turn(ConsoleKey key)
         {
@@ -101,14 +93,5 @@ namespace SnakeGame
                 direction = trydirection.Value;
         }
 
-        // Snake score
-        private int score;
-
-        // Getting snake score
-        public int GetScore()
-        {
-            return score;
-        }
-        
     }
 }

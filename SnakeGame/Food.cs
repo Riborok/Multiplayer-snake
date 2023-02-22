@@ -2,16 +2,25 @@ using System;
 
 namespace SnakeGame
 {
-    
-    // Class for food
-    public class Food : Point
+    public abstract class Food : Point
     {
-        public Food() : base(Generate())
+        public Food((int x, int y) coord) : base(coord)
+        {
+        }
+        
+        public abstract int NutritionalValue { get;}
+        
+    }
+
+    // Class for food
+    public class SimpleFood : Food
+    {
+        public SimpleFood() : base(Generate())
         {
             Draw();
         }
         
-        public Food(int x, int y) : base((x, y))
+        public SimpleFood(int x, int y) : base((x, y))
         {
             Draw();
         }
@@ -30,7 +39,27 @@ namespace SnakeGame
         public override void Draw()
         {
             Console.SetCursorPosition(X, Y);
-            Console.Write('$');
+            Console.Write('☼');
         }
+
+        public override int NutritionalValue {get => 1;}
+        
+    }
+
+    public class SnakeHeadFood : Food
+    {
+        public SnakeHeadFood(SnakeHEADPoint head) : base((head.X, head.Y))
+        {
+            Draw();
+        }
+        
+        // Draw the food
+        public override void Draw()
+        {
+            Console.SetCursorPosition(X, Y);
+            Console.Write('†');
+        }
+        
+        public override int NutritionalValue {get => 5;}
     }
 }
