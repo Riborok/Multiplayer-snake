@@ -19,14 +19,22 @@ namespace SnakeGame
         }
 
         static void Main(string[] args)
-        { 
-            
-            // Filling the field with food
-            const int amountFood = 200;
-            FoodsInformation.Fill(amountFood);
+        {
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
+            Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
             // Create a snake
-            const int amountSnaiks = 3;
+            int amountSnaiks;
+            do
+                amountSnaiks = (int)Console.ReadKey(true).Key - '0';
+            while (amountSnaiks is < 1 or > 3 ); 
+            
+            Console.Clear();
+
+            // Filling the field with food
+            const int amountFood = 150;
+            FoodsInformation.Fill(amountFood);
+            
             SnakesInformation.Fill(amountSnaiks);
 
             // The main game loop (the game will continue until there is at least 1 snake)

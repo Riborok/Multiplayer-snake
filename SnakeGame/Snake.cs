@@ -5,7 +5,7 @@ using System.Linq;
 namespace SnakeGame
 {
     // Сlass for the snake
-    public class Snake
+    public class Snake 
     {
         // List of points that composed a snake
         private List<Point> snakePoints = new(100);
@@ -58,7 +58,7 @@ namespace SnakeGame
 
             // Checking if the snake has collided with a wall, its own body, or another snake
             if (head.X < 1 || head.X > Console.WindowWidth - 2 || head.Y < 1 || head.Y > Console.WindowHeight - 1 ||
-                SnakesInformation.GetSnakePoints().Any(point => point.IsEquals(head)))
+                SnakesInformation.GetListPointsOfSnakes().Any(point => point.IsEquals(head)))
             {
                 //Program.GameOver(this);
                 SnakesInformation.Dead(this);

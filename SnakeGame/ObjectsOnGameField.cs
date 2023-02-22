@@ -55,7 +55,7 @@ namespace SnakeGame
                 return snakeList;
             }
 
-            public static List<Point> GetSnakePoints()
+            public static List<Point> GetListPointsOfSnakes()
             {
                 List<Point> result = new (300);
                 foreach (var snake in snakeList)
