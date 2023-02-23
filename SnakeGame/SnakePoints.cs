@@ -3,9 +3,16 @@ using System.Collections.Generic;
 
 namespace SnakeGame
 {
-    public class SnakeBodyPoint : Point
+    public abstract class SnakePart: Point
     {
-        public SnakeBodyPoint(int x, int y) : base((x, y))
+        protected SnakePart(int x, int y) : base(x,y)
+        {
+        }
+    }
+    
+    public class SnakeBodyPoint : SnakePart
+    {
+        public SnakeBodyPoint(SnakeHEADPoint head) : base(head.X, head.Y)
         {
         }
         public override void Draw()
@@ -15,9 +22,9 @@ namespace SnakeGame
         }
     }
 
-    public class DigestibleBody : Point
+    public class DigestibleBody : SnakePart
     {
-        private DigestibleBody(Food food) : base((food.X, food.Y))
+        private DigestibleBody(Food food) : base(food.X, food.Y)
         {
         }
         
@@ -27,19 +34,19 @@ namespace SnakeGame
             Console.Write('█');   
         }
 
-        public static List<Point> GetListOfAddedBody (Food food)
+        public static List<SnakePart> GetListOfAddedBody (Food food)
         {
             FoodsInformation.Delete(food);
-            List<Point> result = new List<Point>(); 
+            List<SnakePart> result = new List<SnakePart>(); 
             for (int i = 0; i < food.NutritionalValue; i++)
                 result.Add(new DigestibleBody(food));
             return result;
         }
     }
     
-    public class SnakeHEADPoint : Point
+    public class SnakeHEADPoint : SnakePart
     {
-        public SnakeHEADPoint(int x, int y) : base((x, y))
+        public SnakeHEADPoint(int x, int y) : base(x, y)
         {
         }
         public override void Draw()

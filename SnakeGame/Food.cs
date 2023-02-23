@@ -4,11 +4,12 @@ namespace SnakeGame
 {
     public abstract class Food : Point
     {
-        public Food((int x, int y) coord) : base(coord)
+        protected Food((int x, int y) coord) : base(coord.x, coord.y)
         {
+            Draw();
         }
         
-        public abstract int NutritionalValue { get;}
+        public abstract int NutritionalValue {get;}
         
     }
 
@@ -17,12 +18,10 @@ namespace SnakeGame
     {
         public SimpleFood() : base(Generate())
         {
-            Draw();
         }
         
         public SimpleFood(int x, int y) : base((x, y))
         {
-            Draw();
         }
 
         // Generate a new position for food
@@ -50,7 +49,6 @@ namespace SnakeGame
     {
         public SnakeHeadFood(SnakeHEADPoint head) : base((head.X, head.Y))
         {
-            Draw();
         }
         
         // Draw the food
@@ -60,6 +58,6 @@ namespace SnakeGame
             Console.Write('†');
         }
         
-        public override int NutritionalValue {get => 5;}
+        public override int NutritionalValue {get => 10;}
     }
 }

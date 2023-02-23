@@ -56,13 +56,12 @@ namespace SnakeGame
                 return snakeList;
             }
 
-            public static List<Point> GetListPointsOfSnakes()
+            public static List<SnakePart> GetListPartsOfSnakes()
             {
-                List<Point> result = new (300);
+                List<SnakePart> result = new (300);
                 foreach (var snake in snakeList)
                     result.AddRange(snake.GetPoints());    
                 
-
                 return result;
             }
 

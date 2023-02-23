@@ -8,10 +8,10 @@ namespace SnakeGame
         public int X { get; set; }
         public int Y { get; set; }
 
-        public Point((int x, int y) coord)
+        public Point(int x, int y)
         {
-            X = coord.x;
-            Y = coord.y;
+            X = x;
+            Y = y;
         }
         
         public bool IsEquals(Point other)
