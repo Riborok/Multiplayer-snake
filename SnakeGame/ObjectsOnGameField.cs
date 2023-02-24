@@ -26,16 +26,26 @@ namespace SnakeGame
                 FoodList.Remove(food);
                 
                 // Bad
-                Add(new SimpleFood());
+                Add(new SimpleFood(Generate()));
             }
 
             public static void Fill(int amount)
             {
                 for (int i = 0; i < amount; i++)
                 {
-                    Add(new SimpleFood());
+                    Add(new SimpleFood(Generate()));
                     System.Threading.Thread.Sleep(1);
                 }
+            }
+            
+            // Generate a new position for food
+            private static (int x, int y) Generate()
+            {
+                var random = new Random();
+
+                // Checking that the food is in an even position on the x coordinate
+                int randomX = random.Next(2, Console.WindowWidth - 2); 
+                return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(2, Console.WindowHeight - 2));
             }
 
         }

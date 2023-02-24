@@ -29,9 +29,7 @@ namespace SnakeGame
             _movementKeys = movementKeys;
             
             // Checking that the snake is in an even position on the x coordinate
-            if (xHead % 2 == 1)
-                ++xHead;
-            Head = new SnakeHeadPoint(xHead, yHead);
+            Head = new SnakeHeadPoint(x: xHead % 2 == 1 ? ++xHead: xHead, y: yHead);
             
             _snakePoints.Add(new SnakeBodyPoint(Head));
         }
