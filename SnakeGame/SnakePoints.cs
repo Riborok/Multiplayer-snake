@@ -12,7 +12,7 @@ namespace SnakeGame
     
     public class SnakeBodyPoint : SnakePart
     {
-        public SnakeBodyPoint(SnakeHEADPoint head) : base(head.X, head.Y)
+        public SnakeBodyPoint(SnakeHeadPoint head) : base(head.X, head.Y)
         {
         }
         public override void Draw()
@@ -44,9 +44,9 @@ namespace SnakeGame
         }
     }
     
-    public class SnakeHEADPoint : SnakePart
+    public class SnakeHeadPoint : SnakePart
     {
-        public SnakeHEADPoint(int x, int y) : base(x, y)
+        public SnakeHeadPoint(int x, int y) : base(x, y)
         {
         }
         public override void Draw()

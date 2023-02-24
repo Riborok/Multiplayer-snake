@@ -27,7 +27,7 @@ namespace SnakeGame
         // Generate a new position for food
         private static (int x, int y) Generate()
         {
-            Random random = new Random();
+            var random = new Random();
             
             // Checking that the food is in an even position on the x coordinate
             int randomX = random.Next(2, Console.WindowWidth - 2); 
@@ -41,13 +41,12 @@ namespace SnakeGame
             Console.Write('☼');
         }
 
-        public override int NutritionalValue {get => 1;}
-        
+        public override int NutritionalValue => 1;
     }
 
     public class SnakeHeadFood : Food
     {
-        public SnakeHeadFood(SnakeHEADPoint head) : base((head.X, head.Y))
+        public SnakeHeadFood(SnakeHeadPoint head) : base((head.X, head.Y))
         {
         }
         
@@ -58,6 +57,6 @@ namespace SnakeGame
             Console.Write('†');
         }
         
-        public override int NutritionalValue {get => 10;}
+        public override int NutritionalValue => 10;
     }
 }

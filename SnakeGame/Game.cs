@@ -3,7 +3,7 @@
 namespace SnakeGame
 {
     // The main class of the game
-    class Program
+    class Game
     {
 
         public static void GameOver()
@@ -18,7 +18,7 @@ namespace SnakeGame
             System.Threading.Thread.Sleep(10000);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");

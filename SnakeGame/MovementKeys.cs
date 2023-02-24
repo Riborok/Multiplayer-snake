@@ -5,67 +5,89 @@ namespace SnakeGame
     
     public interface IMovementKeys
     {
-        Direction? MovementDirection(ConsoleKey key);
+        Direction MovementDirection(ConsoleKey key, Direction direction);
     }
 
     public class Arrows : IMovementKeys
     {
-        public Direction? MovementDirection(ConsoleKey key)
+        public Direction MovementDirection(ConsoleKey key, Direction direction)
         {
             switch (key)
             {
                 case ConsoleKey.RightArrow:
-                    return Direction.Right;
+                    if (direction != Direction.Left)
+                        return Direction.Right;
+                    break;
                 case ConsoleKey.DownArrow:
-                    return Direction.Down;
+                    if (direction != Direction.Up)
+                        return Direction.Down;
+                    break;
                 case ConsoleKey.LeftArrow:
-                    return Direction.Left;
+                    if (direction != Direction.Right)
+                        return Direction.Left;
+                    break;
                 case ConsoleKey.UpArrow:
-                    return Direction.Up;
-                default:
-                    return null;
+                    if (direction != Direction.Down)
+                        return Direction.Up;
+                    break;
             }
+            return direction;    
         }
 
     }
 
     public class WASD : IMovementKeys
     {
-        public Direction? MovementDirection(ConsoleKey key)
+        public Direction MovementDirection(ConsoleKey key, Direction direction)
         {
             switch (key)
             {
                 case ConsoleKey.D:
-                    return Direction.Right;
+                    if (direction != Direction.Left)
+                        return Direction.Right;
+                    break;
                 case ConsoleKey.S:
-                    return Direction.Down;
+                    if (direction != Direction.Up)
+                        return Direction.Down;
+                    break;
                 case ConsoleKey.A:
-                    return Direction.Left;
+                    if (direction != Direction.Right)
+                        return Direction.Left;
+                    break;
                 case ConsoleKey.W:
-                    return Direction.Up;
-                default:
-                    return null;
+                    if (direction != Direction.Down)
+                        return Direction.Up;
+                    break;
             }
+            return direction;
         }
     }
 
     public class UHJK : IMovementKeys
     {
-        public Direction? MovementDirection(ConsoleKey key)
+        public Direction MovementDirection(ConsoleKey key, Direction direction)
         {
             switch (key)
             {
                 case ConsoleKey.K:
-                    return Direction.Right;
+                    if (direction != Direction.Left)
+                        return Direction.Right;
+                    break;
                 case ConsoleKey.J:
-                    return Direction.Down;
+                    if (direction != Direction.Up)
+                        return Direction.Down;
+                    break;
                 case ConsoleKey.H:
-                    return Direction.Left;
+                    if (direction != Direction.Right)
+                        return Direction.Left;
+                    break;
                 case ConsoleKey.U:
-                    return Direction.Up;
-                default:
-                    return null;
+                    if (direction != Direction.Down)
+                        return Direction.Up;
+                    break;
             }
+            return direction;
         }
     }
+    
 }

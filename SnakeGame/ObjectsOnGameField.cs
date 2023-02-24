@@ -8,28 +8,28 @@ namespace SnakeGame
         public static class FoodsInformation
         {
 
-            private static List<Food> foodList = new(300);
+            private static readonly List<Food> FoodList = new(300);
 
-            static public void Add(Food food)
+            public static void Add(Food food)
             {
-                foodList.Add(food);
+                FoodList.Add(food);
             }
 
             public static List<Food> GetFoodList()
             {
-                return foodList;
+                return FoodList;
             }
 
-            static public void Delete(Food food)
+            public static void Delete(Food food)
             {
                 food.Remove();
-                foodList.Remove(food);
+                FoodList.Remove(food);
                 
                 // Bad
                 Add(new SimpleFood());
             }
 
-            static public void Fill(int amount)
+            public static void Fill(int amount)
             {
                 for (int i = 0; i < amount; i++)
                 {
@@ -42,24 +42,24 @@ namespace SnakeGame
 
         public static class SnakesInformation
         {
-            private static readonly List<Snake> snakeList = new(10);
+            private static readonly List<Snake> SnakeList = new(3);
 
-            private static readonly IMovementKeys[] movementKeys = {new Arrows(), new WASD(), new UHJK()};
+            private static readonly IMovementKeys[] MovementKeys = {new Arrows(), new WASD(), new UHJK()};
 
-            static public void Add(Snake snake)
+            public static void Add(Snake snake)
             {
-                snakeList.Add(snake);
+                SnakeList.Add(snake);
             }
 
             public static List<Snake> GetSnakeList()
             {
-                return snakeList;
+                return SnakeList;
             }
 
             public static List<SnakePart> GetListPartsOfSnakes()
             {
                 List<SnakePart> result = new (300);
-                foreach (var snake in snakeList)
+                foreach (var snake in SnakeList)
                     result.AddRange(snake.GetPoints());    
                 
                 return result;
@@ -70,15 +70,15 @@ namespace SnakeGame
                 foreach (var point in snake.GetPoints())
                     FoodsInformation.Add(new SimpleFood(point.X, point.Y));
                 
-                FoodsInformation.Add(new SnakeHeadFood(snake.head));
+                FoodsInformation.Add(new SnakeHeadFood(snake.Head));
 
-                snakeList.Remove(snake);
+                SnakeList.Remove(snake);
             }
 
             public static void Fill(int amount)
             {
                 for (int i = 0; i < amount; i++)
-                    Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5 * i, movementKeys[i]) );
+                    Add(new Snake(Console.WindowWidth / 2 , Console.WindowHeight / 2 - 5 * i, MovementKeys[i]) );
             }
             
         }
