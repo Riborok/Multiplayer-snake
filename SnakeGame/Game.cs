@@ -1,10 +1,30 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace SnakeGame
 {
     // The main class of the game
     class Game
     {
+        // WinAPI function
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetConsoleWindow();
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private static void SetConsoleSettings()
+        {
+            // Color setting
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            
+            // Console window setting
+            IntPtr handle = GetConsoleWindow();
+            ShowWindow(handle, 3);
+            Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
+            
+            Console.CursorVisible = false;   
+        }
 
         public static void GameOver()
         {
@@ -20,6 +40,8 @@ namespace SnakeGame
 
         static void Main()
         {
+            SetConsoleSettings();
+
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
@@ -36,7 +58,7 @@ namespace SnakeGame
             FoodsInformation.Fill(amountFood);
             
             SnakesInformation.Fill(amountSnaiks);
-
+            
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakesInformation.GetSnakeList().Count != 0)
             {
@@ -55,7 +77,6 @@ namespace SnakeGame
 
                 // Interframe delay
                 System.Threading.Thread.Sleep(60);
-                Console.CursorVisible = false;
             }
 
             GameOver();
