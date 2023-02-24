@@ -11,6 +11,7 @@ namespace SnakeGame
         private static extern IntPtr GetConsoleWindow();
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private const int SW_MAXIMIZE = 3;
 
         private static void SetConsoleSettings()
         {
@@ -20,10 +21,30 @@ namespace SnakeGame
             
             // Console window setting
             IntPtr handle = GetConsoleWindow();
-            ShowWindow(handle, 3);
+            ShowWindow(handle, SW_MAXIMIZE);
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
             
             Console.CursorVisible = false;   
+        }
+
+        private static void GameCreation()
+        {
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
+            Console.Write("Enter the amount of players. Amount can be from 1 to 3");
+
+            // Create a snake
+            int amountSnakes;
+            do
+                amountSnakes = (int)Console.ReadKey(true).Key - '0';
+            while (amountSnakes is < 1 or > 3 ); 
+            
+            Console.Clear();
+
+            // Filling the field with food
+            const int amountFood = 150;
+            FoodsInformation.Fill(amountFood);
+            
+            SnakesInformation.Fill(amountSnakes);    
         }
 
         public static void GameOver()
@@ -42,22 +63,7 @@ namespace SnakeGame
         {
             SetConsoleSettings();
 
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
-            Console.Write("Enter the amount of players. Amount can be from 1 to 3");
-
-            // Create a snake
-            int amountSnaiks;
-            do
-                amountSnaiks = (int)Console.ReadKey(true).Key - '0';
-            while (amountSnaiks is < 1 or > 3 ); 
-            
-            Console.Clear();
-
-            // Filling the field with food
-            const int amountFood = 150;
-            FoodsInformation.Fill(amountFood);
-            
-            SnakesInformation.Fill(amountSnaiks);
+            GameCreation();
             
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakesInformation.GetSnakeList().Count != 0)
