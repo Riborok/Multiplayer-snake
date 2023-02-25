@@ -58,7 +58,7 @@ namespace SnakeGame
             }
 
             // Checking if the snake has collided with a wall, its own body, or another snake
-            if (Head.X < 1 || Head.X > Console.WindowWidth - 2 || Head.Y < 1 || Head.Y > Console.WindowHeight - 1 ||
+            if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2 ||
                 SnakesInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
             {
                 // Because the snake hit the obstacle, take a step back

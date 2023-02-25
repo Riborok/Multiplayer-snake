@@ -15,6 +15,8 @@ namespace SnakeGame
 
         private static void SetConsoleSettings()
         {
+            Console.Title = "Snake Game";
+        
             // Color setting
             Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.ForegroundColor = ConsoleColor.Yellow;
