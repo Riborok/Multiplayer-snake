@@ -31,6 +31,9 @@ namespace SnakeGame
             // Checking that the snake is in an even position on the x coordinate
             Head = new SnakeHeadPoint(x: xHead % 2 == 1 ? ++xHead : xHead, y: yHead);
             
+            // In the list of bodies, we will store the head (the previous values,
+            // and the new value of the head will be stored in Head) as a body.
+            // This is necessary in the event of a collision, it was possible to take a step back.
             _snakePoints.Add(new SnakeBodyPoint(Head));
         }
 
