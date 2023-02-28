@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace SnakeGame
 {
@@ -67,27 +68,36 @@ namespace SnakeGame
 
             GameCreation();
             
+            // Dedicate a thread for handling players clicks
+            ClickHandling();
+            
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakesInformation.GetSnakeList().Count != 0)
             {
-                
-                // Processing user input
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(true).Key;
-                    foreach (var snake in SnakesInformation.GetSnakeList())
-                        snake.Turn(key);
-                }
 
                 // Moving snakes
                 for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
                     SnakesInformation.GetSnakeList()[i].Move();
 
                 // Interframe delay
-                System.Threading.Thread.Sleep(60);
+                System.Threading.Thread.Sleep(45);
             }
 
             GameOver();
+        }
+
+        private static async void ClickHandling()
+        {
+            await Task.Run(() =>
+            {
+                // Processing user input
+                while (SnakesInformation.GetSnakeList().Count != 0)
+                {
+                    var key = Console.ReadKey(true).Key;
+                    foreach (var snake in SnakesInformation.GetSnakeList())
+                        snake.Turn(key);
+                }
+            });
         }
     }
 }
