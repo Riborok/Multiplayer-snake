@@ -62,41 +62,44 @@ namespace SnakeGame
             System.Threading.Thread.Sleep(10000);
         }
 
-        static void Main()
+        static async Task Main()
         {
             SetConsoleSettings();
 
             GameCreation();
-            
-            // Dedicate a thread for handling players clicks
-            ClickHandling();
-            
+
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakesInformation.GetSnakeList().Count != 0)
             {
 
-                // Moving snakes
-                for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                    SnakesInformation.GetSnakeList()[i].Move();
+                // Set the thread that will handle the snakes while there is a frame delay
+                var task = SnakeHandling();
 
-                // Interframe delay
+                // Frame delay
                 System.Threading.Thread.Sleep(45);
+                
+                // Checking if the task is completed
+                await task;
             }
 
             GameOver();
         }
 
-        private static async void ClickHandling()
+        private static async Task SnakeHandling()
         {
             await Task.Run(() =>
             {
                 // Processing user input
-                while (SnakesInformation.GetSnakeList().Count != 0)
+                if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     foreach (var snake in SnakesInformation.GetSnakeList())
                         snake.Turn(key);
                 }
+                
+                // Moving snakes
+                for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
+                    SnakesInformation.GetSnakeList()[i].Move();
             });
         }
     }
