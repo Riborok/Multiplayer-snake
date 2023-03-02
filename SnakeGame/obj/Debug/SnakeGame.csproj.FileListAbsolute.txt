@@ -5,3 +5,10 @@ D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.csproj.SuggestedBi
 D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.csproj.CoreCompileInputs.cache
 D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.exe
 D:\JetBrains\projects\SnakeGame\SnakeGame\obj\Debug\SnakeGame.pdb
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\bin\Debug\SnakeGame.exe
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\bin\Debug\SnakeGame.pdb
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.AssemblyReference.cache
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.SuggestedBindingRedirects.cache
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.CoreCompileInputs.cache
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.exe
+C:\Users\Egor\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.pdb

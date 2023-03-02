@@ -78,8 +78,7 @@ namespace SnakeGame
                 _snakePoints.Add(new SnakeBodyPoint(Head));
 
                 // Checking if the snake has eaten food
-                Food food = FoodsInformation.GetFoodList().FirstOrDefault(food => food.IsEquals(Head));
-                if (food != null)
+                if (FoodsInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is Food food)
                     _snakePoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
 
                 // Draw the head
@@ -92,9 +91,16 @@ namespace SnakeGame
         }
         
         // Turning the snake
-        public void Turn(ConsoleKey key)
+        public bool PassedTurn(ConsoleKey key)
         {
-            _direction = _movementKeys.MovementDirection(key, _direction);
+            Direction redirection = _movementKeys.MovementDirection(key, _direction);
+
+            if (redirection != _direction)
+            {
+                _direction = redirection;
+                return true;
+            }
+            return false;
         }
 
     }

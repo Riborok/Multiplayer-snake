@@ -1,19 +1,30 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SnakeGame
 {
     // The main class of the game
-    class Game
+    static class Game
     {
-        // WinAPI function
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GetConsoleWindow();
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        private const int SW_MAXIMIZE = 3;
+        private static class FullScreen
+        {
+            // WinAPI function
+            [DllImport("kernel32.dll", SetLastError = true)]
+            private static extern IntPtr GetConsoleWindow();
+            [DllImport("user32.dll")]
+            private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+            private const int SW_MAXIMIZE = 3;
 
+            public static void Set()
+            {
+                IntPtr handle = GetConsoleWindow();
+                ShowWindow(handle, SW_MAXIMIZE);
+                Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);    
+            }
+    
+        }
         private static void SetConsoleSettings()
         {
             Console.Title = "Snake Game";
@@ -23,12 +34,13 @@ namespace SnakeGame
             Console.ForegroundColor = ConsoleColor.Yellow;
             
             // Console window setting
-            IntPtr handle = GetConsoleWindow();
-            ShowWindow(handle, SW_MAXIMIZE);
-            Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
-            
+            FullScreen.Set();
+
             Console.CursorVisible = false;   
         }
+
+        public static int AmountSnakes { get; private set; }
+        public static int AmountFood => 250;
 
         private static void GameCreation()
         {
@@ -36,18 +48,16 @@ namespace SnakeGame
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
             // Create a snake
-            int amountSnakes;
             do
-                amountSnakes = (int)Console.ReadKey(true).Key - '0';
-            while (amountSnakes is < 1 or > 3 ); 
+                AmountSnakes = (int)Console.ReadKey(true).Key - '0';
+            while (AmountSnakes is < 1 or > 3 ); 
             
             Console.Clear();
 
             // Filling the field with food
-            const int amountFood = 150;
-            FoodsInformation.Fill(amountFood);
+            FoodsInformation.Fill(AmountFood);
             
-            SnakesInformation.Fill(amountSnakes);    
+            SnakesInformation.Fill(AmountSnakes);    
         }
 
         public static void GameOver()
@@ -73,10 +83,10 @@ namespace SnakeGame
             {
 
                 // Set the thread that will handle the snakes while there is a frame delay
-                var task = SnakeHandling();
+                var task = SnakeHandling.Start();
 
                 // Frame delay
-                System.Threading.Thread.Sleep(45);
+                System.Threading.Thread.Sleep(47);
                 
                 // Checking if the task is completed
                 await task;
@@ -84,23 +94,36 @@ namespace SnakeGame
 
             GameOver();
         }
-
-        private static async Task SnakeHandling()
+        
+        private static class SnakeHandling
         {
-            await Task.Run(() =>
+            private static readonly bool[] WasSnake = new bool[AmountSnakes];
+            private static ConsoleKey _prevKey;
+
+            public static async Task Start()
             {
-                // Processing user input
-                if (Console.KeyAvailable)
+                await Task.Run(() =>
                 {
-                    var key = Console.ReadKey(true).Key;
-                    foreach (var snake in SnakesInformation.GetSnakeList())
-                        snake.Turn(key);
-                }
+                    Array.Clear(WasSnake, 0, WasSnake.Length);
+                    // Processing user input
+                    while (Console.KeyAvailable && WasSnake.Any(_ => _ == false))
+                    {
+                        var key = Console.ReadKey(true).Key;
+                        if (key != _prevKey)
+                        {
+                            for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
+                                WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
+                            _prevKey = key;
+                        }
+                    }
                 
-                // Moving snakes
-                for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                    SnakesInformation.GetSnakeList()[i].Move();
-            });
+                    // Moving snakes
+                    for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
+                        SnakesInformation.GetSnakeList()[i].Move();
+                });
+            }
+            
         }
+        
     }
 }
