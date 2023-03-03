@@ -13,7 +13,7 @@ namespace SnakeGame
         public override void Remove()
         {
             base.Remove();
-            FoodsInformation.Delete(this);
+            FoodInformation.Delete(this);
         }
     }
     

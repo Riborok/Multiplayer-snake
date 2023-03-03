@@ -57,15 +57,14 @@ namespace SnakeGame
 
             // Checking if the snake has collided with a wall, its own body, or another snake
             if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2 ||
-                SnakesInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
+                SnakeInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
             {
                 // Because the snake hit the obstacle, take a step back
                 Head.X = _snakeBodyPoints.Last().X;
                 Head.Y = _snakeBodyPoints.Last().Y;
                 _snakeBodyPoints.RemoveAt(_snakeBodyPoints.Count-1);
                 
-                //Program.GameOver(this);
-                SnakesInformation.Dead(this);
+                SnakeInformation.Kill(this);
             }
             else
             {
@@ -76,7 +75,7 @@ namespace SnakeGame
                 _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
 
                 // Checking if the snake has eaten food
-                if (FoodsInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is Food food)
+                if (FoodInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is Food food)
                     _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
 
                 // Draw the head

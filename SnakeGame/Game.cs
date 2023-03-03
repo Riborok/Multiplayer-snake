@@ -57,10 +57,10 @@ namespace SnakeGame
             Console.Clear();
 
             // Filling the field with food
-            FoodsInformation.Fill(AmountFood);
+            FoodInformation.Fill(AmountFood);
             
             // Create a snake
-            SnakesInformation.Fill(AmountSnakes);    
+            SnakeInformation.Fill(AmountSnakes);    
         }
 
         private static void GameOver()
@@ -82,7 +82,7 @@ namespace SnakeGame
             GameCreation();
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (SnakesInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count < ScoreToWin))
+            while (SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count < ScoreToWin))
             {
 
                 // Set the thread that will handle the snakes while there is a frame delay
@@ -111,14 +111,14 @@ namespace SnakeGame
                     while (Console.KeyAvailable && WasSnake.Any(wasSnake => !wasSnake))
                     {
                         var key = Console.ReadKey(true).Key;
-                        for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++) 
+                        for (int i = 0; i < SnakeInformation.GetSnakeList().Count; i++) 
                             if (!WasSnake[i]) 
-                                WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
+                                WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
                     }
                 
                     // Moving snakes
-                    for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                        SnakesInformation.GetSnakeList()[i].Move();
+                    for (int i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
+                        SnakeInformation.GetSnakeList()[i].Move();
                 });
             }
             

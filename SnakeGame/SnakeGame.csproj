@@ -43,12 +43,12 @@
         <Compile Include="MovementKeys.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
-        <Compile Include="ObjectsOnGameField.cs" />
+        <Compile Include="Information.cs" />
         <Compile Include="Point.cs" />
         <Compile Include="Game.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Snake.cs" />
-        <Compile Include="SnakePoints.cs" />
+        <Compile Include="SnakePart.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

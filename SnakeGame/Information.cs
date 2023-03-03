@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SnakeGame
 {
     
-    public static class FoodsInformation
+    public static class FoodInformation
     {
 
         private static readonly List<Food> FoodList = new(300);
@@ -50,7 +50,7 @@ namespace SnakeGame
 
     }
 
-    public static class SnakesInformation
+    public static class SnakeInformation
     {
         private static readonly List<Snake> SnakeList = new(3);
 
@@ -75,11 +75,11 @@ namespace SnakeGame
             return result;
         }
 
-        public static void Dead(Snake snake)
+        public static void Kill(Snake snake)
         {
             foreach (var body in snake.GetBodyPoints())
-                FoodsInformation.Add(new SimpleFood(body));
-            FoodsInformation.Add(new SnakeHeadFood(snake.Head));
+                FoodInformation.Add(new SimpleFood(body));
+            FoodInformation.Add(new SnakeHeadFood(snake.Head));
             
             SnakeList.Remove(snake);
             Add(new Snake(Generate(), snake.MovementKeys));
