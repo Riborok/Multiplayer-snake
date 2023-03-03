@@ -112,7 +112,8 @@ namespace SnakeGame
                         if (key != _prevKey)
                         {
                             for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                                WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
+                                if (!WasSnake[i])
+                                    WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
                             _prevKey = key;
                         }
                     }
