@@ -98,7 +98,6 @@ namespace SnakeGame
         private static class SnakeHandling
         {
             private static readonly bool[] WasSnake = new bool[AmountSnakes];
-            private static ConsoleKey _prevKey;
 
             public static async Task Start()
             {
@@ -106,16 +105,12 @@ namespace SnakeGame
                 {
                     Array.Clear(WasSnake, 0, WasSnake.Length);
                     // Processing user input
-                    while (Console.KeyAvailable && WasSnake.Any(_ => _ == false))
+                    while (Console.KeyAvailable && WasSnake.Any(wasSnake => !wasSnake))
                     {
                         var key = Console.ReadKey(true).Key;
-                        if (key != _prevKey)
-                        {
-                            for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++)
-                                if (!WasSnake[i])
-                                    WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
-                            _prevKey = key;
-                        }
+                        for (int i = 0; i < SnakesInformation.GetSnakeList().Count; i++) 
+                            if (!WasSnake[i]) 
+                                WasSnake[i] = SnakesInformation.GetSnakeList()[i].PassedTurn(key);
                     }
                 
                     // Moving snakes
