@@ -8,6 +8,8 @@ namespace SnakeGame
         public int X { get; set; }
         public int Y { get; set; }
 
+        protected abstract char Symbol { get; }
+
         protected Point(int x, int y)
         {
             X = x;
@@ -19,7 +21,11 @@ namespace SnakeGame
             return X == other.X && Y == other.Y;
         }
         
-        public abstract void Draw();
+        public void Draw()
+        {
+            Console.SetCursorPosition(X, Y);
+            Console.Write(Symbol);
+        }
 
         public void Remove()
         {

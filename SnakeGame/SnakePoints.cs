@@ -12,26 +12,17 @@ namespace SnakeGame
     
     public class SnakeBodyPoint : SnakePart
     {
+        protected override char Symbol => '■';
         public SnakeBodyPoint(SnakeHeadPoint head) : base(head.X, head.Y)
         {
-        }
-        public override void Draw()
-        {
-            Console.SetCursorPosition(X, Y);
-            Console.Write('■');   
         }
     }
 
     public class DigestibleBody : SnakePart
     {
+        protected override char Symbol => '█';
         private DigestibleBody(Food food) : base(food.X, food.Y)
         {
-        }
-        
-        public override void Draw()
-        {
-            Console.SetCursorPosition(X, Y);
-            Console.Write('█');   
         }
 
         public static List<SnakePart> GetListOfAddedBody (Food food)
@@ -46,13 +37,9 @@ namespace SnakeGame
     
     public class SnakeHeadPoint : SnakePart
     {
+        protected override char Symbol => '☻';
         public SnakeHeadPoint(int x, int y) : base(x, y)
         {
-        }
-        public override void Draw()
-        {
-            Console.SetCursorPosition(X, Y);
-            Console.Write('☻');   
         }
     }
     
