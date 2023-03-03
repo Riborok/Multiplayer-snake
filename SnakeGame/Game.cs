@@ -86,7 +86,7 @@ namespace SnakeGame
                 var task = SnakeHandling.Start();
 
                 // Frame delay
-                System.Threading.Thread.Sleep(47);
+                System.Threading.Thread.Sleep(46);
                 
                 // Checking if the task is completed
                 await task;

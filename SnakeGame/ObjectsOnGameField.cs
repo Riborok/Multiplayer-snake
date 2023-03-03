@@ -26,7 +26,8 @@ namespace SnakeGame
                 FoodList.Remove(food);
                 
                 // Bad
-                Add(new SimpleFood(Generate()));
+                if (FoodList.Count < Game.AmountFood)
+                    Add(new SimpleFood(Generate()));
             }
 
             public static void Fill(int amount)
@@ -44,8 +45,8 @@ namespace SnakeGame
                 var random = new Random();
 
                 // Checking that the food is in an even position on the x coordinate
-                int randomX = random.Next(2, Console.WindowWidth - 2); 
-                return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(2, Console.WindowHeight - 2));
+                int randomX = random.Next(1, Console.WindowWidth - 1); 
+                return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(1, Console.WindowHeight - 1));
             }
 
         }
