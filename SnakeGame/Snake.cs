@@ -7,34 +7,32 @@ namespace SnakeGame
     // Сlass for the snake
     public class Snake 
     {
-        // List of points that composed a snake
-        private readonly List<SnakePart> _snakePoints = new(300);
+        // List of points that composed a snake body
+        private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
 
-        public List<SnakePart> GetPoints()
+        public List<SnakeBodyPoint> GetBodyPoints()
         {
-            return _snakePoints;
+            return _snakeBodyPoints;
         }
         
         // The direction of the snake
         private Direction _direction = Direction.Right;
         
         // Snake movement keys 
-        private readonly IMovementKeys _movementKeys;
+        public IMovementKeys MovementKeys {get;}
         
         // Snake head
         public SnakeHeadPoint Head {get;}
 
-        public Snake(int xHead, int yHead, IMovementKeys movementKeys)
+        public Snake((int x, int y) head, IMovementKeys movementKeys)
         {
-            _movementKeys = movementKeys;
-            
-            // Checking that the snake is in an even position on the x coordinate
-            Head = new SnakeHeadPoint(x: xHead % 2 == 1 ? ++xHead : xHead, y: yHead);
+            MovementKeys = movementKeys;
+            Head = new SnakeHeadPoint(head.x, head.y);
             
             // In the list of bodies, we will store the head (the previous values,
             // and the new value of the head will be stored in Head) as a body.
             // This is necessary in the event of a collision, it was possible to take a step back.
-            _snakePoints.Add(new SnakeBodyPoint(Head));
+            _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
         }
 
         // Movement of the snake
@@ -62,9 +60,9 @@ namespace SnakeGame
                 SnakesInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
             {
                 // Because the snake hit the obstacle, take a step back
-                Head.X = _snakePoints.Last().X;
-                Head.Y = _snakePoints.Last().Y;
-                _snakePoints.RemoveAt(_snakePoints.Count-1);
+                Head.X = _snakeBodyPoints.Last().X;
+                Head.Y = _snakeBodyPoints.Last().Y;
+                _snakeBodyPoints.RemoveAt(_snakeBodyPoints.Count-1);
                 
                 //Program.GameOver(this);
                 SnakesInformation.Dead(this);
@@ -72,28 +70,28 @@ namespace SnakeGame
             else
             {
                 // Draw the last point of the body 
-                _snakePoints.Last().Draw();
+                _snakeBodyPoints.Last().Draw();
 
                 // Adding a new body point
-                _snakePoints.Add(new SnakeBodyPoint(Head));
+                _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
 
                 // Checking if the snake has eaten food
                 if (FoodsInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is Food food)
-                    _snakePoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
+                    _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
 
                 // Draw the head
                 Head.Draw();
                 
                 // Removing the tail of the snake
-                _snakePoints[0].Remove();
-                _snakePoints.RemoveAt(0);
+                _snakeBodyPoints[0].Remove();
+                _snakeBodyPoints.RemoveAt(0);
             }
         }
         
         // Turning the snake
         public bool PassedTurn(ConsoleKey key)
         {
-            Direction redirection = _movementKeys.MovementDirection(key, _direction);
+            Direction redirection = MovementKeys.MovementDirection(key, _direction);
 
             if (redirection != _direction)
             {

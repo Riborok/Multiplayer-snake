@@ -15,12 +15,12 @@ namespace SnakeGame
             private static extern IntPtr GetConsoleWindow();
             [DllImport("user32.dll")]
             private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-            private const int SW_MAXIMIZE = 3;
+            private const int  SwMaximize = 3;
 
             public static void Set()
             {
                 IntPtr handle = GetConsoleWindow();
-                ShowWindow(handle, SW_MAXIMIZE);
+                ShowWindow(handle, SwMaximize);
                 Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);    
             }
     
@@ -41,13 +41,15 @@ namespace SnakeGame
 
         public static int AmountSnakes { get; private set; }
         public static int AmountFood => 250;
+        
+        private const int ScoreToWin = 100;
 
         private static void GameCreation()
         {
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
-            // Create a snake
+            // Enter the amount of snakes. 1 to 3
             do
                 AmountSnakes = (int)Console.ReadKey(true).Key - '0';
             while (AmountSnakes is < 1 or > 3 ); 
@@ -57,17 +59,18 @@ namespace SnakeGame
             // Filling the field with food
             FoodsInformation.Fill(AmountFood);
             
+            // Create a snake
             SnakesInformation.Fill(AmountSnakes);    
         }
 
-        public static void GameOver()
+        private static void GameOver()
         {
             Console.Clear(); 
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2);
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 - 3);
             Console.Write("Game Over");
             
-            //Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 + 5);
-            //Console.Write($"Your score: ");
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 + 3);
+            Console.Write($"Score {ScoreToWin} has been reached");
             
             System.Threading.Thread.Sleep(10000);
         }
@@ -79,14 +82,14 @@ namespace SnakeGame
             GameCreation();
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (SnakesInformation.GetSnakeList().Count != 0)
+            while (SnakesInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count < ScoreToWin))
             {
 
                 // Set the thread that will handle the snakes while there is a frame delay
                 var task = SnakeHandling.Start();
 
                 // Frame delay
-                System.Threading.Thread.Sleep(46);
+                System.Threading.Thread.Sleep(48);
                 
                 // Checking if the task is completed
                 await task;

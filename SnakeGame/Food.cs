@@ -1,5 +1,3 @@
-using System;
-
 namespace SnakeGame
 {
     // Abstract class for food
@@ -11,7 +9,12 @@ namespace SnakeGame
         }
         
         public abstract int NutritionalValue {get;}
-        
+
+        public override void Remove()
+        {
+            base.Remove();
+            FoodsInformation.Delete(this);
+        }
     }
     
     public class SimpleFood : Food
@@ -21,7 +24,7 @@ namespace SnakeGame
         {
         }
         
-        public SimpleFood(int x, int y) : base(x, y)
+        public SimpleFood(SnakeBodyPoint snakeBodyPoint) : base(snakeBodyPoint.X, snakeBodyPoint.Y)
         {
         }
 

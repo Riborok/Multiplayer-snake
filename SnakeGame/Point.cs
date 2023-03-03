@@ -27,7 +27,7 @@ namespace SnakeGame
             Console.Write(Symbol);
         }
 
-        public void Remove()
+        public virtual void Remove()
         {
             Console.SetCursorPosition(X, Y);
             Console.Write(" ");

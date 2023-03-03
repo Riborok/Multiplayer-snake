@@ -16,19 +16,22 @@ namespace SnakeGame
         public SnakeBodyPoint(SnakeHeadPoint head) : base(head.X, head.Y)
         {
         }
+        protected SnakeBodyPoint(int x, int y) : base(x, y)
+        {
+        }
     }
 
-    public class DigestibleBody : SnakePart
+    public class DigestibleBody : SnakeBodyPoint
     {
         protected override char Symbol => '█';
         private DigestibleBody(Food food) : base(food.X, food.Y)
         {
         }
 
-        public static List<SnakePart> GetListOfAddedBody (Food food)
+        public static List<SnakeBodyPoint> GetListOfAddedBody (Food food)
         {
-            FoodsInformation.Delete(food);
-            List<SnakePart> result = new List<SnakePart>(); 
+            food.Remove();
+            List<SnakeBodyPoint> result = new(30); 
             for (int i = 0; i < food.NutritionalValue; i++)
                 result.Add(new DigestibleBody(food));
             return result;
