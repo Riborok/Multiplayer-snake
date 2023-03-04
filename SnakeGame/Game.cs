@@ -100,6 +100,7 @@ namespace SnakeGame
         private static class SnakeHandling
         {
             private static readonly bool[] WasSnake = new bool[_amountSnakes];
+            private static readonly object LockObject = new();
 
             public static async Task Start()
             {
@@ -116,10 +117,16 @@ namespace SnakeGame
                                 WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
                         });
                     }
-                
+                    
                     // Moving snakes
-                    for (int i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
-                        SnakeInformation.GetSnakeList()[i].Move();
+                    Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
+                    {
+                        lock (LockObject)
+                        {
+                            snake.Move();
+                        }
+                    });
+                    
                 });
             }
             
