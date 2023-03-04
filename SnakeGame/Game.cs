@@ -83,42 +83,29 @@ namespace SnakeGame
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count < ScoreToWin))
             {
-
-                // Set the thread that will handle the snakes while there is a frame delay
-                var task = SnakeHandling.Start();
+                // Key handling asynchronous
+                var inputTask = HandlingAsync.Key();
+                
+                // Snake movement handling asynchronous
+                var moveTask = HandlingAsync.SnakeMove();
 
                 // Frame delay
                 await Task.Delay(48);
                 
-                // Checking if the task is completed
-                await task;
+                // Wait for both tasks to complete
+                await Task.WhenAll(moveTask, inputTask);
             }
 
             GameOver();
         }
-        
-        private static class SnakeHandling
-        {
-            private static readonly bool[] WasSnake = new bool[_amountSnakes];
-            private static readonly object LockObject = new();
 
-            public static async Task Start()
+        private static class HandlingAsync
+        {
+            private static readonly object LockObject = new();
+            public static async Task SnakeMove()
             {
                 await Task.Run(() =>
                 {
-                    Array.Clear(WasSnake, 0, WasSnake.Length);
-                    // Processing user input
-                    while (Console.KeyAvailable && WasSnake.Any(wasSnake => !wasSnake))
-                    {
-                        var key = Console.ReadKey(true).Key;
-                        Parallel.For(0, SnakeInformation.GetSnakeList().Count, i =>
-                        {
-                            if (!WasSnake[i]) 
-                                WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
-                        });
-                    }
-                    
-                    // Moving snakes
                     Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
                     {
                         lock (LockObject)
@@ -126,11 +113,29 @@ namespace SnakeGame
                             snake.Move();
                         }
                     });
-                    
                 });
             }
-            
+
+            private static readonly bool[] WasSnake = new bool[_amountSnakes]; 
+            public static async Task Key()
+            {
+                await Task.Run(() =>
+                {
+                    Array.Clear(WasSnake, 0, WasSnake.Length);
+                    
+                    // Processing user input
+                    while (Console.KeyAvailable && WasSnake.Any(snake => !snake))
+                    {
+                        var key = Console.ReadKey(true).Key;
+                        Parallel.For(0, SnakeInformation.GetSnakeList().Count, i =>
+                        {
+                            if (!WasSnake[i])
+                                WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
+                        });
+                    }
+                });
+            }
         }
-        
+
     }
 }
