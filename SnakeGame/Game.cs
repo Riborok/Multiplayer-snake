@@ -88,7 +88,7 @@ namespace SnakeGame
                 var task = SnakeHandling.Start();
 
                 // Frame delay
-                System.Threading.Thread.Sleep(48);
+                await Task.Delay(48);
                 
                 // Checking if the task is completed
                 await task;
@@ -110,9 +110,11 @@ namespace SnakeGame
                     while (Console.KeyAvailable && WasSnake.Any(wasSnake => !wasSnake))
                     {
                         var key = Console.ReadKey(true).Key;
-                        for (int i = 0; i < SnakeInformation.GetSnakeList().Count; i++) 
+                        Parallel.For(0, SnakeInformation.GetSnakeList().Count, i =>
+                        {
                             if (!WasSnake[i]) 
                                 WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
+                        });
                     }
                 
                     // Moving snakes
