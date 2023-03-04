@@ -16,7 +16,7 @@ namespace SnakeGame
         }
         
         // The direction of the snake
-        private Direction _direction = Direction.Right;
+        private Direction _direction;
         
         // Snake movement keys 
         private readonly IMovementKeys _movementKeys;
@@ -24,9 +24,10 @@ namespace SnakeGame
         // Snake head
         public SnakeHeadPoint Head {get;}
 
-        public Snake((int x, int y) head, IMovementKeys movementKeys)
+        public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys)
         {
             _movementKeys = movementKeys;
+            _direction = direction; 
             
             // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
             Head = new SnakeHeadPoint(head.x, head.y);
@@ -110,7 +111,8 @@ namespace SnakeGame
             FoodInformation.Add(new SnakeHeadFood(Head));
 
             SnakeInformation.Remove(this);
-            SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), _movementKeys));
+            SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
+                _movementKeys));
         }
 
     }

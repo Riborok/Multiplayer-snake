@@ -14,6 +14,11 @@ namespace SnakeGame
             var randomX = Random.Next(1, Console.WindowWidth - 1);
             return (x: randomX % 2 == 1 ? ++randomX : randomX, y: Random.Next(1, Console.WindowHeight - 1));
         }
+
+        public static Direction GenerateDirection()
+        {
+            return (Direction)Random.Next(4);
+        }
     }
 
     public static class FoodInformation
@@ -89,7 +94,7 @@ namespace SnakeGame
         {
             for (var i = 0; i < amount; i++)
             {
-                Add(new Snake(Generator.GenerateCoordinates(), MovementKeys[i]));
+                Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), MovementKeys[i]));
                 System.Threading.Thread.Sleep(1);
             }
         }
