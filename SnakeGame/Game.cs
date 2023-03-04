@@ -39,9 +39,8 @@ namespace SnakeGame
             Console.CursorVisible = false;   
         }
 
-        private static int AmountSnakes { get; set; }
-        private static int AmountFood => 250;
-        
+        private static int _amountSnakes;
+        private const int AmountFood = 250;
         private const int ScoreToWin = 100;
 
         private static void GameCreation()
@@ -51,8 +50,8 @@ namespace SnakeGame
 
             // Enter the amount of snakes. 1 to 3
             do
-                AmountSnakes = (int)Console.ReadKey(true).Key - '0';
-            while (AmountSnakes is < 1 or > 3 ); 
+                _amountSnakes = (int)Console.ReadKey(true).Key - '0';
+            while (_amountSnakes is < 1 or > 3 ); 
             
             Console.Clear();
 
@@ -60,7 +59,7 @@ namespace SnakeGame
             FoodInformation.FillWithSimpleFood(AmountFood);
             
             // Create a snake
-            SnakeInformation.Fill(AmountSnakes);    
+            SnakeInformation.Fill(_amountSnakes);    
         }
 
         private static void GameOver()
@@ -100,7 +99,7 @@ namespace SnakeGame
         
         private static class SnakeHandling
         {
-            private static readonly bool[] WasSnake = new bool[AmountSnakes];
+            private static readonly bool[] WasSnake = new bool[_amountSnakes];
 
             public static async Task Start()
             {

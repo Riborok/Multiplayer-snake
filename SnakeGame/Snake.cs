@@ -69,13 +69,10 @@ namespace SnakeGame
             {
                 // Draw the last point of the body 
                 _previousPart.Draw();
-                
-                // Draw the head
-                Head.Draw();
 
                 // Adding a new body point
                 _snakeBodyPoints.Add(_previousPart);
-                
+
                 // Removing the tail of the snake
                 _snakeBodyPoints[0].Remove();
                 _snakeBodyPoints.RemoveAt(0);
@@ -88,6 +85,9 @@ namespace SnakeGame
                 }
                 else 
                     _previousPart = new SnakeBodyPoint(Head);
+                
+                // Draw the head
+                Head.Draw();
             }
         }
         
