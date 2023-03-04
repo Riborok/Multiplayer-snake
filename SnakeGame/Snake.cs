@@ -19,14 +19,14 @@ namespace SnakeGame
         private Direction _direction = Direction.Right;
         
         // Snake movement keys 
-        public IMovementKeys MovementKeys {get;}
+        private readonly IMovementKeys _movementKeys;
         
         // Snake head
         public SnakeHeadPoint Head {get;}
 
         public Snake((int x, int y) head, IMovementKeys movementKeys)
         {
-            MovementKeys = movementKeys;
+            _movementKeys = movementKeys;
             
             // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
             Head = new SnakeHeadPoint(head.x, head.y);
@@ -57,12 +57,12 @@ namespace SnakeGame
 
             // Checking if the snake has collided with a wall, its own body, or another snake
             if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2 ||
-                SnakeInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
+                SnakeInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head) && point != Head))
             {
                 // Because the snake hit the obstacle, take a step back
                 Head.CopyCoordinatesFrom(_previousPart);
                 
-                SnakeInformation.Kill(this);
+                Dead();
             }
             else
             {
@@ -93,7 +93,7 @@ namespace SnakeGame
         // Turning the snake
         public bool PassedTurn(ConsoleKey key)
         {
-            Direction redirection = MovementKeys.MovementDirection(key, _direction);
+            Direction redirection = _movementKeys.MovementDirection(key, _direction);
 
             if (redirection != _direction)
             {
@@ -101,6 +101,16 @@ namespace SnakeGame
                 return true;
             }
             return false;
+        }
+
+        private void Dead()
+        {
+            foreach (var body in _snakeBodyPoints)
+                FoodInformation.Add(new SimpleFood(body));
+            FoodInformation.Add(new SnakeHeadFood(Head));
+
+            SnakeInformation.Remove(this);
+            SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), _movementKeys));
         }
 
     }

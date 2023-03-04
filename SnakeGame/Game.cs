@@ -39,8 +39,8 @@ namespace SnakeGame
             Console.CursorVisible = false;   
         }
 
-        public static int AmountSnakes { get; private set; }
-        public static int AmountFood => 250;
+        private static int AmountSnakes { get; set; }
+        private static int AmountFood => 250;
         
         private const int ScoreToWin = 100;
 
@@ -57,7 +57,7 @@ namespace SnakeGame
             Console.Clear();
 
             // Filling the field with food
-            FoodInformation.Fill(AmountFood);
+            FoodInformation.FillWithSimpleFood(AmountFood);
             
             // Create a snake
             SnakeInformation.Fill(AmountSnakes);    

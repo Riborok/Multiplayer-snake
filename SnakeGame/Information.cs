@@ -4,11 +4,23 @@ using System.Collections.Generic;
 
 namespace SnakeGame
 {
-    
+    public static class Generator
+    {
+        private static readonly Random Random = new();
+
+        public static (int x, int y) GenerateCoordinates()
+        {
+            // Checking that randomX is in an even position
+            var randomX = Random.Next(1, Console.WindowWidth - 1);
+            return (x: randomX % 2 == 1 ? ++randomX : randomX, y: Random.Next(1, Console.WindowHeight - 1));
+        }
+    }
+
     public static class FoodInformation
     {
 
         private static readonly List<Food> FoodList = new(300);
+        private static int _foodAmount;
 
         public static void Add(Food food)
         {
@@ -24,30 +36,20 @@ namespace SnakeGame
         {
             FoodList.Remove(food);
             
-            // Bad
-            if (FoodList.Count < Game.AmountFood)
-                Add(new SimpleFood(Generate()));
+            if (FoodList.Count < _foodAmount)
+                Add(new SimpleFood(Generator.GenerateCoordinates()));
         }
 
-        public static void Fill(int amount)
+        public static void FillWithSimpleFood(int amount)
         {
-            for (int i = 0; i < amount; i++)
+            _foodAmount = amount;
+            
+            for (var i = 0; i < amount; i++)
             {
-                Add(new SimpleFood(Generate()));
+                Add(new SimpleFood(Generator.GenerateCoordinates()));
                 System.Threading.Thread.Sleep(1);
             }
         }
-        
-        // Generate a new position for food
-        private static (int x, int y) Generate()
-        {
-            var random = new Random();
-
-            // Checking that the food is in an even position on the x coordinate
-            int randomX = random.Next(1, Console.WindowWidth - 1); 
-            return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(1, Console.WindowHeight - 1));
-        }
-
     }
 
     public static class SnakeInformation
@@ -56,9 +58,14 @@ namespace SnakeGame
 
         private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
 
-        private static void Add(Snake snake)
+        public static void Add(Snake snake)
         {
             SnakeList.Add(snake);
+        }
+        
+        public static void Remove(Snake snake)
+        {
+            SnakeList.Remove(snake);
         }
 
         public static List<Snake> GetSnakeList()
@@ -70,37 +77,21 @@ namespace SnakeGame
         {
             List<SnakePart> result = new(300);
             foreach (var snake in SnakeList)
+            {
                 result.AddRange(snake.GetBodyPoints());
+                result.Add(snake.Head);
+            }
 
             return result;
         }
 
-        public static void Kill(Snake snake)
-        {
-            foreach (var body in snake.GetBodyPoints())
-                FoodInformation.Add(new SimpleFood(body));
-            FoodInformation.Add(new SnakeHeadFood(snake.Head));
-            
-            SnakeList.Remove(snake);
-            Add(new Snake(Generate(), snake.MovementKeys));
-        }
-
         public static void Fill(int amount)
         {
-            for (int i = 0; i < amount; i++)
+            for (var i = 0; i < amount; i++)
             {
-                Add(new Snake(Generate(), MovementKeys[i]));
+                Add(new Snake(Generator.GenerateCoordinates(), MovementKeys[i]));
                 System.Threading.Thread.Sleep(1);
             }
-        }
-
-        private static (int x, int y) Generate()
-        {
-            var random = new Random();
-
-            // Checking that the snake is in an even position on the x coordinate
-            int randomX = random.Next(1, Console.WindowWidth - 50); 
-            return (x: randomX % 2 == 1 ? ++randomX : randomX, y: random.Next(1, Console.WindowHeight - 1));
         }
     }
 }
