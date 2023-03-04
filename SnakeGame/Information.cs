@@ -54,7 +54,7 @@ namespace SnakeGame
     {
         private static readonly List<Snake> SnakeList = new(3);
 
-        private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new WASD(), new UHJK() };
+        private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
 
         private static void Add(Snake snake)
         {

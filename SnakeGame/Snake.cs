@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    // Сlass for the snake
+    // Class for the snake
     public class Snake 
     {
         // List of points that composed a snake body
@@ -27,13 +27,13 @@ namespace SnakeGame
         public Snake((int x, int y) head, IMovementKeys movementKeys)
         {
             MovementKeys = movementKeys;
-            Head = new SnakeHeadPoint(head.x, head.y);
             
-            // In the list of bodies, we will store the head (the previous values,
-            // and the new value of the head will be stored in Head) as a body.
-            // This is necessary in the event of a collision, it was possible to take a step back.
-            _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
+            // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
+            Head = new SnakeHeadPoint(head.x, head.y);
+            _previousPart = new SnakeBodyPoint(Head);
         }
+
+        private SnakeBodyPoint _previousPart; 
 
         // Movement of the snake
         public void Move()
@@ -60,30 +60,33 @@ namespace SnakeGame
                 SnakeInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head)) )
             {
                 // Because the snake hit the obstacle, take a step back
-                Head.X = _snakeBodyPoints.Last().X;
-                Head.Y = _snakeBodyPoints.Last().Y;
-                _snakeBodyPoints.RemoveAt(_snakeBodyPoints.Count-1);
+                Head.CopyCoordinatesFrom(_previousPart);
                 
                 SnakeInformation.Kill(this);
             }
             else
             {
                 // Draw the last point of the body 
-                _snakeBodyPoints.Last().Draw();
-
-                // Adding a new body point
-                _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
-
-                // Checking if the snake has eaten food
-                if (FoodInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is Food food)
-                    _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
-
+                _previousPart.Draw();
+                
                 // Draw the head
                 Head.Draw();
+
+                // Adding a new body point
+                _snakeBodyPoints.Add(_previousPart);
                 
                 // Removing the tail of the snake
                 _snakeBodyPoints[0].Remove();
                 _snakeBodyPoints.RemoveAt(0);
+
+                // Checking if the snake has eaten food
+                if (FoodInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
+                {
+                    _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
+                    _previousPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+                }
+                else 
+                    _previousPart = new SnakeBodyPoint(Head);
             }
         }
         

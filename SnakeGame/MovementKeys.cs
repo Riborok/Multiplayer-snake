@@ -36,7 +36,7 @@ namespace SnakeGame
 
     }
 
-    public class WASD : IMovementKeys
+    public class Wasd : IMovementKeys
     {
         public Direction MovementDirection(ConsoleKey key, Direction direction)
         {
@@ -63,7 +63,7 @@ namespace SnakeGame
         }
     }
 
-    public class UHJK : IMovementKeys
+    public class Uhjk : IMovementKeys
     {
         public Direction MovementDirection(ConsoleKey key, Direction direction)
         {
