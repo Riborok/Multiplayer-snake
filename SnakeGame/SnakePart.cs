@@ -13,10 +13,10 @@ namespace SnakeGame
     public class SnakeBodyPoint : SnakePart
     {
         protected override char Symbol => '■';
-        public SnakeBodyPoint(SnakeHeadPoint head) : base(head.X, head.Y)
+        public SnakeBodyPoint(SnakePart snakePart) : base(snakePart.X, snakePart.Y)
         {
         }
-        protected SnakeBodyPoint(int x, int y) : base(x, y)
+        protected SnakeBodyPoint(Food food) : base(food.X, food.Y)
         {
         }
     }
@@ -24,7 +24,7 @@ namespace SnakeGame
     public class DigestibleBody : SnakeBodyPoint
     {
         protected override char Symbol => '█';
-        private DigestibleBody(Food food) : base(food.X, food.Y)
+        private DigestibleBody(Food food) : base(food)
         {
         }
 
