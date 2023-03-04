@@ -29,9 +29,9 @@ namespace SnakeGame
 
         public static List<SnakeBodyPoint> GetListOfAddedBody (Food food)
         {
-            food.Remove();
+            FoodInformation.Remove(food);
             List<SnakeBodyPoint> result = new(30); 
-            for (int i = 0; i < food.NutritionalValue; i++)
+            for (var i = 0; i < food.NutritionalValue; i++)
                 result.Add(new DigestibleBody(food));
             return result;
         }

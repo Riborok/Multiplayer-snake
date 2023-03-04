@@ -9,12 +9,6 @@ namespace SnakeGame
         }
         
         public abstract int NutritionalValue {get;}
-
-        public override void Remove()
-        {
-            base.Remove();
-            FoodInformation.Delete(this);
-        }
     }
     
     public class SimpleFood : Food

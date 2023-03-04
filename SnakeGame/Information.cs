@@ -37,10 +37,11 @@ namespace SnakeGame
             return FoodList;
         }
 
-        public static void Delete(Food food)
+        public static void Remove(Food food)
         {
+            food.Remove();
             FoodList.Remove(food);
-            
+
             if (FoodList.Count < _foodAmount)
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
         }
