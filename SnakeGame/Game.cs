@@ -81,7 +81,7 @@ namespace SnakeGame
             GameCreation();
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count < ScoreToWin))
+            while (!SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count >= ScoreToWin))
             {
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
