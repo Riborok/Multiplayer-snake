@@ -63,7 +63,7 @@ namespace SnakeGame
                 // Because the snake hit the obstacle, take a step back
                 Head.CopyCoordinatesFrom(_previousPart);
 
-                if (otherSnakePart?.GetType() == typeof(SnakeHeadPoint))
+                if (otherSnakePart.GetType() == typeof(SnakeHeadPoint))
                     SnakeInformation.GetSnakeList().First(snake => snake.Head == otherSnakePart).Dead();
 
                 this.Dead();

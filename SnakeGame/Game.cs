@@ -101,28 +101,23 @@ namespace SnakeGame
 
         private static class HandlingAsync
         {
-            private static readonly object LockObject = new();
             public static async Task SnakeMove()
             {
                 await Task.Run(() =>
                 {
-                    Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
+                    for (var i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
                     {
-                        lock (LockObject)
-                        {
-                            snake.Move();
-                        }
-                    });
+                        SnakeInformation.GetSnakeList()[i].Move();
+                    }
                 });
             }
 
             private static readonly bool[] WasSnake = new bool[_amountSnakes]; 
             public static async Task Key()
             {
+                Array.Clear(WasSnake, 0, WasSnake.Length);
                 await Task.Run(() =>
                 {
-                    Array.Clear(WasSnake, 0, WasSnake.Length);
-                    
                     // Processing user input
                     while (Console.KeyAvailable && WasSnake.Any(snake => !snake))
                     {
