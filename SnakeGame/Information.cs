@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace SnakeGame
@@ -46,15 +48,14 @@ namespace SnakeGame
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
         }
 
-        public static void FillWithSimpleFood(int amount)
+        public static void SpawnSimpleFood(int amount)
         {
             _foodAmount = amount;
             
-            for (var i = 0; i < amount; i++)
+            Parallel.For(0, amount, i =>
             {
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
-                System.Threading.Thread.Sleep(1);
-            }
+            });
         }
     }
 
@@ -91,14 +92,13 @@ namespace SnakeGame
             return result;
         }
 
-        public static void Fill(int amount)
+        public static void SpawnSnakes(int amount)
         {
-            for (var i = 0; i < amount; i++)
+            Parallel.For(0, amount, i =>
             {
                 Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
                     MovementKeys[i], id: i));
-                System.Threading.Thread.Sleep(1);
-            }
+            });
         }
     }
 }

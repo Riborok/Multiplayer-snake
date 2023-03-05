@@ -40,7 +40,7 @@ namespace SnakeGame
         }
 
         private static int _amountSnakes;
-        private const int AmountFood = 250;
+        private const int AmountSimpleFood = 250;
         private const int ScoreToWin = 100;
 
         private static void GameCreation()
@@ -56,10 +56,10 @@ namespace SnakeGame
             Console.Clear();
 
             // Filling the field with food
-            FoodInformation.FillWithSimpleFood(AmountFood);
+            FoodInformation.SpawnSimpleFood(AmountSimpleFood);
             
             // Create a snake
-            SnakeInformation.Fill(_amountSnakes);
+            SnakeInformation.SpawnSnakes(_amountSnakes);
         }
 
         private static void GameOver()
@@ -79,6 +79,7 @@ namespace SnakeGame
             SetConsoleSettings();
 
             GameCreation();
+            await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
             while (!SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count >= ScoreToWin))
