@@ -57,13 +57,23 @@ namespace SnakeGame
             }
 
             // Checking if the snake has collided with a wall, its own body, or another snake
-            if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2 ||
-                SnakeInformation.GetListPartsOfSnakes().Any(point => point.IsEquals(Head) && point != Head))
+            if (SnakeInformation.GetListPartsOfSnakes().FirstOrDefault(point => point.IsEquals(Head)
+                    && point != Head) is { } otherSnakePart)
             {
                 // Because the snake hit the obstacle, take a step back
                 Head.CopyCoordinatesFrom(_previousPart);
-                
-                Dead();
+
+                if (otherSnakePart?.GetType() == typeof(SnakeHeadPoint))
+                    SnakeInformation.GetSnakeList().First(snake => snake.Head == otherSnakePart).Dead();
+
+                this.Dead();
+            }
+            else if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2)
+            {
+                // Because the snake hit the obstacle, take a step back
+                Head.CopyCoordinatesFrom(_previousPart);
+
+                this.Dead();
             }
             else
             {
@@ -94,7 +104,7 @@ namespace SnakeGame
         // Turning the snake
         public bool PassedTurn(ConsoleKey key)
         {
-            Direction redirection = _movementKeys.MovementDirection(key, _direction);
+            var redirection = _movementKeys.MovementDirection(key, _direction);
 
             if (redirection != _direction)
             {
