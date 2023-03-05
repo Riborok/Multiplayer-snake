@@ -12,7 +12,7 @@ namespace SnakeGame
 
         public List<SnakeBodyPoint> GetBodyPoints()
         {
-            return _snakeBodyPoints;
+            return new List<SnakeBodyPoint>(_snakeBodyPoints);
         }
         
         // The direction of the snake
