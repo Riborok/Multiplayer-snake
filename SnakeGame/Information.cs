@@ -34,7 +34,7 @@ namespace SnakeGame
 
         public static List<Food> GetFoodList()
         {
-            return FoodList;
+            return new List<Food>(FoodList);
         }
 
         public static void Remove(Food food)
@@ -60,7 +60,7 @@ namespace SnakeGame
 
     public static class SnakeInformation
     {
-        private static readonly List<Snake> SnakeList = new(3);
+        private static readonly List<Snake> SnakeList = new(30);
 
         private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
 
@@ -76,12 +76,12 @@ namespace SnakeGame
 
         public static List<Snake> GetSnakeList()
         {
-            return SnakeList;
+            return new List<Snake>(SnakeList);
         }
 
         public static List<SnakePart> GetListPartsOfSnakes()
         {
-            List<SnakePart> result = new(300);
+            List<SnakePart> result = new(SnakeList.Count * 100);
             foreach (var snake in SnakeList)
             {
                 result.AddRange(snake.GetBodyPoints());
