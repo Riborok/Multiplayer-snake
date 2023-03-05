@@ -95,7 +95,8 @@ namespace SnakeGame
         {
             for (var i = 0; i < amount; i++)
             {
-                Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), MovementKeys[i]));
+                Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
+                    MovementKeys[i], id: i));
                 System.Threading.Thread.Sleep(1);
             }
         }

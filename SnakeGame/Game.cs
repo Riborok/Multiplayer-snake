@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -123,10 +122,10 @@ namespace SnakeGame
                     while (Console.KeyAvailable && WasSnake.Any(snake => !snake))
                     {
                         var key = Console.ReadKey(true).Key;
-                        Parallel.For(0, SnakeInformation.GetSnakeList().Count, i =>
+                        Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
                         {
-                            if (!WasSnake[i])
-                                WasSnake[i] = SnakeInformation.GetSnakeList()[i].PassedTurn(key);
+                            if (!WasSnake[snake.Id])
+                                WasSnake[snake.Id] = snake.PassedTurn(key);    
                         });
                     }
                 });

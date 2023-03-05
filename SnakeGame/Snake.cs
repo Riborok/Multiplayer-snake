@@ -23,11 +23,15 @@ namespace SnakeGame
         
         // Snake head
         public SnakeHeadPoint Head {get;}
+        
+        // Id
+        public int Id {get;}
 
-        public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys)
+        public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys, int id)
         {
             _movementKeys = movementKeys;
-            _direction = direction; 
+            _direction = direction;
+            Id = id;
             
             // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
             Head = new SnakeHeadPoint(head.x, head.y);
@@ -122,7 +126,7 @@ namespace SnakeGame
 
             SnakeInformation.Remove(this);
             SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
-                _movementKeys));
+                _movementKeys, Id));
         }
 
     }
