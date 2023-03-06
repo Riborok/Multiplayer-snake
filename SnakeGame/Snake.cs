@@ -24,7 +24,7 @@ namespace SnakeGame
         // Snake head
         public SnakeHeadPoint Head {get;}
         
-        // Id
+        // Id (it is equal to the number in the SnakeList)
         public int Id {get;}
 
         public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys, int id)

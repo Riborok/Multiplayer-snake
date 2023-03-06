@@ -1,7 +1,7 @@
 namespace SnakeGame
 {
     // Driving direction
-    public enum Direction : sbyte
+    public enum Direction
     {
         Right,
         Down,

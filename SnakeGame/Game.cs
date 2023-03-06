@@ -70,8 +70,6 @@ namespace SnakeGame
             
             Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 + 3);
             Console.Write($"Score {ScoreToWin} has been reached");
-            
-            System.Threading.Thread.Sleep(10000);
         }
 
         static async Task Main()
@@ -90,14 +88,16 @@ namespace SnakeGame
                 // Snake movement handling asynchronous
                 var moveTask = HandlingAsync.SnakeMove();
 
+                // Wait for both tasks to complete
+                await Task.WhenAll(moveTask, inputTask);
+                
                 // Frame delay
                 await Task.Delay(48);
                 
-                // Wait for both tasks to complete
-                await Task.WhenAll(moveTask, inputTask);
             }
 
             GameOver();
+            await Task.Delay(5000);
         }
 
         private static class HandlingAsync
@@ -106,6 +106,7 @@ namespace SnakeGame
             {
                 await Task.Run(() =>
                 {
+                    // Can't use foreach here, because if the snake dies will be an error
                     for (var i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
                     {
                         SnakeInformation.GetSnakeList()[i].Move();
@@ -113,20 +114,21 @@ namespace SnakeGame
                 });
             }
 
-            private static readonly bool[] WasSnake = new bool[_amountSnakes]; 
+            // Boolean array, for control: the player can change direction once per iteration
+            private static readonly bool[] HasMoved = new bool[_amountSnakes]; 
             public static async Task Key()
             {
-                Array.Clear(WasSnake, 0, WasSnake.Length);
+                Array.Clear(HasMoved, 0, HasMoved.Length);
                 await Task.Run(() =>
                 {
                     // Processing user input
-                    while (Console.KeyAvailable && WasSnake.Any(snake => !snake))
+                    while (Console.KeyAvailable && HasMoved.Any(hasMoved => !hasMoved))
                     {
                         var key = Console.ReadKey(true).Key;
                         Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
                         {
-                            if (!WasSnake[snake.Id])
-                                WasSnake[snake.Id] = snake.PassedTurn(key);    
+                            if (!HasMoved[snake.Id])
+                                HasMoved[snake.Id] = snake.PassedTurn(key);    
                         });
                     }
                 });
