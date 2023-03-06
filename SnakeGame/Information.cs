@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 
 namespace SnakeGame
 {
@@ -51,11 +48,8 @@ namespace SnakeGame
         public static void SpawnSimpleFood(int amount)
         {
             _foodAmount = amount;
-            
-            Parallel.For(0, amount, i =>
-            {
+            for (var i = 0; i < amount; i++)
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
-            });
         }
     }
 
@@ -94,11 +88,9 @@ namespace SnakeGame
 
         public static void SpawnSnakes(int amount)
         {
-            Parallel.For(0, amount, i =>
-            {
+            for (var i = 0; i < amount; i++)
                 Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
                     MovementKeys[i], id: i));
-            });
         }
     }
 }
