@@ -72,7 +72,7 @@ namespace SnakeGame
 
                 this.Dead();
             }
-            else if (Head.X < 1 || Head.X > Console.WindowWidth || Head.Y < 1 || Head.Y > Console.WindowHeight - 2)
+            else if (Head.X < 1 || Head.X > Console.WindowWidth - 1 || Head.Y < 1 || Head.Y > Console.WindowHeight - 2)
             {
                 // Because the snake hit the obstacle, take a step back
                 Head.CopyCoordinatesFrom(_previousPart);
