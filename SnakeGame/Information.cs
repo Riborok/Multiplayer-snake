@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SnakeGame
 {
@@ -68,16 +69,10 @@ namespace SnakeGame
             SnakeList.Remove(snake);
         }
 
-        public static List<SnakePart> GetListPartsOfSnakes()
+        public static IEnumerable<SnakePart> GetListPartsOfSnakes()
         {
-            List<SnakePart> result = new(SnakeList.Count * 100);
-            foreach (var snake in SnakeList)
-            {
-                result.AddRange(snake.BodyPoints);
-                result.Add(snake.Head);
-            }
-
-            return result;
+            return SnakeList.SelectMany<Snake, SnakePart>(snake => snake.BodyPoints.Concat<SnakePart>
+                (new[] { snake.Head }));
         }
 
         public static void SpawnSnakes(int amount)
