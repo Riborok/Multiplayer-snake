@@ -80,7 +80,7 @@ namespace SnakeGame
             await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (!SnakeInformation.GetSnakeList().Any(snake => snake.GetBodyPoints().Count >= ScoreToWin))
+            while (!SnakeInformation.GetSnakeList.Any(snake => snake.BodyPoints.Count >= ScoreToWin))
             {
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
@@ -107,10 +107,8 @@ namespace SnakeGame
                 await Task.Run(() =>
                 {
                     // Can't use foreach here, because if the snake dies will be an error
-                    for (var i = 0; i < SnakeInformation.GetSnakeList().Count; i++)
-                    {
-                        SnakeInformation.GetSnakeList()[i].Move();
-                    }
+                    for (var i = 0; i < SnakeInformation.GetSnakeList.Count; i++)
+                        SnakeInformation.GetSnakeList[i].Move();
                 });
             }
 
@@ -125,7 +123,7 @@ namespace SnakeGame
                     while (Console.KeyAvailable && HasMoved.Any(hasMoved => !hasMoved))
                     {
                         var key = Console.ReadKey(true).Key;
-                        Parallel.ForEach(SnakeInformation.GetSnakeList(), snake =>
+                        Parallel.ForEach(SnakeInformation.GetSnakeList, snake =>
                         {
                             if (!HasMoved[snake.Id])
                                 HasMoved[snake.Id] = snake.PassedTurn(key);    

@@ -26,14 +26,11 @@ namespace SnakeGame
         private static readonly List<Food> FoodList = new(300);
         private static int _foodAmount;
 
+        public static IEnumerable<Food> GetFoodList => FoodList;
+        
         public static void Add(Food food)
         {
             FoodList.Add(food);
-        }
-
-        public static List<Food> GetFoodList()
-        {
-            return new List<Food>(FoodList);
         }
 
         public static void Remove(Food food)
@@ -59,6 +56,8 @@ namespace SnakeGame
 
         private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
 
+        public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
+        
         public static void Add(Snake snake)
         {
             SnakeList.Add(snake);
@@ -69,17 +68,12 @@ namespace SnakeGame
             SnakeList.Remove(snake);
         }
 
-        public static List<Snake> GetSnakeList()
-        {
-            return new List<Snake>(SnakeList);
-        }
-
         public static List<SnakePart> GetListPartsOfSnakes()
         {
             List<SnakePart> result = new(SnakeList.Count * 100);
             foreach (var snake in SnakeList)
             {
-                result.AddRange(snake.GetBodyPoints());
+                result.AddRange(snake.BodyPoints);
                 result.Add(snake.Head);
             }
 

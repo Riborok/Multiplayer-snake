@@ -9,12 +9,8 @@ namespace SnakeGame
     {
         // List of points that composed a snake body
         private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
+        public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
 
-        public List<SnakeBodyPoint> GetBodyPoints()
-        {
-            return new List<SnakeBodyPoint>(_snakeBodyPoints);
-        }
-        
         // The direction of the snake
         private Direction _direction;
         
@@ -68,7 +64,7 @@ namespace SnakeGame
                 Head.CopyCoordinatesFrom(_previousPart);
 
                 if (otherSnakePart.GetType() == typeof(SnakeHeadPoint))
-                    SnakeInformation.GetSnakeList().First(snake => snake.Head == otherSnakePart).Dead();
+                    SnakeInformation.GetSnakeList.First(snake => snake.Head == otherSnakePart).Dead();
 
                 this.Dead();
             }
@@ -91,7 +87,7 @@ namespace SnakeGame
                 RemoveSnakeBodyPointAt(0);
 
                 // Checking if the snake has eaten food
-                if (FoodInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
+                if (FoodInformation.GetFoodList.FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
                 {
                     _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
                     _previousPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
