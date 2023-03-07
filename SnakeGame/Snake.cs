@@ -88,8 +88,7 @@ namespace SnakeGame
                 _snakeBodyPoints.Add(_previousPart);
 
                 // Removing the tail of the snake
-                _snakeBodyPoints[0].Remove();
-                _snakeBodyPoints.RemoveAt(0);
+                RemoveSnakeBodyPointAt(0);
 
                 // Checking if the snake has eaten food
                 if (FoodInformation.GetFoodList().FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
@@ -104,6 +103,23 @@ namespace SnakeGame
                 Head.Draw();
             }
         }
+
+        private void RemoveSnakeBodyPointAt(int index)
+        {
+            _snakeBodyPoints[index].Remove();
+            _snakeBodyPoints.RemoveAt(index);    
+        }
+            
+        private void Dead()
+        {
+            foreach (var body in _snakeBodyPoints)
+                FoodInformation.Add(new SimpleFood(body));
+            FoodInformation.Add(new SnakeHeadFood(Head));
+
+            SnakeInformation.Remove(this);
+            SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
+                _movementKeys, Id));
+        }
         
         // Turning the snake
         public bool PassedTurn(ConsoleKey key)
@@ -116,17 +132,6 @@ namespace SnakeGame
                 return true;
             }
             return false;
-        }
-
-        private void Dead()
-        {
-            foreach (var body in _snakeBodyPoints)
-                FoodInformation.Add(new SimpleFood(body));
-            FoodInformation.Add(new SnakeHeadFood(Head));
-
-            SnakeInformation.Remove(this);
-            SnakeInformation.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
-                _movementKeys, Id));
         }
 
     }
