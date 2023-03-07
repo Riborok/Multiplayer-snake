@@ -11,17 +11,20 @@ namespace SnakeGame
         private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
         public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
 
+        
         // The direction of the snake
         private Direction _direction;
         
         // Snake movement keys 
         private readonly IMovementKeys _movementKeys;
         
+        
         // Snake head
         public SnakeHeadPoint Head {get;}
         
         // Id (it is equal to the number in the SnakeList)
         public int Id {get;}
+        
 
         public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys, int id)
         {

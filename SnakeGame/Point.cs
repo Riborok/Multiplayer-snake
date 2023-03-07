@@ -21,10 +21,10 @@ namespace SnakeGame
             return X == other.X && Y == other.Y;
         }
 
-        public void CopyCoordinatesFrom(Point point)
+        public void CopyCoordinatesFrom(Point other)
         {
-            X = point.X;
-            Y = point.Y;
+            X = other.X;
+            Y = other.Y;
         }
         
         public void Draw()

@@ -23,10 +23,9 @@ namespace SnakeGame
 
     public static class FoodInformation
     {
-
-        private static readonly List<Food> FoodList = new(300);
         private static int _foodAmount;
-
+        
+        private static readonly List<Food> FoodList = new(300);
         public static IEnumerable<Food> GetFoodList => FoodList;
         
         public static void Add(Food food)
@@ -53,10 +52,9 @@ namespace SnakeGame
 
     public static class SnakeInformation
     {
-        private static readonly List<Snake> SnakeList = new(30);
-
         private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
-
+        
+        private static readonly List<Snake> SnakeList = new(30);
         public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
         
         public static void Add(Snake snake)

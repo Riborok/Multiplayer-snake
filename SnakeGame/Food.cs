@@ -14,6 +14,7 @@ namespace SnakeGame
     public class SimpleFood : Food
     {
         protected override char Symbol => '☼';   
+        public override int NutritionalValue => 1;
         public SimpleFood((int x, int y) randomCoord) : base(randomCoord.x, randomCoord.y)
         {
         }
@@ -21,17 +22,14 @@ namespace SnakeGame
         public SimpleFood(SnakeBodyPoint snakeBodyPoint) : base(snakeBodyPoint.X, snakeBodyPoint.Y)
         {
         }
-
-        public override int NutritionalValue => 1;
     }
 
     public class SnakeHeadFood : Food
     {
         protected override char Symbol => '†'; 
+        public override int NutritionalValue => 10;
         public SnakeHeadFood(SnakeHeadPoint head) : base(head.X, head.Y)
         {
         }
-
-        public override int NutritionalValue => 10;
     }
 }
