@@ -53,19 +53,9 @@ namespace SnakeGame
     public static class SnakeInformation
     {
         private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
-        
+
         private static readonly List<Snake> SnakeList = new(30);
         public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
-        
-        public static void Add(Snake snake)
-        {
-            SnakeList.Add(snake);
-        }
-        
-        public static void Remove(Snake snake)
-        {
-            SnakeList.Remove(snake);
-        }
 
         public static IEnumerable<SnakePart> GetListPartsOfSnakes()
         {
@@ -76,8 +66,20 @@ namespace SnakeGame
         public static void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)
-                Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
+                SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(),
                     MovementKeys[i], id: i));
+        }
+
+        public static void SnakeRespawn(Snake snake)
+        {
+            if (!SnakeList.Contains(snake))
+                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
+            
+            
+            SnakeList.Remove(snake);
+            SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
+                snake.MovementKeys, snake.Id));
+
         }
     }
 }

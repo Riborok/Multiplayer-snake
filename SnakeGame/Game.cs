@@ -80,7 +80,7 @@ namespace SnakeGame
             await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (!SnakeInformation.GetSnakeList.Any(snake => snake.BodyPoints.Count >= ScoreToWin))
+            while (SnakeInformation.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
@@ -120,7 +120,7 @@ namespace SnakeGame
                 await Task.Run(() =>
                 {
                     // Processing user input
-                    while (Console.KeyAvailable && HasMoved.Any(hasMoved => !hasMoved))
+                    while (Console.KeyAvailable && !HasMoved.All(hasMoved => hasMoved))
                     {
                         var key = Console.ReadKey(true).Key;
                         Parallel.ForEach(SnakeInformation.GetSnakeList, snake =>
