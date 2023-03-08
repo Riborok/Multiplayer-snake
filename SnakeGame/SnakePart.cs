@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SnakeGame
 {
@@ -27,13 +28,10 @@ namespace SnakeGame
         {
         }
 
-        public static List<SnakeBodyPoint> GetListOfAddedBody (Food food)
+        public static IEnumerable<DigestibleBody> GetListOfAddedBody (Food food)
         {
             FoodInformation.Remove(food);
-            List<SnakeBodyPoint> result = new(30); 
-            for (var i = 0; i < food.NutritionalValue; i++)
-                result.Add(new DigestibleBody(food));
-            return result;
+            return Enumerable.Repeat(new DigestibleBody(food), food.NutritionalValue);
         }
     }
     
