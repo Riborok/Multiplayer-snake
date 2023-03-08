@@ -1,47 +1,47 @@
 using System;
+using System.Collections.Generic;
 
 namespace SnakeGame
 {
+    // This class manages the direction of the snakes in the game
     public class SnakeDirectionManager 
     {
-        private readonly IMovementKeys _iMovementKeys;
+        private readonly Dictionary<ConsoleKey, Direction> _keyDirections;
+        
+        // The constructor initializes the dictionary of movement keys and directions
         public SnakeDirectionManager(IMovementKeys iMovementKeys)
         {
-            _iMovementKeys = iMovementKeys;
+            _keyDirections = new Dictionary<ConsoleKey, Direction>
+            {
+                {iMovementKeys.Down, Direction.Down},
+                {iMovementKeys.Up, Direction.Up},
+                {iMovementKeys.Left, Direction.Left},
+                {iMovementKeys.Right, Direction.Right}
+            };
         }
 
+        // This method tries to change the direction of the snake 
+        // Returns true if the direction is successfully changed, otherwise return false
         public bool TryChangeDirection(Snake snake, ConsoleKey key)
         {
-            switch (snake.Direction)
+            if (_keyDirections.TryGetValue(key, out var direction) && snake.Direction != OppositeDirection(direction))
             {
-                case Direction.Left:
-                case Direction.Right:
-                    if (key == _iMovementKeys.Down)
-                    {
-                        snake.Direction = Direction.Down; 
-                        return true;
-                    }
-                    if (key == _iMovementKeys.Up)
-                    {
-                        snake.Direction = Direction.Up; 
-                        return true;    
-                    }
-                    break;
-                case Direction.Up:
-                case Direction.Down:
-                    if (key == _iMovementKeys.Left)
-                    {
-                        snake.Direction = Direction.Left; 
-                        return true;
-                    }
-                    if (key == _iMovementKeys.Right)
-                    {
-                        snake.Direction = Direction.Right; 
-                        return true;    
-                    }
-                    break;
+                snake.Direction = direction;
+                return true;
             }
             return false;
+        }
+
+        private static Direction OppositeDirection(Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Left => Direction.Right,
+                Direction.Right => Direction.Left,
+                Direction.Up => Direction.Down,
+                Direction.Down => Direction.Up,
+                _ => throw new ArgumentException("Key handling error.")
+            };
         }
         
     }
@@ -56,7 +56,7 @@ namespace SnakeGame
         ConsoleKey Up { get; }
     }
 
-    public struct Arrows : IMovementKeys
+    public struct ArrowsMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.RightArrow;
         public ConsoleKey Down => ConsoleKey.DownArrow;
@@ -64,7 +64,7 @@ namespace SnakeGame
         public ConsoleKey Up => ConsoleKey.UpArrow;
     }
     
-    public struct Wasd : IMovementKeys
+    public struct WasdMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.D;
         public ConsoleKey Down => ConsoleKey.S;
@@ -72,7 +72,7 @@ namespace SnakeGame
         public ConsoleKey Up => ConsoleKey.W;
     }
     
-    public struct Uhjk : IMovementKeys
+    public struct UhjkMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.K;
         public ConsoleKey Down => ConsoleKey.J;

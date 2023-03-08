@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -73,7 +72,7 @@ namespace SnakeGame
             Console.Write($"Score {ScoreToWin} has been reached");
         }
 
-        static async Task Main()
+        public static async Task Main()
         {
             SetConsoleSettings();
             
@@ -83,6 +82,9 @@ namespace SnakeGame
             // The main game loop (the game will continue until there is at least 1 snake)
             while (SnakeInformation.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
+                // Frame delay
+                var delayTask = Task.Delay(45);
+                
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
                 
@@ -90,22 +92,19 @@ namespace SnakeGame
                 var moveTask = HandlingAsync.SnakeMove();
 
                 // Wait for both tasks to complete
-                await Task.WhenAll(moveTask, inputTask);
-                
-                // Frame delay
-                await Task.Delay(45);
-                
+                await Task.WhenAll(moveTask, inputTask, delayTask);
+
             }
 
             GameOver();
             await Task.Delay(5000);
         }
         
-        private static readonly List<SnakeDirectionManager> SnakeDirectionManagers = new()
+        private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
         {
-            new SnakeDirectionManager(new Arrows()),
-            new SnakeDirectionManager(new Wasd()),
-            new SnakeDirectionManager(new Uhjk())
+            new (new ArrowsMovementKey()),
+            new (new WasdMovementKey()),
+            new (new UhjkMovementKey())
         };
 
         private static class HandlingAsync
