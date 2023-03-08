@@ -10,24 +10,20 @@ namespace SnakeGame
         // List of points that composed a snake body
         private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
         public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
-
         
-        // Snake movement keys 
-        public IMovementKeys MovementKeys {get;}
         // The direction of the snake
-        private volatile Direction _direction;
+        public Direction Direction { get; set; }
 
         // Snake head
         public SnakeHeadPoint Head {get;}
         
-        // Id (it is equal to the number in the SnakeList)
+        // Id (id number corresponds to the various lists)
         public int Id {get;}
         
 
-        public Snake((int x, int y) head, Direction direction, IMovementKeys movementKeys, int id)
+        public Snake((int x, int y) head, Direction direction, int id)
         {
-            MovementKeys = movementKeys;
-            _direction = direction;
+            Direction = direction;
             Id = id;
             
             // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
@@ -45,7 +41,7 @@ namespace SnakeGame
             {
                 // If the snake collided with an obstacle or another snake, roll back head movement and die
                 Head.CopyCoordinatesFrom(_previousPart);
-                Dead();
+                Die();
                 return;
             }
             
@@ -58,7 +54,7 @@ namespace SnakeGame
         // Movement of the snakes head
         private void MoveHead()
         {
-            switch (_direction)
+            switch (Direction)
             {
                 case Direction.Right:
                     Head.X += 2;
@@ -90,7 +86,7 @@ namespace SnakeGame
             {
                 // If the snakes collided head to head, kill another snake
                 if (snakePart.GetType() == typeof(SnakeHeadPoint))
-                    SnakeInformation.GetSnakeList.Single(snake => snake.Head == snakePart).Dead();
+                    SnakeInformation.GetSnakeList.Single(snake => snake.Head == snakePart).Die();
 
                 return true;
             }
@@ -127,26 +123,13 @@ namespace SnakeGame
         }
             
         // Kill this snake and spawn a new snake
-        private void Dead()
+        private void Die()
         {
             foreach (var body in _snakeBodyPoints)
                 FoodInformation.Add(new SimpleFood(body));
             FoodInformation.Add(new SnakeHeadFood(Head));
 
             SnakeInformation.SnakeRespawn(this);
-        }
-        
-        // Turning the snake
-        public bool PassedTurn(ConsoleKey key)
-        {
-            var redirection = MovementKeys.MovementDirection(key, _direction);
-
-            if (redirection != _direction)
-            {
-                _direction = redirection;
-                return true;
-            }
-            return false;
         }
 
     }

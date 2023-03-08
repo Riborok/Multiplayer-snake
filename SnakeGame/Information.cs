@@ -52,8 +52,6 @@ namespace SnakeGame
 
     public static class SnakeInformation
     {
-        private static readonly IMovementKeys[] MovementKeys = { new Arrows(), new Wasd(), new Uhjk() };
-
         private static readonly List<Snake> SnakeList = new(30);
         public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
 
@@ -66,8 +64,7 @@ namespace SnakeGame
         public static void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)
-                SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(),
-                    MovementKeys[i], id: i));
+                SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), id: i));
         }
 
         public static void SnakeRespawn(Snake snake)
@@ -77,8 +74,7 @@ namespace SnakeGame
             
             
             SnakeList.Remove(snake);
-            SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), 
-                snake.MovementKeys, snake.Id));
+            SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), snake.Id));
 
         }
     }

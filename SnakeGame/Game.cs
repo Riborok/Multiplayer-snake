@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -75,7 +76,7 @@ namespace SnakeGame
         static async Task Main()
         {
             SetConsoleSettings();
-
+            
             GameCreation();
             await Task.Delay(1000);
 
@@ -92,13 +93,20 @@ namespace SnakeGame
                 await Task.WhenAll(moveTask, inputTask);
                 
                 // Frame delay
-                await Task.Delay(48);
+                await Task.Delay(45);
                 
             }
 
             GameOver();
             await Task.Delay(5000);
         }
+        
+        private static readonly List<SnakeDirectionManager> SnakeDirectionManagers = new()
+        {
+            new SnakeDirectionManager(new Arrows()),
+            new SnakeDirectionManager(new Wasd()),
+            new SnakeDirectionManager(new Uhjk())
+        };
 
         private static class HandlingAsync
         {
@@ -126,7 +134,7 @@ namespace SnakeGame
                         Parallel.ForEach(SnakeInformation.GetSnakeList, snake =>
                         {
                             if (!HasMoved[snake.Id])
-                                HasMoved[snake.Id] = snake.PassedTurn(key);    
+                                HasMoved[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    
                         });
                     }
                 });

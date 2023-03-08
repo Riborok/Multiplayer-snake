@@ -40,7 +40,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="MovementKeys.cs" />
+        <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
         <Compile Include="Information.cs" />
