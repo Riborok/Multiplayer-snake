@@ -4,24 +4,7 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    public static class Generator
-    {
-        private static readonly Random Random = new();
-
-        public static (int x, int y) GenerateCoordinates()
-        {
-            // Checking that randomX is in an even position
-            var randomX = Random.Next(1, Console.WindowWidth - 1);
-            return (x: randomX % 2 == 1 ? ++randomX : randomX, y: Random.Next(1, Console.WindowHeight - 1));
-        }
-
-        public static Direction GenerateDirection()
-        {
-            return (Direction)Random.Next(4);
-        }
-    }
-
-    public static class FoodInformation
+    public static class FoodInformationManager
     {
         private static int _foodAmount;
         
@@ -50,7 +33,7 @@ namespace SnakeGame
         }
     }
 
-    public static class SnakeInformation
+    public static class SnakeInformationManager
     {
         private static readonly List<Snake> SnakeList = new(30);
         public static IReadOnlyList<Snake> GetSnakeList => SnakeList;

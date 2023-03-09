@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SnakeGame
 {
     // The main class of the game
-    static class Game
+    public static class Game
     {
         private static class FullScreen
         {
@@ -56,10 +56,10 @@ namespace SnakeGame
             Console.Clear();
 
             // Filling the field with food
-            FoodInformation.SpawnSimpleFood(AmountSimpleFood);
+            FoodInformationManager.SpawnSimpleFood(AmountSimpleFood);
             
             // Create a snake
-            SnakeInformation.SpawnSnakes(_amountSnakes);
+            SnakeInformationManager.SpawnSnakes(_amountSnakes);
         }
 
         private static void GameOver()
@@ -80,7 +80,7 @@ namespace SnakeGame
             await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (SnakeInformation.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (SnakeInformationManager.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -114,8 +114,8 @@ namespace SnakeGame
                 await Task.Run(() =>
                 {
                     // Can't use foreach here, because if the snake dies will be an error
-                    for (var i = 0; i < SnakeInformation.GetSnakeList.Count; i++)
-                        SnakeInformation.GetSnakeList[i].Move();
+                    for (var i = 0; i < SnakeInformationManager.GetSnakeList.Count; i++)
+                        SnakeInformationManager.GetSnakeList[i].Move();
                 });
             }
 
@@ -130,7 +130,7 @@ namespace SnakeGame
                     while (Console.KeyAvailable && !HasMoved.All(hasMoved => hasMoved))
                     {
                         var key = Console.ReadKey(true).Key;
-                        Parallel.ForEach(SnakeInformation.GetSnakeList, snake =>
+                        Parallel.ForEach(SnakeInformationManager.GetSnakeList, snake =>
                         {
                             if (!HasMoved[snake.Id])
                                 HasMoved[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    

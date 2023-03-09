@@ -30,7 +30,7 @@ namespace SnakeGame
 
         public static IEnumerable<DigestibleBody> GetListOfAddedBody (Food food)
         {
-            FoodInformation.Remove(food);
+            FoodInformationManager.Remove(food);
             return Enumerable.Repeat(new DigestibleBody(food), food.NutritionalValue);
         }
     }

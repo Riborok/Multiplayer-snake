@@ -40,10 +40,11 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Generator.cs" />
         <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
-        <Compile Include="Information.cs" />
+        <Compile Include="InformationManagers.cs" />
         <Compile Include="Point.cs" />
         <Compile Include="Game.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

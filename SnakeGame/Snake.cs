@@ -81,12 +81,12 @@ namespace SnakeGame
         private bool CheckCollisionWithPartsOfSnakes()
         {
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (SnakeInformation.GetListPartsOfSnakes().FirstOrDefault(point => point.IsEquals(Head) 
+            if (SnakeInformationManager.GetListPartsOfSnakes().FirstOrDefault(point => point.IsEquals(Head) 
                     && point != Head) is { } snakePart)
             {
                 // If the snakes collided head to head, kill another snake
                 if (snakePart.GetType() == typeof(SnakeHeadPoint))
-                    SnakeInformation.GetSnakeList.Single(snake => snake.Head == snakePart).Die();
+                    SnakeInformationManager.GetSnakeList.Single(snake => snake.Head == snakePart).Die();
 
                 return true;
             }
@@ -107,7 +107,7 @@ namespace SnakeGame
         private void CheckCollisionWithFood()
         {
             // Checking if the snake collision with food
-            if (FoodInformation.GetFoodList.FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
+            if (FoodInformationManager.GetFoodList.FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
             {
                 // If there is, add new points of the body and update the previous point
                 _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
@@ -126,10 +126,10 @@ namespace SnakeGame
         private void Die()
         {
             foreach (var body in _snakeBodyPoints)
-                FoodInformation.Add(new SimpleFood(body));
-            FoodInformation.Add(new SnakeHeadFood(Head));
+                FoodInformationManager.Add(new SimpleFood(body));
+            FoodInformationManager.Add(new SnakeHeadFood(Head));
 
-            SnakeInformation.SnakeRespawn(this);
+            SnakeInformationManager.SnakeRespawn(this);
         }
 
     }
