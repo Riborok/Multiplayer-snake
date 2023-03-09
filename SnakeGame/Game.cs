@@ -42,6 +42,14 @@ namespace SnakeGame
         private static int _amountSnakes;
         private const int AmountSimpleFood = 250;
         private const int ScoreToWin = 100;
+        
+        // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
+        private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
+        {
+            new (new ArrowsMovementKey()),
+            new (new WasdMovementKey()),
+            new (new UhjkMovementKey())
+        };
 
         private static void GameCreation()
         {
@@ -99,13 +107,6 @@ namespace SnakeGame
             GameOver();
             await Task.Delay(5000);
         }
-        
-        private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
-        {
-            new (new ArrowsMovementKey()),
-            new (new WasdMovementKey()),
-            new (new UhjkMovementKey())
-        };
 
         private static class HandlingAsync
         {

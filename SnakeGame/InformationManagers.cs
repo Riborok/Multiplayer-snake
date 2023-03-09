@@ -13,7 +13,8 @@ namespace SnakeGame
         
         public static void Add(Food food)
         {
-            FoodList.Add(food);
+            if (!FoodList.Any(existingFood => existingFood.IsEquals(food)))
+                FoodList.Add(food);
         }
 
         public static void Remove(Food food)
@@ -38,9 +39,9 @@ namespace SnakeGame
         private static readonly List<Snake> SnakeList = new(30);
         public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
 
-        public static IEnumerable<SnakePart> GetListPartsOfSnakes()
+        public static IEnumerable<Point> GetListSnakesPoints()
         {
-            return SnakeList.SelectMany<Snake, SnakePart>(snake => snake.BodyPoints.Concat<SnakePart>
+            return SnakeList.SelectMany<Snake, Point>(snake => snake.BodyPoints.Concat<Point>
                 (new[] { snake.Head }));
         }
 

@@ -3,17 +3,10 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    public abstract class SnakePart: Point
-    {
-        protected SnakePart(int x, int y) : base(x,y)
-        {
-        }
-    }
-    
-    public class SnakeBodyPoint : SnakePart
+    public class SnakeBodyPoint : Point
     {
         protected override char Symbol => '■';
-        public SnakeBodyPoint(SnakePart snakePart) : base(snakePart.X, snakePart.Y)
+        public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.X, snakeHeadPoint.Y)
         {
         }
         protected SnakeBodyPoint(Food food) : base(food.X, food.Y)
@@ -35,7 +28,7 @@ namespace SnakeGame
         }
     }
     
-    public class SnakeHeadPoint : SnakePart
+    public class SnakeHeadPoint : Point
     {
         protected override char Symbol => '☻';
         public SnakeHeadPoint(int x, int y) : base(x, y)
