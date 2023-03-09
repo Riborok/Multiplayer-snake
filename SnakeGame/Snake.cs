@@ -81,7 +81,7 @@ namespace SnakeGame
         private bool CheckCollisionWithPartsOfSnakes()
         {
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (SnakeInformationManager.GetListPartsOfSnakes().FirstOrDefault(point => point.IsEquals(Head) 
+            if (SnakeInformationManager.GetListSnakesPoints().FirstOrDefault(point => point.IsEquals(Head) 
                     && point != Head) is { } snakePart)
             {
                 // If the snakes collided head to head, kill another snake
@@ -112,6 +112,9 @@ namespace SnakeGame
                 // If there is, add new points of the body and update the previous point
                 _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
                 _previousPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+                
+                // Removing from the list
+                FoodInformationManager.Remove(food);
             }
         }
 
