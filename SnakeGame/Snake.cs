@@ -18,7 +18,12 @@ namespace SnakeGame
         {
             // Add new points of the body and update the previous point
             _snakeBodyPoints.AddRange(snakeParts);
+
+            _isDigestingFood = true;
         }
+
+        // Flag that indicates if the snake is currently digesting food.
+        private bool _isDigestingFood;
         
         // The direction of the snake
         public Direction Direction { get; set; }
@@ -45,7 +50,15 @@ namespace SnakeGame
         public void Move()
         {
             // Save the coordinates of the previous head
-            LastBodyPart = new SnakeBodyPoint(Head);
+            // If food has been eaten. Draw the last element in the list to get DigestibleBody symbol 
+            // The last body part will be the last element in the list
+            if (_isDigestingFood)
+            {
+                LastBodyPart = LastInSnakeBodyPoints();
+                _isDigestingFood = false;
+            }
+            else
+                LastBodyPart = new SnakeBodyPoint(Head);
 
             // Moving the head
             switch (Direction)
@@ -68,13 +81,7 @@ namespace SnakeGame
         // Drawing a snake 
         public void Draw()
         {
-            // If the last element in the list is equal (by coordinates) to LastBodyPart,
-            // then food has been eaten. Draw the last element in the list to get DigestibleBody symbol 
-            if (_snakeBodyPoints.Count > 1 && LastInSnakeBodyPoints().IsEquals(LastBodyPart))
-                LastInSnakeBodyPoints().Draw();
-            else
-                LastBodyPart.Draw();
-            
+            LastBodyPart.Draw();
             Head.Draw();
 
             // Update snake body points 
