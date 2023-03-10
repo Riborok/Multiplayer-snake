@@ -127,6 +127,7 @@ namespace SnakeGame
         {
             _foodInformationManager.AddRange(new[] { new SnakeHeadFood(snake.Head) }
                 .Concat<Food>(snake.BodyPoints.Select(body => new SimpleFood(body)))); 
+            
             _snakeInformationManager.SnakeRespawn(snake);
         }
         
@@ -144,7 +145,7 @@ namespace SnakeGame
                     
                     // Checking snake collision with obstacles
                     if (_obstaclesCollisionManager.IsCollisionOccured(snake))
-                        foreach (var snakeToKill in _obstaclesCollisionManager.GetSnakesToKill)
+                        foreach (var snakeToKill in _obstaclesCollisionManager.SnakesToKill)
                             Kill(snakeToKill);
                     
                     // If there was no collusion with obstacles, draw the snake and check the collision with food

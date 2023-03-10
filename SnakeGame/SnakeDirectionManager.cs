@@ -24,12 +24,13 @@ namespace SnakeGame
         // Returns true if the direction is successfully changed, otherwise return false
         public bool TryChangeDirection(Snake snake, ConsoleKey key)
         {
+            bool result = false;
             if (_keyDirections.TryGetValue(key, out var direction) && snake.Direction != OppositeDirection(direction))
             {
                 snake.Direction = direction;
-                return true;
+                result = true;
             }
-            return false;
+            return result;
         }
 
         private static Direction OppositeDirection(Direction direction)

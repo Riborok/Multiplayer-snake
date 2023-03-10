@@ -4,29 +4,6 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    // The manager checks the collision of the snake with food
-    public class FoodCollisionManager
-    {
-        private readonly FoodInformationManager _foodInformationManager;
-        public FoodCollisionManager(FoodInformationManager foodInformationManager)
-        {
-            _foodInformationManager = foodInformationManager;
-        }
-        
-        // Check for collision with food
-        public void CollisionCheck(Snake snake)
-        {
-            if (_foodInformationManager.GetFoodList
-                    .FirstOrDefault(currFood => currFood.IsEquals(snake.Head)) is { } collidingFood)
-            {
-                snake.AddBodyPoints(DigestibleBody.GetListOfAddedBody(collidingFood));
-                _foodInformationManager.Remove(collidingFood);
-            }
-            
-        }
-    }
-    
-    
     // The manager checks the collision of the snake with some object
     public class ObstaclesCollisionManager
     {
@@ -38,11 +15,13 @@ namespace SnakeGame
 
         // List of snakes to kill
         private readonly List<Snake> _snakesToKill = new(2);
-        public IEnumerable<Snake> GetSnakesToKill => _snakesToKill;
+        public IEnumerable<Snake> SnakesToKill => _snakesToKill;
 
         // Check for collision with objects 
         public bool IsCollisionOccured(Snake snake)
         {
+            bool result = false;
+            
             // Clear the list
             _snakesToKill.Clear();
             
@@ -53,9 +32,10 @@ namespace SnakeGame
                 snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
 
                 _snakesToKill.Add(snake);
-                return true;
+                result = true;
             }
-            return false;
+
+            return result;
         }
         
         // Check collision with obstacles 
@@ -68,20 +48,23 @@ namespace SnakeGame
         // Check collision with parts of snakes
         private bool CheckCollisionWithPartsOfSnakes(Snake snake)
         {
+            bool result = false;
+            
             // Checking for collisions with other parts of the snakes and own parts (except head)    
             if (_snakeInformationManager.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
                  && point != snake.Head) is { } snakePart)
             {
                 // If the snakes collided head to head, kill another snake
-                if (snakePart.GetType() == typeof(SnakeHeadPoint))
+                if (snakePart is SnakeHeadPoint)
                 {
                     _snakesToKill.Add(_snakeInformationManager.GetSnakeList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
                 }
 
-                return true;
+                result = true;
             }
-            return false;
+            
+            return result;
         }
         
     }

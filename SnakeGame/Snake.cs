@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-
 namespace SnakeGame
 {
     // Class for the snake
