@@ -4,8 +4,11 @@ using System.Linq;
 
 namespace SnakeGame
 {
+    // Manager working with food information 
     public class FoodInformationManager
     {
+        // When a manager is created, he will spawn amount simple food.
+        // Further, he always controls that there is this amount on the field
         public FoodInformationManager(int amount)
         {
             _foodAmount = amount;
@@ -27,9 +30,9 @@ namespace SnakeGame
             }
         }
 
-        public void AddRange(IEnumerable<Food> foods)
+        public void AddRange(IEnumerable<Food> foodList)
         {
-            foreach (var food in foods)
+            foreach (var food in foodList)
                 Add(food);
         }
 
@@ -49,8 +52,10 @@ namespace SnakeGame
         }
     }
 
+    // Manager working with snake information 
     public class SnakeInformationManager
     {
+        // When a manager is created, he will spawn amount snakes
         public SnakeInformationManager(int amount)
         {
             SpawnSnakes(amount);
@@ -59,12 +64,14 @@ namespace SnakeGame
         private readonly List<Snake> _snakeList = new(3);
         public IReadOnlyList<Snake> GetSnakeList => _snakeList;
 
+        // This method returns all parts of all snakes
         public IEnumerable<Point> GetListPointsOfSnakes()
         {
             return _snakeList.SelectMany<Snake, Point>(snake => snake.BodyPoints.Concat<Point>
                 (new[] { snake.Head }));
         }
 
+        // This method respawn the snake under its id. The id corresponds to the number in the list
         public void SnakeRespawn(Snake snake)
         {
             if (!_snakeList.Contains(snake))

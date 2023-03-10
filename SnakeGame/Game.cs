@@ -39,8 +39,11 @@ namespace SnakeGame
             Console.CursorVisible = false;   
         }
 
+        // Fields storing the amount of snakes and food
         private static int _amountSnakes;
-        private const int AmountSimpleFood = 450;
+        private const int AmountSimpleFood = 250;
+        
+        // Amount of points to win
         private const int ScoreToWin = 100;
         
         // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
@@ -51,19 +54,22 @@ namespace SnakeGame
             new (new UhjkMovementKey())
         };
 
+        // Managers are responsible for information about snakes and food in the game 
         private static FoodCollisionManager _foodCollisionManager;
         private static ObstaclesCollisionManager _obstaclesCollisionManager;
         
+        // Managers are responsible for collisions with obstacles and food
         private static FoodInformationManager _foodInformationManager;
         private static SnakeInformationManager _snakeInformationManager;
 
 
+        // Creating the playing field 
         private static void GameCreation()
         {
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
-            // Enter the amount of snakes. 1 to 3
+            // The user will press the keys until he presses a number from 1 to 3
             do
                 _amountSnakes = (int)Console.ReadKey(true).Key - '0';
             while (_amountSnakes is < 1 or > 3 ); 
@@ -77,6 +83,7 @@ namespace SnakeGame
             _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeInformationManager);
         }
 
+        // End of game caption
         private static void GameOver()
         {
             Console.Clear(); 
@@ -108,21 +115,22 @@ namespace SnakeGame
 
                 // Wait for both tasks to complete
                 await Task.WhenAll(moveTask, inputTask, delayTask);
-
             }
 
             GameOver();
             await Task.Delay(5000);
         }
 
+        // Killing a snake. This method gives the _foodInformationManager a list of food from snake parts
+        // to put those parts into the food list. _snakeInformationManager will respawn this snake
         private static void Kill(Snake snake)
         {
             _foodInformationManager.AddRange(new[] { new SnakeHeadFood(snake.Head) }
                 .Concat<Food>(snake.BodyPoints.Select(body => new SimpleFood(body)))); 
             _snakeInformationManager.SnakeRespawn(snake);
         }
-
-
+        
+        // Handling snakes asynchronously 
         private static async Task HandlingSnakesAsync()
         {
             await Task.Run(() =>
@@ -143,13 +151,14 @@ namespace SnakeGame
                     else
                     {
                         snake.Draw();
-                        _foodCollisionManager.FoodCollisionCheck(snake);
+                        _foodCollisionManager.CollisionCheck(snake);
                     }
                     
                 }
             });
         }
         
+        // Handling keys asynchronously 
         private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration

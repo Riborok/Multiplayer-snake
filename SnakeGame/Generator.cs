@@ -2,6 +2,7 @@ using System;
 
 namespace SnakeGame
 {
+    // Handling keys asynchronously 
     public static class Generator
     {
         private static readonly Random Random = new();

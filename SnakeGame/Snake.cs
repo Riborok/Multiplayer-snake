@@ -8,6 +8,12 @@ namespace SnakeGame
     {
         // List of points that composed a snake body
         private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
+        
+        // Returns the last point of the snake's body in the list 
+        private SnakeBodyPoint LastInSnakeBodyPoints()
+        {
+            return _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+        }
         public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
         public void AddBodyPoints(IEnumerable<SnakeBodyPoint> snakeParts)
         {
@@ -30,7 +36,6 @@ namespace SnakeGame
             Direction = direction;
             Id = id;
             
-            // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
             Head = new SnakeHeadPoint(head.x, head.y);
         }
         
@@ -61,10 +66,16 @@ namespace SnakeGame
             }
         }
 
+        // Drawing a snake 
         public void Draw()
         {
-            // Drawing a snake 
-            LastBodyPart.Draw();
+            // If the last element in the list is equal (by coordinates) to LastBodyPart,
+            // then food has been eaten. Draw the last element in the list to get DigestibleBody symbol 
+            if (_snakeBodyPoints.Count > 1 && LastInSnakeBodyPoints().IsEquals(LastBodyPart))
+                LastInSnakeBodyPoints().Draw();
+            else
+                LastBodyPart.Draw();
+            
             Head.Draw();
 
             // Update snake body points 

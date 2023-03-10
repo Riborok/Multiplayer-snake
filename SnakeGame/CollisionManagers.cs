@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SnakeGame
 {
+    // The manager checks the collision of the snake with food
     public class FoodCollisionManager
     {
         private readonly FoodInformationManager _foodInformationManager;
@@ -13,7 +14,7 @@ namespace SnakeGame
         }
         
         // Check for collision with food
-        public void FoodCollisionCheck(Snake snake)
+        public void CollisionCheck(Snake snake)
         {
             if (_foodInformationManager.GetFoodList
                     .FirstOrDefault(currFood => currFood.IsEquals(snake.Head)) is { } collidingFood)
@@ -35,12 +36,14 @@ namespace SnakeGame
             _snakeInformationManager = snakeInformationManager;
         }
 
+        // List of snakes to kill
         private readonly List<Snake> _snakesToKill = new(2);
         public IEnumerable<Snake> GetSnakesToKill => _snakesToKill;
 
         // Check for collision with objects 
         public bool IsCollisionOccured(Snake snake)
         {
+            // Clear the list
             _snakesToKill.Clear();
             
             // Check for collision with an obstacle or another snake (and with their parts)
