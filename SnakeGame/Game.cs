@@ -101,10 +101,10 @@ namespace SnakeGame
                 var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
-                var inputTask = HandlingAsync.Key();
+                var inputTask = HandlingKeysAsync();
                 
                 // Snake movement handling asynchronous
-                var moveTask = HandlingAsync.Snakes();
+                var moveTask = HandlingSnakesAsync();
 
                 // Wait for both tasks to complete
                 await Task.WhenAll(moveTask, inputTask, delayTask);
@@ -117,60 +117,56 @@ namespace SnakeGame
 
         private static void Kill(Snake snake)
         {
-            _foodInformationManager.AddRange(snake.BodyPoints.Select(body => new SimpleFood(body))
-                .Concat<Food>(new[] { new SnakeHeadFood(snake.Head) })); 
+            _foodInformationManager.AddRange(new[] { new SnakeHeadFood(snake.Head) }
+                .Concat<Food>(snake.BodyPoints.Select(body => new SimpleFood(body)))); 
             _snakeInformationManager.SnakeRespawn(snake);
         }
 
-        private static class HandlingAsync
+
+        private static async Task HandlingSnakesAsync()
         {
-            public static async Task Snakes()
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
+                // Can't use foreach here, because if the snake dies will be an error
+                for (var i = 0; i < _snakeInformationManager.GetSnakeList.Count; i++)
                 {
-                    // Can't use foreach here, because if the snake dies will be an error
-                    for (var i = 0; i < _snakeInformationManager.GetSnakeList.Count; i++)
+                    var snake = _snakeInformationManager.GetSnakeList[i];
+                    
+                    snake.Move();
+                    
+                    // Checking snake collision with obstacles
+                    if (_obstaclesCollisionManager.IsCollisionOccured(snake))
+                        foreach (var snakeToKill in _obstaclesCollisionManager.GetSnakesToKill)
+                            Kill(snakeToKill);
+                    
+                    // If there was no collusion with obstacles, draw the snake and check the collision with food
+                    else
                     {
-                        var snake = _snakeInformationManager.GetSnakeList[i];
-                        
-                        snake.Move();
-                        
-                        // Checking snake collision with obstacles
-                        if (_obstaclesCollisionManager.IsCollisionOccured(snake))
-                            foreach (var snakeToKill in _obstaclesCollisionManager.GetSnakesToKill)
-                                Kill(snakeToKill);
-                        
-                        // If there was no collusion with obstacles, check the collision with food and draw the snake
-                        else
-                        {
-                            _foodCollisionManager.FoodCollisionCheck(snake);
-                            snake.Draw();
-                        }
-                        
+                        snake.Draw();
+                        _foodCollisionManager.FoodCollisionCheck(snake);
                     }
-                });
-            }
-
-            // Boolean array, for control: the player can change direction once per iteration
-            private static readonly bool[] HasMoved = new bool[_amountSnakes]; 
-            public static async Task Key()
-            {
-                Array.Clear(HasMoved, 0, HasMoved.Length);
-                await Task.Run(() =>
-                {
-                    // Processing user input
-                    while (Console.KeyAvailable && !HasMoved.All(hasMoved => hasMoved))
-                    {
-                        var key = Console.ReadKey(true).Key;
-                        Parallel.ForEach(_snakeInformationManager.GetSnakeList, snake =>
-                        {
-                            if (!HasMoved[snake.Id])
-                                HasMoved[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    
-                        });
-                    }
-                });
-            }
+                    
+                }
+            });
         }
-
+        
+        private static async Task HandlingKeysAsync()
+        {
+            // Boolean array, for control: the player can change direction once per iteration
+            var hasDirectionChanged = new bool[_amountSnakes];  
+            await Task.Run(() =>
+            {
+                // Processing user input
+                while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
+                {
+                    var key = Console.ReadKey(true).Key;
+                    Parallel.ForEach(_snakeInformationManager.GetSnakeList, snake =>
+                    {
+                        if (!hasDirectionChanged[snake.Id])
+                            hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    
+                    });
+                }
+            });
+        }
     }
 }

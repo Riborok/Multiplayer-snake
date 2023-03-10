@@ -9,8 +9,7 @@ namespace SnakeGame
         private readonly FoodInformationManager _foodInformationManager;
         public FoodCollisionManager(FoodInformationManager foodInformationManager)
         {
-            _foodInformationManager = foodInformationManager;    
-            
+            _foodInformationManager = foodInformationManager;
         }
         
         // Check for collision with food
@@ -48,7 +47,7 @@ namespace SnakeGame
             if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
                 // If the snake collided with an obstacle or another snake, roll the snake back
-                snake.Rollback();
+                snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
 
                 _snakesToKill.Add(snake);
                 return true;

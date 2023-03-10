@@ -21,7 +21,10 @@ namespace SnakeGame
         {
             // Spawn only if there is no food on this position
             if (!_foodList.Any(existingFood => existingFood.IsEquals(food)))
+            {
+                food.Draw();
                 _foodList.Add(food);
+            }
         }
 
         public void AddRange(IEnumerable<Food> foods)

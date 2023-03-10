@@ -5,7 +5,6 @@ namespace SnakeGame
     {
         protected Food(int x, int y) : base(x, y)
         {
-            Draw();
         }
         
         public abstract int NutritionalValue {get;}

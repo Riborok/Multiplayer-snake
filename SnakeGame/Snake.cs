@@ -34,12 +34,15 @@ namespace SnakeGame
             Head = new SnakeHeadPoint(head.x, head.y);
         }
         
+        // Last part of the snake's body 
+        public SnakeBodyPoint LastBodyPart { get; private set; }
+        
         // Movement of the snake
         public void Move()
         {
             // Save the coordinates of the previous head
-            _snakeBodyPoints.Add(new SnakeBodyPoint(Head));
-            
+            LastBodyPart = new SnakeBodyPoint(Head);
+
             // Moving the head
             switch (Direction)
             {
@@ -60,9 +63,19 @@ namespace SnakeGame
 
         public void Draw()
         {
+            // Drawing a snake 
+            LastBodyPart.Draw();
             Head.Draw();
-            _snakeBodyPoints[_snakeBodyPoints.Count - 1].Draw();
 
+            // Update snake body points 
+            BodyUpdate();
+        }
+        
+        // Update snake body points 
+        private void BodyUpdate()
+        {
+            // Update the list of body points
+            _snakeBodyPoints.Add(LastBodyPart);
             RemoveSnakeBodyPointAt(0);
         }
         
@@ -72,12 +85,5 @@ namespace SnakeGame
             _snakeBodyPoints[index].Remove();
             _snakeBodyPoints.RemoveAt(index);    
         }
-
-        public void Rollback()
-        {
-            Head.CopyCoordinatesFrom(_snakeBodyPoints[_snakeBodyPoints.Count - 1]);
-            RemoveSnakeBodyPointAt(_snakeBodyPoints.Count - 1);
-        }
-
     }
 }
