@@ -50,6 +50,11 @@ namespace SnakeGame
             new (new WasdMovementKey()),
             new (new UhjkMovementKey())
         };
+        
+        private static CollisionManager _collisionManager;
+        private static FoodInformationManager _foodInformationManager;
+        private static SnakeInformationManager _snakeInformationManager;
+
 
         private static void GameCreation()
         {
@@ -62,12 +67,10 @@ namespace SnakeGame
             while (_amountSnakes is < 1 or > 3 ); 
             
             Console.Clear();
-
-            // Filling the field with food
-            FoodInformationManager.SpawnSimpleFood(AmountSimpleFood);
             
-            // Create a snake
-            SnakeInformationManager.SpawnSnakes(_amountSnakes);
+            _foodInformationManager = new FoodInformationManager(AmountSimpleFood);
+            _snakeInformationManager = new SnakeInformationManager(_amountSnakes); 
+            _collisionManager = new CollisionManager(_foodInformationManager, _snakeInformationManager);
         }
 
         private static void GameOver()
@@ -88,16 +91,16 @@ namespace SnakeGame
             await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (SnakeInformationManager.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (_snakeInformationManager.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(45);
+                var delayTask = Task.Delay(80);
                 
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
                 
                 // Snake movement handling asynchronous
-                var moveTask = HandlingAsync.SnakeMove();
+                var moveTask = HandlingAsync.Snakes();
 
                 // Wait for both tasks to complete
                 await Task.WhenAll(moveTask, inputTask, delayTask);
@@ -110,13 +113,21 @@ namespace SnakeGame
 
         private static class HandlingAsync
         {
-            public static async Task SnakeMove()
+            public static async Task Snakes()
             {
                 await Task.Run(() =>
                 {
                     // Can't use foreach here, because if the snake dies will be an error
-                    for (var i = 0; i < SnakeInformationManager.GetSnakeList.Count; i++)
-                        SnakeInformationManager.GetSnakeList[i].Move();
+                    for (var i = 0; i < _snakeInformationManager.GetSnakeList.Count; i++)
+                    {
+                        var snake = _snakeInformationManager.GetSnakeList[i];
+                        snake.Move();
+                        if (_collisionManager.IsNotCollisionOccured(snake))
+                        {
+                            _collisionManager.FoodCollisionCheck(snake);
+                            snake.Draw();
+                        }
+                    }
                 });
             }
 
@@ -131,7 +142,7 @@ namespace SnakeGame
                     while (Console.KeyAvailable && !HasMoved.All(hasMoved => hasMoved))
                     {
                         var key = Console.ReadKey(true).Key;
-                        Parallel.ForEach(SnakeInformationManager.GetSnakeList, snake =>
+                        Parallel.ForEach(_snakeInformationManager.GetSnakeList, snake =>
                         {
                             if (!HasMoved[snake.Id])
                                 HasMoved[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    

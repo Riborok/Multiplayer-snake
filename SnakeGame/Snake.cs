@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+
 
 namespace SnakeGame
 {
@@ -10,6 +9,12 @@ namespace SnakeGame
         // List of points that composed a snake body
         private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
         public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
+        public void AddBodyPoints(IEnumerable<SnakeBodyPoint> snakeParts)
+        {
+            // Add new points of the body and update the previous point
+            _snakeBodyPoints.AddRange(snakeParts);
+            PreviousPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+        }
         
         // The direction of the snake
         public Direction Direction { get; set; }
@@ -28,32 +33,15 @@ namespace SnakeGame
             
             // Since the head in the Move method immediately changes its position, record the value to the _previousPart 
             Head = new SnakeHeadPoint(head.x, head.y);
-            _previousPart = new SnakeBodyPoint(Head);
+            PreviousPart = new SnakeBodyPoint(Head);
         }
 
-        private SnakeBodyPoint _previousPart; 
+        public SnakeBodyPoint PreviousPart { get; private set; }
 
         // Movement of the snake
         public void Move()
         {
-            MoveHead();
-            if (CheckCollisionWithObstacles() || CheckCollisionWithPartsOfSnakes())
-            {
-                // If the snake collided with an obstacle or another snake, roll back head movement and die
-                Head.CopyCoordinatesFrom(_previousPart);
-                Die();
-                return;
-            }
-            
-            _previousPart.Draw();
-            BodyUpdate();
-            CheckCollisionWithFood();
-            Head.Draw();
-        }
-
-        // Movement of the snakes head
-        private void MoveHead()
-        {
+            PreviousPart = new SnakeBodyPoint(Head);
             switch (Direction)
             {
                 case Direction.Right:
@@ -71,51 +59,20 @@ namespace SnakeGame
             }
         }
 
-        // Check collision with obstacles 
-        private bool CheckCollisionWithObstacles()
+        public void Draw()
         {
-            return Head.X < 1 || Head.X > Console.WindowWidth - 1 || Head.Y < 1 || Head.Y > Console.WindowHeight - 2;
-        }
-
-        // Check collision with parts of snakes
-        private bool CheckCollisionWithPartsOfSnakes()
-        {
-            // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (SnakeInformationManager.GetListSnakesPoints().FirstOrDefault(point => point.IsEquals(Head) 
-                    && point != Head) is { } snakePart)
-            {
-                // If the snakes collided head to head, kill another snake
-                if (snakePart.GetType() == typeof(SnakeHeadPoint))
-                    SnakeInformationManager.GetSnakeList.Single(snake => snake.Head == snakePart).Die();
-
-                return true;
-            }
+            PreviousPart.Draw();
+            Head.Draw();
             
-            return false;
+            BodyUpdate();
         }
 
         // Update snake body points 
         private void BodyUpdate()
         {
             // Update the list of body points
-            _snakeBodyPoints.Add(_previousPart);
+            _snakeBodyPoints.Add(PreviousPart);
             RemoveSnakeBodyPointAt(0);
-            _previousPart = new SnakeBodyPoint(Head);
-        }
-
-        // Check collision with food
-        private void CheckCollisionWithFood()
-        {
-            // Checking if the snake collision with food
-            if (FoodInformationManager.GetFoodList.FirstOrDefault(currFood => currFood.IsEquals(Head)) is { } food)
-            {
-                // If there is, add new points of the body and update the previous point
-                _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
-                _previousPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
-                
-                // Removing from the list
-                FoodInformationManager.Remove(food);
-            }
         }
 
         // Remove from _snakeBodyPoints and from the field the part of the body
@@ -123,16 +80,6 @@ namespace SnakeGame
         {
             _snakeBodyPoints[index].Remove();
             _snakeBodyPoints.RemoveAt(index);    
-        }
-            
-        // Kill this snake and spawn a new snake
-        private void Die()
-        {
-            foreach (var body in _snakeBodyPoints)
-                FoodInformationManager.Add(new SimpleFood(body));
-            FoodInformationManager.Add(new SnakeHeadFood(Head));
-
-            SnakeInformationManager.SnakeRespawn(this);
         }
 
     }

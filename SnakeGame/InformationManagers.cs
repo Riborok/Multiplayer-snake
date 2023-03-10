@@ -4,62 +4,71 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    public static class FoodInformationManager
+    public class FoodInformationManager
     {
-        private static int _foodAmount;
-        
-        private static readonly List<Food> FoodList = new(300);
-        public static IEnumerable<Food> GetFoodList => FoodList;
-        
-        public static void Add(Food food)
+        public FoodInformationManager(int amount)
         {
-            if (!FoodList.Any(existingFood => existingFood.IsEquals(food)))
-                FoodList.Add(food);
+            _foodAmount = amount;
+            SpawnSimpleFood(amount);
+        }
+        
+        private readonly int _foodAmount;
+        
+        private readonly List<Food> _foodList = new(300);
+        public IEnumerable<Food> GetFoodList => _foodList;
+        
+        public void Add(Food food)
+        {
+            // If food was on the field before, respawn it
+            _foodList.Remove(food);
+            _foodList.Add(food);
         }
 
-        public static void Remove(Food food)
+        public void Remove(Food food)
         {
             food.Remove();
-            FoodList.Remove(food);
+            _foodList.Remove(food);
 
-            if (FoodList.Count < _foodAmount)
+            while (_foodList.Count < _foodAmount)
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
         }
 
-        public static void SpawnSimpleFood(int amount)
+        private void SpawnSimpleFood(int amount)
         {
-            _foodAmount = amount;
             for (var i = 0; i < amount; i++)
                 Add(new SimpleFood(Generator.GenerateCoordinates()));
         }
     }
 
-    public static class SnakeInformationManager
+    public class SnakeInformationManager
     {
-        private static readonly List<Snake> SnakeList = new(30);
-        public static IReadOnlyList<Snake> GetSnakeList => SnakeList;
-
-        public static IEnumerable<Point> GetListSnakesPoints()
+        public SnakeInformationManager(int amount)
         {
-            return SnakeList.SelectMany<Snake, Point>(snake => snake.BodyPoints.Concat<Point>
+            SpawnSnakes(amount);
+        }
+        
+        private readonly List<Snake> _snakeList = new(3);
+        public IReadOnlyList<Snake> GetSnakeList => _snakeList;
+
+        public IEnumerable<Point> GetListPointsOfSnakes()
+        {
+            return _snakeList.SelectMany<Snake, Point>(snake => snake.BodyPoints.Concat<Point>
                 (new[] { snake.Head }));
         }
 
-        public static void SpawnSnakes(int amount)
+        public void SnakeRespawn(Snake snake)
+        {
+            if (!_snakeList.Contains(snake))
+                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
+
+            _snakeList[_snakeList.IndexOf(snake)] =
+                new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), snake.Id);
+        }
+        
+        private void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)
-                SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), id: i));
-        }
-
-        public static void SnakeRespawn(Snake snake)
-        {
-            if (!SnakeList.Contains(snake))
-                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
-            
-            
-            SnakeList.Remove(snake);
-            SnakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), snake.Id));
-
+                _snakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), id: i));
         }
     }
 }

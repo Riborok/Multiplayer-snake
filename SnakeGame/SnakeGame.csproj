@@ -40,6 +40,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="CollisionManager.cs" />
         <Compile Include="Generator.cs" />
         <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
