@@ -1,21 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SnakeGame
 {
-    // The manager checks the collision of the snake with some object
-    public class CollisionManager
+    public class FoodCollisionManager
     {
         private readonly FoodInformationManager _foodInformationManager;
-        private readonly SnakeInformationManager _snakeInformationManager;
-
-        public CollisionManager(FoodInformationManager foodInformationManager,
-            SnakeInformationManager snakeInformationManager)
+        public FoodCollisionManager(FoodInformationManager foodInformationManager)
         {
-            _foodInformationManager = foodInformationManager;
-            _snakeInformationManager = snakeInformationManager;
+            _foodInformationManager = foodInformationManager;    
+            
         }
-
+        
         // Check for collision with food
         public void FoodCollisionCheck(Snake snake)
         {
@@ -27,24 +24,40 @@ namespace SnakeGame
             }
             
         }
-        
-        // Check for collision with objects 
-        public bool IsNotCollisionOccured(Snake snake)
+    }
+    
+    
+    // The manager checks the collision of the snake with some object
+    public class ObstaclesCollisionManager
+    {
+        private readonly SnakeInformationManager _snakeInformationManager;
+        public ObstaclesCollisionManager(SnakeInformationManager snakeInformationManager)
         {
+            _snakeInformationManager = snakeInformationManager;
+        }
+
+        private readonly List<Snake> _snakesToKill = new(2);
+        public IEnumerable<Snake> GetSnakesToKill => _snakesToKill;
+
+        // Check for collision with objects 
+        public bool IsCollisionOccured(Snake snake)
+        {
+            _snakesToKill.Clear();
+            
             // Check for collision with an obstacle or another snake (and with their parts)
-            if (CheckCollisionWithObstacles(snake) || CheckCollisionWithPartsOfSnakes(snake))
+            if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
                 // If the snake collided with an obstacle or another snake, roll the snake back
-                snake.Head.CopyCoordinatesFrom(snake.PreviousPart);
+                snake.Rollback();
 
-                Kill(snake);
-                return false;
+                _snakesToKill.Add(snake);
+                return true;
             }
-            return true;
+            return false;
         }
         
         // Check collision with obstacles 
-        private bool CheckCollisionWithObstacles(Snake snake)
+        private bool CheckCollisionWithBorder(Snake snake)
         {
             return snake.Head.X < 1 || snake.Head.X > Console.WindowWidth - 1 || 
                    snake.Head.Y < 1 || snake.Head.Y > Console.WindowHeight - 2;
@@ -60,26 +73,13 @@ namespace SnakeGame
                 // If the snakes collided head to head, kill another snake
                 if (snakePart.GetType() == typeof(SnakeHeadPoint))
                 {
-                    Kill(_snakeInformationManager.GetSnakeList.Single(
+                    _snakesToKill.Add(_snakeInformationManager.GetSnakeList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
                 }
 
                 return true;
             }
             return false;
-        }
-
-
-        // Kill this snake and spawn a new snake
-        private void Kill(Snake snake)
-        {
-            // Add all body points as food
-            foreach (var body in snake.BodyPoints)
-                _foodInformationManager.Add(new SimpleFood(body));
-
-            _foodInformationManager.Add(new SnakeHeadFood(snake.Head));
-            
-            _snakeInformationManager.SnakeRespawn(snake);
         }
         
     }

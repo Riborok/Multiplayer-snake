@@ -40,7 +40,7 @@ namespace SnakeGame
         }
 
         private static int _amountSnakes;
-        private const int AmountSimpleFood = 250;
+        private const int AmountSimpleFood = 450;
         private const int ScoreToWin = 100;
         
         // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
@@ -50,8 +50,10 @@ namespace SnakeGame
             new (new WasdMovementKey()),
             new (new UhjkMovementKey())
         };
+
+        private static FoodCollisionManager _foodCollisionManager;
+        private static ObstaclesCollisionManager _obstaclesCollisionManager;
         
-        private static CollisionManager _collisionManager;
         private static FoodInformationManager _foodInformationManager;
         private static SnakeInformationManager _snakeInformationManager;
 
@@ -69,8 +71,10 @@ namespace SnakeGame
             Console.Clear();
             
             _foodInformationManager = new FoodInformationManager(AmountSimpleFood);
-            _snakeInformationManager = new SnakeInformationManager(_amountSnakes); 
-            _collisionManager = new CollisionManager(_foodInformationManager, _snakeInformationManager);
+            _snakeInformationManager = new SnakeInformationManager(_amountSnakes);
+
+            _foodCollisionManager = new FoodCollisionManager(_foodInformationManager);
+            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeInformationManager);
         }
 
         private static void GameOver()
@@ -94,7 +98,7 @@ namespace SnakeGame
             while (_snakeInformationManager.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(80);
+                var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
                 var inputTask = HandlingAsync.Key();
@@ -111,6 +115,13 @@ namespace SnakeGame
             await Task.Delay(5000);
         }
 
+        private static void Kill(Snake snake)
+        {
+            _foodInformationManager.AddRange(snake.BodyPoints.Select(body => new SimpleFood(body))
+                .Concat<Food>(new[] { new SnakeHeadFood(snake.Head) })); 
+            _snakeInformationManager.SnakeRespawn(snake);
+        }
+
         private static class HandlingAsync
         {
             public static async Task Snakes()
@@ -121,12 +132,21 @@ namespace SnakeGame
                     for (var i = 0; i < _snakeInformationManager.GetSnakeList.Count; i++)
                     {
                         var snake = _snakeInformationManager.GetSnakeList[i];
+                        
                         snake.Move();
-                        if (_collisionManager.IsNotCollisionOccured(snake))
+                        
+                        // Checking snake collision with obstacles
+                        if (_obstaclesCollisionManager.IsCollisionOccured(snake))
+                            foreach (var snakeToKill in _obstaclesCollisionManager.GetSnakesToKill)
+                                Kill(snakeToKill);
+                        
+                        // If there was no collusion with obstacles, check the collision with food and draw the snake
+                        else
                         {
-                            _collisionManager.FoodCollisionCheck(snake);
+                            _foodCollisionManager.FoodCollisionCheck(snake);
                             snake.Draw();
                         }
+                        
                     }
                 });
             }

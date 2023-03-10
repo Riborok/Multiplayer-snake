@@ -16,12 +16,18 @@ namespace SnakeGame
         
         private readonly List<Food> _foodList = new(300);
         public IEnumerable<Food> GetFoodList => _foodList;
-        
-        public void Add(Food food)
+
+        private void Add(Food food)
         {
-            // If food was on the field before, respawn it
-            _foodList.Remove(food);
-            _foodList.Add(food);
+            // Spawn only if there is no food on this position
+            if (!_foodList.Any(existingFood => existingFood.IsEquals(food)))
+                _foodList.Add(food);
+        }
+
+        public void AddRange(IEnumerable<Food> foods)
+        {
+            foreach (var food in foods)
+                Add(food);
         }
 
         public void Remove(Food food)
@@ -61,7 +67,7 @@ namespace SnakeGame
             if (!_snakeList.Contains(snake))
                 throw new ArgumentException("The provided snake does not exist in the list of snakes.");
 
-            _snakeList[_snakeList.IndexOf(snake)] =
+            _snakeList[snake.Id] =
                 new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), snake.Id);
         }
         
