@@ -18,7 +18,7 @@ namespace SnakeGame
                     .FirstOrDefault(currFood => currFood.IsEquals(snake.Head)) is { } collidingFood)
             {
                 snake.Eat(collidingFood);
-                _foodService.Remove(collidingFood);
+                _foodService.Eaten(collidingFood);
             }
             
         }

@@ -2,11 +2,13 @@ using System;
 
 namespace SnakeGame
 {
-    // Handling keys asynchronously 
+   
+    // A static class for generating random values
     public static class Generator
     {
         private static readonly Random Random = new();
 
+        // Generates random x and y coordinates within the console window size. X is always an even number
         public static (int x, int y) GenerateCoordinates()
         {
             // Checking that randomX is in an even position
@@ -14,6 +16,7 @@ namespace SnakeGame
             return (x: randomX % 2 == 1 ? ++randomX : randomX, y: Random.Next(1, Console.WindowHeight - 1));
         }
 
+        // Generates a random direction
         public static Direction GenerateDirection()
         {
             return (Direction)Random.Next(4);

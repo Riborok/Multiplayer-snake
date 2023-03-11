@@ -13,6 +13,7 @@ namespace SnakeGame
             SpawnSnakes(amount);
         }
         
+        // Stores the amount of snakes
         private readonly List<Snake> _snakeList = new(3);
         public IReadOnlyList<Snake> GetSnakeList => _snakeList;
 
@@ -33,6 +34,7 @@ namespace SnakeGame
                 new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(), snake.Id);
         }
         
+        // Spawner in the game amount snakes
         private void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)

@@ -14,14 +14,16 @@ namespace SnakeGame
             SpawnSimpleFood(amount);
         }
         
+        // Stores the amount of food that needs to be maintained on the field
         private readonly int _foodAmount;
         
+        // Stores a list of all food on the field.
         private readonly List<Food> _foodList = new(300);
         public IEnumerable<Food> GetFoodList => _foodList;
 
+        // Adds food to the field only if there is no other food at this position
         private void Add(Food food)
         {
-            // Spawn only if there is no food on this position
             if (!_foodList.Any(existingFood => existingFood.IsEquals(food)))
             {
                 food.Draw();
@@ -29,21 +31,29 @@ namespace SnakeGame
             }
         }
 
+        // Adds multiple pieces of food to the field
         public void AddRange(IEnumerable<Food> foodList)
         {
             foreach (var food in foodList)
                 Add(food);
         }
 
-        public void Remove(Food food)
+        // Removes food from the field and checks whether new food needs to be added to maintain its quantity
+        public void Eaten(Food food)
         {
-            food.Remove();
             _foodList.Remove(food);
 
-            while (_foodList.Count < _foodAmount)
-                Add(new SimpleFood(Generator.GenerateCoordinates()));
+            ControlFoodAmount();
         }
 
+        // Controls the amount of food on the field
+        private void ControlFoodAmount()
+        {
+            while (_foodList.Count < _foodAmount)
+                Add(new SimpleFood(Generator.GenerateCoordinates()));   
+        }
+
+        // Generates and adds the specified amount of simple food to the field
         private void SpawnSimpleFood(int amount)
         {
             for (var i = 0; i < amount; i++)
