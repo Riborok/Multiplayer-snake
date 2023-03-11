@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    // Manager working with food information 
+    // Service working with food information 
     public class FoodService
     {
-        // When a manager is created, he will spawn amount simple food.
+        // When a service is created, he will spawn amount simple food.
         // Further, he always controls that there is this amount on the field
         public FoodService(int amount)
         {

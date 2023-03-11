@@ -53,12 +53,12 @@ namespace SnakeGame
             new (new WasdMovementKey()),
             new (new UhjkMovementKey())
         };
-
-        // Managers are responsible for information about snakes and food in the game 
+        
+        // Managers are responsible for collisions with obstacles and food
         private static FoodCollisionManager _foodCollisionManager;
         private static ObstaclesCollisionManager _obstaclesCollisionManager;
         
-        // Managers are responsible for collisions with obstacles and food
+        // Services are responsible for information about snakes and food in the game 
         private static FoodService _foodService;
         private static SnakesService _snakesService;
 
@@ -121,8 +121,8 @@ namespace SnakeGame
             await Task.Delay(5000);
         }
 
-        // Killing a snake. This method gives the _foodInformationManager a list of food from snake parts
-        // to put those parts into the food list. _snakeInformationManager will respawn this snake
+        // Killing a snake. This method gives the _foodService a list of food from snake parts
+        // to put those parts into the food list. _snakesService will respawn this snake
         private static void Kill(Snake snake)
         {
             _foodService.AddRange(new[] { new SnakeHeadFood(snake.Head) }

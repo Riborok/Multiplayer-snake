@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace SnakeGame
 {
-    // Manager working with snake information 
+    // Service working with snake information 
     public class SnakesService
     {
-        // When a manager is created, he will spawn amount snakes
+        // When a service is created, he will spawn amount snakes
         public SnakesService(int amount)
         {
             SpawnSnakes(amount);
