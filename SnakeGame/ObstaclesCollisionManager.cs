@@ -7,10 +7,10 @@ namespace SnakeGame
     // The manager checks the collision of the snake with some object
     public class ObstaclesCollisionManager
     {
-        private readonly SnakeInformationManager _snakeInformationManager;
-        public ObstaclesCollisionManager(SnakeInformationManager snakeInformationManager)
+        private readonly SnakesService _snakesService;
+        public ObstaclesCollisionManager(SnakesService snakesService)
         {
-            _snakeInformationManager = snakeInformationManager;
+            _snakesService = snakesService;
         }
 
         // List of snakes to kill
@@ -51,13 +51,13 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (_snakeInformationManager.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
+            if (_snakesService.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
                  && point != snake.Head) is { } snakePart)
             {
                 // If the snakes collided head to head, kill another snake
                 if (snakePart is SnakeHeadPoint)
                 {
-                    _snakesToKill.Add(_snakeInformationManager.GetSnakeList.Single(
+                    _snakesToKill.Add(_snakesService.GetSnakeList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
                 }
 

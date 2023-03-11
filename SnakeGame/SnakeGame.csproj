@@ -40,14 +40,14 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="FoodInformationManager.cs" />
+        <Compile Include="FoodService.cs" />
         <Compile Include="ObstaclesCollisionManager.cs" />
         <Compile Include="FoodCollisionManager.cs" />
         <Compile Include="Generator.cs" />
         <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
-        <Compile Include="SnakeInformationManager.cs" />
+        <Compile Include="SnakesService.cs" />
         <Compile Include="Point.cs" />
         <Compile Include="Game.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

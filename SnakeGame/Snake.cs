@@ -14,11 +14,12 @@ namespace SnakeGame
             return _snakeBodyPoints[_snakeBodyPoints.Count - 1];
         }
         public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
-        public void AddBodyPoints(IEnumerable<SnakeBodyPoint> snakeParts)
+        
+        // Eat food and add a new points to the _snakeBodyPoints 
+        public void Eat(Food food)
         {
-            // Add new points of the body and update the previous point
-            _snakeBodyPoints.AddRange(snakeParts);
-
+            // Add new points of the body and set _isDigestingFood 
+            _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
             _isDigestingFood = true;
         }
 

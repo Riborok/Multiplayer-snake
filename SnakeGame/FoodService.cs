@@ -4,11 +4,11 @@ using System.Linq;
 namespace SnakeGame
 {
     // Manager working with food information 
-    public class FoodInformationManager
+    public class FoodService
     {
         // When a manager is created, he will spawn amount simple food.
         // Further, he always controls that there is this amount on the field
-        public FoodInformationManager(int amount)
+        public FoodService(int amount)
         {
             _foodAmount = amount;
             SpawnSimpleFood(amount);

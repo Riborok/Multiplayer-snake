@@ -59,8 +59,8 @@ namespace SnakeGame
         private static ObstaclesCollisionManager _obstaclesCollisionManager;
         
         // Managers are responsible for collisions with obstacles and food
-        private static FoodInformationManager _foodInformationManager;
-        private static SnakeInformationManager _snakeInformationManager;
+        private static FoodService _foodService;
+        private static SnakesService _snakesService;
 
 
         // Creating the playing field 
@@ -76,11 +76,11 @@ namespace SnakeGame
             
             Console.Clear();
             
-            _foodInformationManager = new FoodInformationManager(AmountSimpleFood);
-            _snakeInformationManager = new SnakeInformationManager(_amountSnakes);
+            _foodService = new FoodService(AmountSimpleFood);
+            _snakesService = new SnakesService(_amountSnakes);
 
-            _foodCollisionManager = new FoodCollisionManager(_foodInformationManager);
-            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeInformationManager);
+            _foodCollisionManager = new FoodCollisionManager(_foodService);
+            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService);
         }
 
         // End of game caption
@@ -102,7 +102,7 @@ namespace SnakeGame
             await Task.Delay(1000);
 
             // The main game loop (the game will continue until there is at least 1 snake)
-            while (_snakeInformationManager.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -125,10 +125,10 @@ namespace SnakeGame
         // to put those parts into the food list. _snakeInformationManager will respawn this snake
         private static void Kill(Snake snake)
         {
-            _foodInformationManager.AddRange(new[] { new SnakeHeadFood(snake.Head) }
+            _foodService.AddRange(new[] { new SnakeHeadFood(snake.Head) }
                 .Concat<Food>(snake.BodyPoints.Select(body => new SimpleFood(body)))); 
             
-            _snakeInformationManager.SnakeRespawn(snake);
+            _snakesService.SnakeRespawn(snake);
         }
         
         // Handling snakes asynchronously 
@@ -137,9 +137,9 @@ namespace SnakeGame
             await Task.Run(() =>
             {
                 // Can't use foreach here, because if the snake dies will be an error
-                for (var i = 0; i < _snakeInformationManager.GetSnakeList.Count; i++)
+                for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
                 {
-                    var snake = _snakeInformationManager.GetSnakeList[i];
+                    var snake = _snakesService.GetSnakeList[i];
                     
                     snake.Move();
                     
@@ -170,7 +170,7 @@ namespace SnakeGame
                 while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
                 {
                     var key = Console.ReadKey(true).Key;
-                    Parallel.ForEach(_snakeInformationManager.GetSnakeList, snake =>
+                    Parallel.ForEach(_snakesService.GetSnakeList, snake =>
                     {
                         if (!hasDirectionChanged[snake.Id])
                             hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    
