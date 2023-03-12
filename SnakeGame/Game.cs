@@ -30,9 +30,8 @@ namespace SnakeGame
             Console.Title = "Snake Game";
         
             // Color setting
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+
             // Console window setting
             FullScreen.Set();
 
@@ -62,10 +61,19 @@ namespace SnakeGame
         private static FoodService _foodService;
         private static SnakesService _snakesService;
 
+        // Colors that snakes can accept 
+        private static readonly ConsoleColor[] ColorsForSnakes =
+        {
+            // Stas, add here :) 
+            ConsoleColor.White,
+            ConsoleColor.Magenta
+        };
+
 
         // Creating the playing field 
         private static void GameCreation()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
@@ -77,7 +85,7 @@ namespace SnakeGame
             Console.Clear();
             
             _foodService = new FoodService(AmountSimpleFood);
-            _snakesService = new SnakesService(_amountSnakes);
+            _snakesService = new SnakesService(_amountSnakes, ColorsForSnakes);
 
             _foodCollisionManager = new FoodCollisionManager(_foodService);
             _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService);
@@ -87,6 +95,7 @@ namespace SnakeGame
         private static void GameOver()
         {
             Console.Clear(); 
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 - 3);
             Console.Write("Game Over");
             

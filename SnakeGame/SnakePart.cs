@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,10 +7,11 @@ namespace SnakeGame
     public class SnakeBodyPoint : Point
     {
         protected override char Symbol => '■';
-        public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.X, snakeHeadPoint.Y)
+        public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.X, snakeHeadPoint.Y, 
+            snakeHeadPoint.Color)
         {
         }
-        protected SnakeBodyPoint(Food food) : base(food.X, food.Y)
+        protected SnakeBodyPoint(Food food) : base(food.X, food.Y, food.Color)
         {
         }
     }
@@ -30,7 +32,7 @@ namespace SnakeGame
     public class SnakeHeadPoint : Point
     {
         protected override char Symbol => '☻';
-        public SnakeHeadPoint(int x, int y) : base(x, y)
+        public SnakeHeadPoint(int x, int y, ConsoleColor color) : base(x, y, color)
         {
         }
     }

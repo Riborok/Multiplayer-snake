@@ -9,11 +9,13 @@ namespace SnakeGame
         public int Y { get; set; }
 
         protected abstract char Symbol { get; }
+        public ConsoleColor Color { get; }
 
-        protected Point(int x, int y)
+        protected Point(int x, int y, ConsoleColor color)
         {
             X = x;
             Y = y;
+            Color = color;
         }
         
         public bool IsEquals(Point other)
@@ -29,6 +31,7 @@ namespace SnakeGame
         
         public void Draw()
         {
+            Console.ForegroundColor = Color;
             Console.SetCursorPosition(X, Y);
             Console.Write(Symbol);
         }

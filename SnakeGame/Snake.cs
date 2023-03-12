@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace SnakeGame
@@ -36,12 +37,12 @@ namespace SnakeGame
         public int Id {get;}
         
 
-        public Snake((int x, int y) head, Direction direction, int id)
+        public Snake((int x, int y) head, Direction direction, ConsoleColor color, int id)
         {
             Direction = direction;
             Id = id;
             
-            Head = new SnakeHeadPoint(head.x, head.y);
+            Head = new SnakeHeadPoint(head.x, head.y, color);
         }
         
         // Last part of the snake's body 

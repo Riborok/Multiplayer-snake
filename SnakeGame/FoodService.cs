@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +12,7 @@ namespace SnakeGame
         public FoodService(int amount)
         {
             _foodAmount = amount;
-            SpawnSimpleFood(amount);
+            EnsureFoodQuantity();
         }
         
         // Stores the amount of food that needs to be maintained on the field
@@ -43,21 +44,15 @@ namespace SnakeGame
         {
             _foodList.Remove(food);
 
-            ControlFoodAmount();
+            EnsureFoodQuantity();
         }
 
         // Controls the amount of food on the field
-        private void ControlFoodAmount()
+        private void EnsureFoodQuantity()
         {
+            // When generating new food, it will always be yellow 
             while (_foodList.Count < _foodAmount)
-                Add(new SimpleFood(Generator.GenerateCoordinates()));   
-        }
-
-        // Generates and adds the specified amount of simple food to the field
-        private void SpawnSimpleFood(int amount)
-        {
-            for (var i = 0; i < amount; i++)
-                Add(new SimpleFood(Generator.GenerateCoordinates()));
+                Add(new SimpleFood(Generator.GenerateCoordinates(), ConsoleColor.Yellow));   
         }
     }
     
