@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SnakeGame
 {
     // The main class of the game
-    public static class Game
+    public static partial class Game
     {
         private static class FullScreen
         {
@@ -23,7 +23,6 @@ namespace SnakeGame
                 ShowWindow(handle, SwMaximize);
                 Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);    
             }
-    
         }
         private static void SetConsoleSettings()
         {
@@ -35,7 +34,15 @@ namespace SnakeGame
             // Console window setting
             FullScreen.Set();
 
-            Console.CursorVisible = false;   
+            Console.CursorVisible = false;
+            
+            _bordersTuple = 
+            (
+                UpBorder: 1, 
+                DownBorder: Console.WindowHeight - 2, 
+                LeftBorder: 0, 
+                RightBorder: Console.BufferWidth - 1
+            );
         }
 
         // Fields storing the amount of snakes and food
@@ -58,6 +65,14 @@ namespace SnakeGame
             new (new UhjkMovementKey())
         };
         
+        // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
+        private static readonly ConsoleColor[] ColorsForSnakes =
+        {
+            ConsoleColor.White,
+            ConsoleColor.DarkRed,
+            ConsoleColor.DarkYellow
+        };
+        
         // Managers are responsible for collisions with obstacles and food
         private static FoodCollisionManager _foodCollisionManager;
         private static ObstaclesCollisionManager _obstaclesCollisionManager;
@@ -66,15 +81,31 @@ namespace SnakeGame
         private static FoodService _foodService;
         private static SnakesService _snakesService;
 
-        // Colors that snakes can accept 
-        private static readonly ConsoleColor[] ColorsForSnakes =
-        {
-            // Stas, add here :) 
-            ConsoleColor.White,
-            ConsoleColor.DarkRed,
-            ConsoleColor.DarkYellow
-        };
+        // Field borders
+        private static (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) _bordersTuple;
 
+        // Draws borders
+        private static void MarkBorder()
+        {
+            // Set the border text color
+            Console.ForegroundColor = BorderColor;
+
+            // Border drawing
+            Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.UpBorder);
+            Console.Write(new string('▄', Console.BufferWidth));
+
+            for (var i = _bordersTuple.UpBorder + 1; i < _bordersTuple.DownBorder; i++)
+            {
+                Console.SetCursorPosition(_bordersTuple.RightBorder, i);
+                Console.Write('█');
+                Console.SetCursorPosition(_bordersTuple.LeftBorder, i);
+                Console.Write('█');
+            }
+
+            Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.DownBorder);
+            Console.Write(new string('▀', Console.BufferWidth));
+        }
+        
         // Creating the playing field 
         private static void GameCreation()
         {
@@ -88,12 +119,13 @@ namespace SnakeGame
             while (_amountSnakes is < 1 or > 3 ); 
             
             Console.Clear();
+            MarkBorder();
             
             _foodService = new FoodService(AmountSimpleFood);
             _snakesService = new SnakesService(_amountSnakes, ColorsForSnakes);
 
             _foodCollisionManager = new FoodCollisionManager(_foodService);
-            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService);
+            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService, _bordersTuple);
         }
 
         // End of game caption

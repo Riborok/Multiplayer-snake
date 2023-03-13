@@ -7,7 +7,7 @@ namespace SnakeGame
     // Service working with snake information 
     public class SnakesService
     {
-        // Colors that snakes can accept. Each colour for each snake
+        // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private readonly ConsoleColor[] _colorsForSnakes;
         
         // When a service is created, he will spawn amount snakes
@@ -35,16 +35,17 @@ namespace SnakeGame
                 throw new ArgumentException("The provided snake does not exist in the list of snakes.");
 
             _snakeList[snake.Id] =
-                new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(),
-                    color: snake.Head.Color, snake.Id);
+                new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
+                    color: _colorsForSnakes[snake.Id], id: snake.Id);
         }
         
         // Spawner in the game amount snakes
         private void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)
-                _snakeList.Add(new Snake(Generator.GenerateCoordinates(), Generator.GenerateDirection(),
-                    color: _colorsForSnakes[i], id: i));
+                _snakeList.Add(
+                        new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
+                        color: _colorsForSnakes[i], id: i));
         }
     }
 }

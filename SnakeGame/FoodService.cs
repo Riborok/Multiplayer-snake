@@ -54,7 +54,7 @@ namespace SnakeGame
         private void EnsureFoodQuantity()
         {
             while (_foodList.Count < _foodAmount)
-                Add(new SimpleFood(Generator.GenerateCoordinates(), ColorForGeneratedSimpleFood));   
+                Add(new SimpleFood(Game.Generator.GenerateCoordinates(), ColorForGeneratedSimpleFood));   
         }
     }
     

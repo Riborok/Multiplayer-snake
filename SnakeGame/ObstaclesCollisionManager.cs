@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,9 +7,12 @@ namespace SnakeGame
     public class ObstaclesCollisionManager
     {
         private readonly SnakesService _snakesService;
-        public ObstaclesCollisionManager(SnakesService snakesService)
+        private readonly (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) _bordersTuple;
+        public ObstaclesCollisionManager(SnakesService snakesService, 
+            (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple)
         {
             _snakesService = snakesService;
+            _bordersTuple = bordersTuple;
         }
 
         // List of snakes to kill
@@ -41,8 +43,8 @@ namespace SnakeGame
         // Check collision with obstacles 
         private bool CheckCollisionWithBorder(Snake snake)
         {
-            return snake.Head.X < 1 || snake.Head.X > Console.WindowWidth - 1 || 
-                   snake.Head.Y < 1 || snake.Head.Y > Console.WindowHeight - 2;
+            return snake.Head.X <= _bordersTuple.LeftBorder || snake.Head.X >= _bordersTuple.RightBorder || 
+                   snake.Head.Y <= _bordersTuple.UpBorder || snake.Head.Y >= _bordersTuple.DownBorder;
         }
         
         // Check collision with parts of snakes
