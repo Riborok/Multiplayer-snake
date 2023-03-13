@@ -40,7 +40,7 @@ namespace SnakeGame
             (
                 UpBorder: 1, 
                 DownBorder: Console.WindowHeight - 2, 
-                LeftBorder: 2, 
+                LeftBorder: 3, 
                 RightBorder: Console.BufferWidth - 1
             );
         }
@@ -134,7 +134,7 @@ namespace SnakeGame
             Console.Clear();
             Console.ForegroundColor = TextColor;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 - 3);
-            Console.Write("Game Over");
+            Console.Write("You are win!");
             
             Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 + 3);
             Console.Write($"Score {ScoreToWin} has been reached");
