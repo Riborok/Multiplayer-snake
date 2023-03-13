@@ -40,7 +40,7 @@ namespace SnakeGame
             (
                 UpBorder: 1, 
                 DownBorder: Console.WindowHeight - 2, 
-                LeftBorder: 0, 
+                LeftBorder: 2, 
                 RightBorder: Console.BufferWidth - 1
             );
         }
@@ -92,7 +92,7 @@ namespace SnakeGame
 
             // Border drawing
             Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.UpBorder);
-            Console.Write(new string('▄', Console.BufferWidth));
+            Console.Write(new string('▄', Console.BufferWidth - _bordersTuple.LeftBorder));
 
             for (var i = _bordersTuple.UpBorder + 1; i < _bordersTuple.DownBorder; i++)
             {
@@ -103,7 +103,7 @@ namespace SnakeGame
             }
 
             Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.DownBorder);
-            Console.Write(new string('▀', Console.BufferWidth));
+            Console.Write(new string('▀', Console.BufferWidth - _bordersTuple.LeftBorder));
         }
         
         // Creating the playing field 
