@@ -17,7 +17,10 @@ namespace SnakeGame
         
         // Stores the amount of food that needs to be maintained on the field
         private readonly int _foodAmount;
-        
+
+        // Generated food is always one color
+        private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Yellow;
+
         // Stores a list of all food on the field.
         private readonly List<Food> _foodList = new(300);
         public IEnumerable<Food> GetFoodList => _foodList;
@@ -50,9 +53,8 @@ namespace SnakeGame
         // Controls the amount of food on the field
         private void EnsureFoodQuantity()
         {
-            // When generating new food, it will always be yellow 
             while (_foodList.Count < _foodAmount)
-                Add(new SimpleFood(Generator.GenerateCoordinates(), ConsoleColor.Yellow));   
+                Add(new SimpleFood(Generator.GenerateCoordinates(), ColorForGeneratedSimpleFood));   
         }
     }
     

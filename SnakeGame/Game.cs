@@ -30,7 +30,7 @@ namespace SnakeGame
             Console.Title = "Snake Game";
         
             // Color setting
-            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.BackgroundColor = BackgroundColor;
 
             // Console window setting
             FullScreen.Set();
@@ -44,6 +44,11 @@ namespace SnakeGame
         
         // Amount of points to win
         private const int ScoreToWin = 100;
+        
+        // Colors for background, text and border
+        private const ConsoleColor BackgroundColor = ConsoleColor.DarkGreen; 
+        private const ConsoleColor TextColor = ConsoleColor.Yellow; 
+        // private const ConsoleColor BorderColor = ConsoleColor.Red; 
         
         // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
         private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
@@ -69,11 +74,10 @@ namespace SnakeGame
             ConsoleColor.Magenta
         };
 
-
         // Creating the playing field 
         private static void GameCreation()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = TextColor;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
@@ -94,8 +98,8 @@ namespace SnakeGame
         // End of game caption
         private static void GameOver()
         {
-            Console.Clear(); 
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Clear();
+            Console.ForegroundColor = TextColor;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 - 3);
             Console.Write("Game Over");
             
