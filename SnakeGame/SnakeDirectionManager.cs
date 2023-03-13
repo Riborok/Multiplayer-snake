@@ -11,8 +11,10 @@ namespace SnakeGame
             _iMovementKeys = iMovementKeys;
         }
 
+        // Trying to change direction. Returns true if it succeeded, else returns false
         public bool TryChangeDirection(Snake snake, ConsoleKey key)
         {
+            bool result = false;
             switch (snake.Direction)
             {
                 case Direction.Left:
@@ -20,12 +22,12 @@ namespace SnakeGame
                     if (key == _iMovementKeys.Down)
                     {
                         snake.Direction = Direction.Down; 
-                        return true;
+                        result = true;
                     }
-                    if (key == _iMovementKeys.Up)
+                    else if (key == _iMovementKeys.Up)
                     {
                         snake.Direction = Direction.Up; 
-                        return true;    
+                        result = true;    
                     }
                     break;
                 case Direction.Up:
@@ -33,16 +35,16 @@ namespace SnakeGame
                     if (key == _iMovementKeys.Left)
                     {
                         snake.Direction = Direction.Left; 
-                        return true;
+                        result = true;
                     }
-                    if (key == _iMovementKeys.Right)
+                    else if (key == _iMovementKeys.Right)
                     {
                         snake.Direction = Direction.Right; 
-                        return true;    
+                        result = true;    
                     }
                     break;
             }
-            return false;
+            return result;
         }
     }
     
