@@ -133,11 +133,19 @@ namespace SnakeGame
         {
             Console.Clear();
             Console.ForegroundColor = TextColor;
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight / 2 - 3);
-            Console.Write("You are win!");
-            
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 + 3);
+
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 - 3);
             Console.Write($"Score {ScoreToWin} has been reached");
+
+            var playerArray = _snakesService.GetSnakeList.OrderByDescending(snake => 
+                snake.BodyPoints.Count).ToList();
+
+            for (var i = 0; i < playerArray.Count; i++)
+            {
+                Console.SetCursorPosition(Console.WindowWidth / 2 - 15, Console.WindowHeight / 2 + 3 + i*2);
+                Console.Write($"{playerArray[i].Head.Color}, " +
+                              $"you are {i}! Your score: {playerArray[i].BodyPoints.Count}");
+            }
         }
 
         public static async Task Main()
@@ -164,7 +172,7 @@ namespace SnakeGame
             }
 
             GameOver();
-            await Task.Delay(5000);
+            await Task.Delay(60000);
         }
 
         // Killing a snake. Process the snake into food and respawn

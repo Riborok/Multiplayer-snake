@@ -30,7 +30,7 @@ namespace SnakeGame
     {
         private readonly int _amountOfBodyPoints;
         protected override char Symbol => '†'; 
-        public override int NutritionalValue => _amountOfBodyPoints / 10 * 9 + 1;
+        public override int NutritionalValue => Math.Min(3, _amountOfBodyPoints / 20) * 10 + 1;
         public SnakeHeadFood(SnakeHeadPoint head, int amountOfBodyPoints) : base(head.X, head.Y, head.Color)
         {
             _amountOfBodyPoints = amountOfBodyPoints;
