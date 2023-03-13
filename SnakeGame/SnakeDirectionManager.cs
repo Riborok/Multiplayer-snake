@@ -1,50 +1,49 @@
 using System;
-using System.Collections.Generic;
 
 namespace SnakeGame
 {
     // This class manages the direction of the snakes in the game
     public class SnakeDirectionManager 
     {
-        private readonly Dictionary<ConsoleKey, Direction> _keyDirections;
-        
-        // The constructor initializes the dictionary of movement keys and directions
+        private readonly IMovementKeys _iMovementKeys;
         public SnakeDirectionManager(IMovementKeys iMovementKeys)
         {
-            _keyDirections = new Dictionary<ConsoleKey, Direction>
-            {
-                {iMovementKeys.Down, Direction.Down},
-                {iMovementKeys.Up, Direction.Up},
-                {iMovementKeys.Left, Direction.Left},
-                {iMovementKeys.Right, Direction.Right}
-            };
+            _iMovementKeys = iMovementKeys;
         }
 
-        // This method tries to change the direction of the snake 
-        // Returns true if the direction is successfully changed, otherwise return false
         public bool TryChangeDirection(Snake snake, ConsoleKey key)
         {
-            bool result = false;
-            if (_keyDirections.TryGetValue(key, out var direction) && snake.Direction != OppositeDirection(direction))
+            switch (snake.Direction)
             {
-                snake.Direction = direction;
-                result = true;
+                case Direction.Left:
+                case Direction.Right:
+                    if (key == _iMovementKeys.Down)
+                    {
+                        snake.Direction = Direction.Down; 
+                        return true;
+                    }
+                    if (key == _iMovementKeys.Up)
+                    {
+                        snake.Direction = Direction.Up; 
+                        return true;    
+                    }
+                    break;
+                case Direction.Up:
+                case Direction.Down:
+                    if (key == _iMovementKeys.Left)
+                    {
+                        snake.Direction = Direction.Left; 
+                        return true;
+                    }
+                    if (key == _iMovementKeys.Right)
+                    {
+                        snake.Direction = Direction.Right; 
+                        return true;    
+                    }
+                    break;
             }
-            return result;
+            return false;
         }
-
-        private static Direction OppositeDirection(Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Left => Direction.Right,
-                Direction.Right => Direction.Left,
-                Direction.Up => Direction.Down,
-                Direction.Down => Direction.Up,
-                _ => throw new ArgumentException("Key handling error.")
-            };
-        }
-        
     }
     
     
