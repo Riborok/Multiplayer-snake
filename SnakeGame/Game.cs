@@ -167,14 +167,12 @@ namespace SnakeGame
             await Task.Delay(5000);
         }
 
-        // Killing a snake. This method gives the _foodService a list of food from snake parts
-        // to put those parts into the food list. _snakesService will respawn this snake
+        // Killing a snake. Process the snake into food and respawn
         private static void Kill(Snake snake)
         {
-            _foodService.AddRange(new[] { new SnakeHeadFood(snake.Head) }
-                .Concat<Food>(snake.BodyPoints.Select(body => new SimpleFood(body)))); 
+            _foodService.ProcessIntoFood(snake);
             
-            _snakesService.SnakeRespawn(snake);
+            _snakesService.Respawn(snake);
         }
         
         // Handling snakes asynchronously 

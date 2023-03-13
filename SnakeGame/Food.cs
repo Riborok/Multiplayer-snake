@@ -28,10 +28,12 @@ namespace SnakeGame
 
     public class SnakeHeadFood : Food
     {
+        private readonly int _amountOfBodyPoints;
         protected override char Symbol => '†'; 
-        public override int NutritionalValue => 10;
-        public SnakeHeadFood(SnakeHeadPoint head) : base(head.X, head.Y, head.Color)
+        public override int NutritionalValue => _amountOfBodyPoints / 10 * 9 + 1;
+        public SnakeHeadFood(SnakeHeadPoint head, int amountOfBodyPoints) : base(head.X, head.Y, head.Color)
         {
+            _amountOfBodyPoints = amountOfBodyPoints;
         }
     }
 }

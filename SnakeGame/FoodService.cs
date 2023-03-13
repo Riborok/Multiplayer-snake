@@ -35,11 +35,12 @@ namespace SnakeGame
             }
         }
 
-        // Adds multiple pieces of food to the field
-        public void AddRange(IEnumerable<Food> foodList)
+        // Processing a snake into food
+        public void ProcessIntoFood(Snake snake)
         {
-            foreach (var food in foodList)
-                Add(food);
+            Add(new SnakeHeadFood(snake.Head, snake.BodyPoints.Count));
+            foreach (var snakeBodyPoint in snake.BodyPoints)
+                Add(new SimpleFood(snakeBodyPoint));
         }
 
         // Removes food from the field and checks whether new food needs to be added to maintain its quantity

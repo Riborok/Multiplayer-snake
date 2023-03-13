@@ -14,11 +14,12 @@ namespace SnakeGame
         public SnakesService(int amount, ConsoleColor[] colorsForSnakes)
         {
             _colorsForSnakes = colorsForSnakes;
-            SpawnSnakes(amount);
+            _snakeList = new List<Snake>(amount);
+            Spawn(amount);
         }
         
         // Stores the amount of snakes
-        private readonly List<Snake> _snakeList = new(3);
+        private readonly List<Snake> _snakeList;
         public IReadOnlyList<Snake> GetSnakeList => _snakeList;
 
         // This method returns all parts of all snakes
@@ -29,7 +30,7 @@ namespace SnakeGame
         }
 
         // This method respawn the snake under its id. The id corresponds to the number in the list
-        public void SnakeRespawn(Snake snake)
+        public void Respawn(Snake snake)
         {
             if (!_snakeList.Contains(snake))
                 throw new ArgumentException("The provided snake does not exist in the list of snakes.");
@@ -40,7 +41,7 @@ namespace SnakeGame
         }
         
         // Spawner in the game amount snakes
-        private void SpawnSnakes(int amount)
+        private void Spawn(int amount)
         {
             for (var i = 0; i < amount; i++)
                 _snakeList.Add(
