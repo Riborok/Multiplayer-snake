@@ -21,11 +21,5 @@ namespace SnakeGame
         {
             return (Direction)Random.Next(4);
         }
-
-        // Generates a random color from the given array
-        public static ConsoleColor GenerateColor(ConsoleColor[] colorsForSnakes)
-        {
-            return colorsForSnakes[Random.Next(colorsForSnakes.Length)];
-        }
     }
 }

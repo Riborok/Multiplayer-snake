@@ -46,9 +46,9 @@ namespace SnakeGame
         private const int ScoreToWin = 100;
         
         // Colors for background, text and border
-        private const ConsoleColor BackgroundColor = ConsoleColor.DarkGreen; 
-        private const ConsoleColor TextColor = ConsoleColor.Yellow; 
-        // private const ConsoleColor BorderColor = ConsoleColor.Red; 
+        private const ConsoleColor BackgroundColor = ConsoleColor.Black; 
+        private const ConsoleColor TextColor = ConsoleColor.Cyan; 
+        private const ConsoleColor BorderColor = ConsoleColor.DarkGray; 
         
         // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
         private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
@@ -71,7 +71,8 @@ namespace SnakeGame
         {
             // Stas, add here :) 
             ConsoleColor.White,
-            ConsoleColor.Magenta
+            ConsoleColor.DarkRed,
+            ConsoleColor.DarkYellow
         };
 
         // Creating the playing field 

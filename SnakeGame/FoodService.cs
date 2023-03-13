@@ -19,7 +19,7 @@ namespace SnakeGame
         private readonly int _foodAmount;
 
         // Generated food is always one color
-        private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Yellow;
+        private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Cyan;
 
         // Stores a list of all food on the field.
         private readonly List<Food> _foodList = new(300);
