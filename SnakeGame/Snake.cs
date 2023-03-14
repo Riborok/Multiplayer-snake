@@ -31,10 +31,10 @@ namespace SnakeGame
         public Direction Direction { get; set; }
 
         // Snake head
-        public SnakeHeadPoint Head {get;}
+        public SnakeHeadPoint Head { get; }
         
-        // Id (id number corresponds to the various lists)
-        public int Id {get;}
+        // Id (Id number corresponds to a specific color and direction manager)
+        public int Id { get; }
         
 
         public Snake((int x, int y) head, Direction direction, ConsoleColor color, int id)

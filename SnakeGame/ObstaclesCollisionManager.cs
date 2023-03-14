@@ -12,28 +12,33 @@ namespace SnakeGame
             (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple)
         {
             _snakesService = snakesService;
+            _listOfSnakesToKill = new List<Snake>(_snakesService.GetSnakeList.Count);
             _bordersTuple = bordersTuple;
         }
 
         // List of snakes to kill
-        private readonly List<Snake> _snakesToKill = new(2);
-        public IEnumerable<Snake> SnakesToKill => _snakesToKill;
+        private readonly List<Snake> _listOfSnakesToKill;
+        public IEnumerable<Snake> ListOfSnakesToKill => _listOfSnakesToKill;
+        
+        // Clear the list _listOfSnakesToKill
+        public void ClearListOfSnakesToKill()
+        {
+            _listOfSnakesToKill.Clear();
+        }
 
         // Check for collision with objects 
-        public bool IsCollisionOccured(Snake snake)
+        public bool HasCollisionOccurred(Snake snake)
         {
             bool result = false;
-            
-            // Clear the list
-            _snakesToKill.Clear();
-            
+
             // Check for collision with an obstacle or another snake (and with their parts)
             if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
-                // If the snake collided with an obstacle or another snake, roll the snake back
+                // If the snake collided with an obstacle or another snake, roll the snake back.
+                // If a snake has not been added to the list, add
                 snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
-
-                _snakesToKill.Add(snake);
+                AddIfNotContains(snake);
+                
                 result = true;
             }
 
@@ -56,17 +61,22 @@ namespace SnakeGame
             if (_snakesService.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
                  && point != snake.Head) is { } snakePart)
             {
-                // If the snakes collided head to head, kill another snake
+                // If the snakes collided head to head and was not already added to the list
                 if (snakePart is SnakeHeadPoint)
-                {
-                    _snakesToKill.Add(_snakesService.GetSnakeList.Single(
+                    AddIfNotContains(_snakesService.GetSnakeList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
-                }
-
+                
                 result = true;
             }
             
             return result;
+        }
+        
+        // Add to the list if the snake has not been added before
+        private void AddIfNotContains(Snake snake)
+        {
+            if (!_listOfSnakesToKill.Contains(snake))
+                _listOfSnakesToKill.Add(snake);
         }
         
     }

@@ -153,34 +153,41 @@ namespace SnakeGame
             SetConsoleSettings();
             
             GameCreation();
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
-            // The main game loop (the game will continue until there is at least 1 snake)
+            // The game will continue until all players have points less than ScoreToWin
             while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
-                var inputTask = HandlingKeysAsync();
+                var handlingKeysTask = HandlingKeysAsync();
                 
                 // Snake movement handling asynchronous
-                var moveTask = HandlingSnakesAsync();
+                var handlingSnakesTask = HandlingSnakesAsync();
 
                 // Wait for both tasks to complete
-                await Task.WhenAll(moveTask, inputTask, delayTask);
+                await Task.WhenAll(handlingSnakesTask, handlingKeysTask, delayTask);
+                
+                // If there are snakes to kill, kill them
+                if (_obstaclesCollisionManager.ListOfSnakesToKill.Count() != 0)
+                    KillSnakes();
             }
 
             GameOver();
             await Task.Delay(60000);
         }
 
-        // Killing a snake. Process the snake into food and respawn
-        private static void Kill(Snake snake)
+        // Killing snakes from the list: process the snake into food and respawn, then clear the list
+        private static void KillSnakes()
         {
-            _foodService.ProcessIntoFood(snake);
-            
-            _snakesService.Respawn(snake);
+            foreach (var snakeToKill in _obstaclesCollisionManager.ListOfSnakesToKill)
+            {
+                _foodService.ProcessIntoFood(snakeToKill);
+                _snakesService.Respawn(snakeToKill);
+            }
+            _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
         
         // Handling snakes asynchronously 
@@ -196,13 +203,10 @@ namespace SnakeGame
                     snake.Move();
                     
                     // Checking snake collision with obstacles
-                    if (_obstaclesCollisionManager.IsCollisionOccured(snake))
-                        foreach (var snakeToKill in _obstaclesCollisionManager.SnakesToKill)
-                            Kill(snakeToKill);
-                    
-                    // If there was no collusion with obstacles, draw the snake and check the collision with food
-                    else
+                    if (!(_obstaclesCollisionManager.HasCollisionOccurred(snake) || 
+                        _obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake)))
                     {
+                        // If there was no collusion with obstacles, draw the snake and check the collision with food
                         snake.Draw();
                         _foodCollisionManager.CollisionCheck(snake);
                     }
@@ -215,16 +219,20 @@ namespace SnakeGame
         private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_amountSnakes];  
+            var hasDirectionChanged = new bool[_snakesService.GetSnakeList.Count];  
+            
             await Task.Run(() =>
             {
                 // Processing user input
                 while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
                 {
                     var key = Console.ReadKey(true).Key;
-                    foreach (var snake in _snakesService.GetSnakeList)
-                        if (!hasDirectionChanged[snake.Id])
-                            hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
+                    for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
+                        if (!hasDirectionChanged[i])
+                        {
+                            var snake = _snakesService.GetSnakeList[i];
+                            hasDirectionChanged[i] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
+                        }
                 }
             });
         }

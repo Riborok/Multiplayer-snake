@@ -9,7 +9,7 @@ namespace SnakeGame
         {
         }
         
-        public abstract int NutritionalValue {get;}
+        public abstract int NutritionalValue { get; }
     }
     
     public class SimpleFood : Food
