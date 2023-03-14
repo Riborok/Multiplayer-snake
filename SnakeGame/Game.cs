@@ -50,7 +50,7 @@ namespace SnakeGame
         private const int AmountSimpleFood = 250;
         
         // Amount of points to win
-        private const int ScoreToWin = 100;
+        private const int ScoreToWin = 200;
         
         // Colors for background, text and border
         private const ConsoleColor BackgroundColor = ConsoleColor.Black; 
@@ -69,7 +69,7 @@ namespace SnakeGame
         private static readonly ConsoleColor[] ColorsForSnakes =
         {
             ConsoleColor.White,
-            ConsoleColor.DarkRed,
+            ConsoleColor.Magenta,
             ConsoleColor.DarkYellow
         };
         
@@ -143,8 +143,8 @@ namespace SnakeGame
             for (var i = 0; i < playerArray.Count; i++)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 - 15, Console.WindowHeight / 2 + 3 + i*2);
-                Console.Write($"{playerArray[i].Head.Color}, " +
-                              $"you are {i}! Your score: {playerArray[i].BodyPoints.Count}");
+                Console.Write(playerArray[i].Head.Color +
+                              $", you are {i}! Your score: {playerArray[i].BodyPoints.Count}");
             }
         }
 
