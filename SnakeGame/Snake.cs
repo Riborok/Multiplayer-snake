@@ -33,7 +33,7 @@ namespace SnakeGame
         // Snake head
         public SnakeHeadPoint Head {get;}
         
-        // Id (Id number corresponds to a specific color and direction manager)
+        // Id (id number corresponds to the various lists)
         public int Id {get;}
         
 

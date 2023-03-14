@@ -153,39 +153,26 @@ namespace SnakeGame
             SetConsoleSettings();
             
             GameCreation();
-            await Task.Delay(2000);
+            await Task.Delay(1000);
 
-            // The game will continue until all players have points less than ScoreToWin.
+            // The main game loop (the game will continue until there is at least 1 snake)
             while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
-                var handlingKeysTask = HandlingKeysAsync();
+                var inputTask = HandlingKeysAsync();
                 
                 // Snake movement handling asynchronous
-                var handlingSnakesTask = HandlingSnakesAsync();
+                var moveTask = HandlingSnakesAsync();
 
                 // Wait for both tasks to complete
-                await Task.WhenAll(handlingSnakesTask, handlingKeysTask, delayTask);
-                
-                // If there are no snakes on the field, wait for at least one to appear
-                if (_snakesService.GetSnakeList.Count == 0)
-                    await WaitForAppearAnySnake();
+                await Task.WhenAll(moveTask, inputTask, delayTask);
             }
 
             GameOver();
             await Task.Delay(60000);
-        }
-
-        // Waits until at least one snake joins the game, so that the game can continue.
-        // This method is used in the game loop to ensure that the game does not proceed until
-        // there is at least one active player.
-        private static async Task WaitForAppearAnySnake()
-        {
-            while (_snakesService.GetSnakeList.Count == 0)
-                await Task.Delay(100);
         }
 
         // Killing a snake. Process the snake into food and respawn
@@ -228,19 +215,16 @@ namespace SnakeGame
         private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_snakesService.GetSnakeList.Count];  
+            var hasDirectionChanged = new bool[_amountSnakes];  
             await Task.Run(() =>
             {
                 // Processing user input
                 while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
                 {
                     var key = Console.ReadKey(true).Key;
-                    for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
-                        if (!hasDirectionChanged[i])
-                        {
-                            var snake = _snakesService.GetSnakeList[i];
-                            hasDirectionChanged[i] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
-                        }
+                    foreach (var snake in _snakesService.GetSnakeList)
+                        if (!hasDirectionChanged[snake.Id])
+                            hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
                 }
             });
         }

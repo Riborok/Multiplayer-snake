@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SnakeGame
 {
@@ -30,39 +29,24 @@ namespace SnakeGame
                 (new[] { snake.Head }));
         }
 
-        // This method respawn the snake. Before adding to the list, there is a delay.
-        // This is necessary for the players to navigate the new spawn
-        public async void Respawn(Snake snake)
+        // This method respawn the snake under its id. The id corresponds to the number in the list
+        public void Respawn(Snake snake)
         {
-            await Task.Run(async () =>
-            {
+            if (!_snakeList.Contains(snake))
+                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
 
-                if (!_snakeList.Remove(snake))
-                    throw new ArgumentException("The provided snake does not exist in the list of snakes.");
-
-                var newSnake = new Snake(Game.Generator.GenerateCoordinates(),
-                    Game.Generator.GenerateDirection(), color: _colorsForSnakes[snake.Id], id: snake.Id);
-                
-                newSnake.Head.Draw();
-                
-                await Task.Delay(2000);
-
-                _snakeList.Add(newSnake);
-            });
+            _snakeList[snake.Id] =
+                new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
+                    color: _colorsForSnakes[snake.Id], id: snake.Id);
         }
         
         // Spawner in the game amount snakes
         private void Spawn(int amount)
         {
             for (var i = 0; i < amount; i++)
-            {
-                var newSnake = new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
-                    color: _colorsForSnakes[i], id: i); 
-                
-                newSnake.Head.Draw();
-                
-                _snakeList.Add(newSnake);
-            }
+                _snakeList.Add(
+                        new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
+                        color: _colorsForSnakes[i], id: i));
         }
     }
 }
