@@ -222,11 +222,9 @@ namespace SnakeGame
                 while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
                 {
                     var key = Console.ReadKey(true).Key;
-                    Parallel.ForEach(_snakesService.GetSnakeList, snake =>
-                    {
+                    foreach (var snake in _snakesService.GetSnakeList)
                         if (!hasDirectionChanged[snake.Id])
-                            hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);    
-                    });
+                            hasDirectionChanged[snake.Id] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
                 }
             });
         }
