@@ -6,8 +6,13 @@ namespace SnakeGame
     // The manager checks the collision of the snake with some object
     public class ObstaclesCollisionManager
     {
+        // A reference to the SnakesService, used to manipulate snakes
         private readonly SnakesService _snakesService;
+        
+        // Tuple with borders of the game field
         private readonly (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) _bordersTuple;
+        
+        // Constructor for the ObstaclesCollisionManager, requires a SnakesService and the field borders
         public ObstaclesCollisionManager(SnakesService snakesService, 
             (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple)
         {
@@ -44,7 +49,7 @@ namespace SnakeGame
             return result;
         }
         
-        // Check collision with obstacles 
+        // Check collision with border 
         private bool CheckCollisionWithBorder(Snake snake)
         {
             return snake.Head.X <= _bordersTuple.LeftBorder || snake.Head.X >= _bordersTuple.RightBorder || 
@@ -57,8 +62,7 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (_snakesService.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
-                 && point != snake.Head) is { } snakePart)
+            if (_snakesService.SnakesPointsDict.TryGetValue((snake.Head.X, snake.Head.Y), out var snakePart))
             {
                 // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)

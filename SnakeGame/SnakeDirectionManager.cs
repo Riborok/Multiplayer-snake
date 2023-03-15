@@ -6,6 +6,8 @@ namespace SnakeGame
     public class SnakeDirectionManager 
     {
         private readonly IMovementKeys _iMovementKeys;
+        
+        // Constructor that takes an instance of IMovementKeys to be used by the SnakeDirectionManager
         public SnakeDirectionManager(IMovementKeys iMovementKeys)
         {
             _iMovementKeys = iMovementKeys;
@@ -47,9 +49,8 @@ namespace SnakeGame
             return result;
         }
     }
-    
-    
 
+    // Interface for movement keys
     public interface IMovementKeys
     {
         ConsoleKey Right { get; }
@@ -58,6 +59,7 @@ namespace SnakeGame
         ConsoleKey Up { get; }
     }
 
+    // Struct for movement keys using arrow keys
     public struct ArrowsMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.RightArrow;
@@ -66,6 +68,7 @@ namespace SnakeGame
         public ConsoleKey Up => ConsoleKey.UpArrow;
     }
     
+    // Struct for movement keys using arrow keys
     public struct WasdMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.D;
@@ -74,6 +77,7 @@ namespace SnakeGame
         public ConsoleKey Up => ConsoleKey.W;
     }
     
+    // Struct for movement keys using arrow keys
     public struct UhjkMovementKey : IMovementKeys
     {
         public ConsoleKey Right  => ConsoleKey.K;

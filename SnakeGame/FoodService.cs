@@ -8,11 +8,15 @@ namespace SnakeGame
     {
         // When a service is created, he will spawn amount simple food.
         // Further, he always controls that there is this amount on the field
-        public FoodService(int amount)
+        public FoodService(int amount, IReadOnlyDictionary<(int x, int y), Point> snakePointsDict)
         {
             _foodAmount = amount;
+            _snakePointsDict = snakePointsDict;
             EnsureFoodQuantity();
         }
+
+        // Information about snake points to avoid spawning food in them
+        private readonly IReadOnlyDictionary<(int x, int y), Point> _snakePointsDict;
         
         // Stores the amount of food that needs to be maintained on the field
         private readonly int _foodAmount;
@@ -20,14 +24,14 @@ namespace SnakeGame
         // Generated food is always one color
         private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Cyan;
 
-        // Stores a list of all food on the field.
+        // Stores a list of all food on the field
         private readonly Dictionary<(int x, int y), Food> _foodDict = new(300);
         public IReadOnlyDictionary<(int x, int y), Food> FoodDict => _foodDict; 
 
         // Adds food to the field only if there is no other food at this position
         private void Add(Food food)
         {
-            if (!_foodDict.ContainsKey((food.X, food.Y)))
+            if (!_foodDict.ContainsKey((food.X, food.Y)) && !_snakePointsDict.ContainsKey((food.X, food.Y)))
             {
                 food.Draw();
                 _foodDict.Add((food.X, food.Y), food);

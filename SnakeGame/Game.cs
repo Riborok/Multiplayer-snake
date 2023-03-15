@@ -8,15 +8,19 @@ namespace SnakeGame
     // The main class of the game
     public static partial class Game
     {
+        // Class responsible for full screen mode
         private static class FullScreen
         {
-            // WinAPI function
+            // Class responsible for full screen mode
             [DllImport("kernel32.dll", SetLastError = true)]
             private static extern IntPtr GetConsoleWindow();
+            // WinAPI function to show or hide the window
             [DllImport("user32.dll")]
             private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-            private const int  SwMaximize = 3;
+            // Show the window
+            private const int SwMaximize = 3;
 
+            // Method to set the console window to full screen
             public static void Set()
             {
                 IntPtr handle = GetConsoleWindow();
@@ -24,18 +28,21 @@ namespace SnakeGame
                 Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);    
             }
         }
+        
+        // Method to set console settings
         private static void SetConsoleSettings()
         {
             Console.Title = "Snake Game";
         
-            // Color setting
+            // Method to set console settings
             Console.BackgroundColor = BackgroundColor;
 
-            // Console window setting
+            // Set console window to full screen
             FullScreen.Set();
 
             Console.CursorVisible = false;
             
+            // Set field borders
             _bordersTuple = 
             (
                 UpBorder: 1, 
@@ -87,13 +94,14 @@ namespace SnakeGame
         // Draws borders
         private static void MarkBorder()
         {
-            // Set the border text color
+            // Set the border color
             Console.ForegroundColor = BorderColor;
 
-            // Border drawing
+            // Set the border color
             Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.UpBorder);
             Console.Write(new string('▄', Console.BufferWidth - _bordersTuple.LeftBorder));
 
+            // Draw left and right borders
             for (var i = _bordersTuple.UpBorder + 1; i < _bordersTuple.DownBorder; i++)
             {
                 Console.SetCursorPosition(_bordersTuple.RightBorder, i);
@@ -102,6 +110,7 @@ namespace SnakeGame
                 Console.Write('█');
             }
 
+            // Draw bottom border
             Console.SetCursorPosition(_bordersTuple.LeftBorder, _bordersTuple.DownBorder);
             Console.Write(new string('▀', Console.BufferWidth - _bordersTuple.LeftBorder));
         }
@@ -109,21 +118,25 @@ namespace SnakeGame
         // Creating the playing field 
         private static void GameCreation()
         {
+            // Output message about entering the number of players
             Console.ForegroundColor = TextColor;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 23, Console.WindowHeight / 2);
             Console.Write("Enter the amount of players. Amount can be from 1 to 3");
 
-            // The user will press the keys until he presses a number from 1 to 3
+            // Waiting for the user to enter a valid number of players
             do
                 _amountSnakes = (int)Console.ReadKey(true).Key - '0';
             while (_amountSnakes is < 1 or > 3 ); 
             
+            // Clear the console and draw the game borders
             Console.Clear();
             MarkBorder();
             
-            _foodService = new FoodService(AmountSimpleFood);
+            // Creating objects for managing game entities
             _snakesService = new SnakesService(_amountSnakes, ColorsForSnakes);
+            _foodService = new FoodService(AmountSimpleFood, _snakesService.SnakesPointsDict);
 
+            // Creating objects for managing game entities
             _foodCollisionManager = new FoodCollisionManager(_foodService);
             _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService, _bordersTuple);
         }
@@ -131,15 +144,19 @@ namespace SnakeGame
         // End of game caption
         private static void GameOver()
         {
+            // Clear the console and set the text color
             Console.Clear();
             Console.ForegroundColor = TextColor;
 
+            // Output message about the end of the game
             Console.SetCursorPosition(Console.WindowWidth / 2 - 13, Console.WindowHeight / 2 - 3);
             Console.Write($"Score {ScoreToWin} has been reached");
 
+            // Sort the list of snakes by score and output the results
             var playerArray = _snakesService.GetSnakeList.OrderByDescending(snake => 
                 snake.BodyPoints.Count).ToList();
 
+            // Output the results of the game
             for (var i = 0; i < playerArray.Count; i++)
             {
                 Console.SetCursorPosition(Console.WindowWidth / 2 - 15, Console.WindowHeight / 2 + 3 + i*2);
@@ -148,6 +165,7 @@ namespace SnakeGame
             }
         }
 
+        // The main method of the game
         public static async Task Main()
         {
             SetConsoleSettings();
@@ -184,8 +202,8 @@ namespace SnakeGame
         {
             foreach (var snakeToKill in _obstaclesCollisionManager.ListOfSnakesToKill)
             {
-                _foodService.ProcessIntoFood(snakeToKill);
                 _snakesService.Respawn(snakeToKill);
+                _foodService.ProcessIntoFood(snakeToKill);
             }
             _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
@@ -212,6 +230,9 @@ namespace SnakeGame
                             snake.Draw();
                             _foodCollisionManager.CollisionCheck(snake);
                         }
+                        
+                        _snakesService.UpdateSnakePointsDict
+                            (snake.PreviousTail, snake.LastBodyPart, snake.Head);
                     }
                 }
             });

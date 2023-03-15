@@ -2,6 +2,7 @@ using System;
 
 namespace SnakeGame
 {
+    // A partial class of the main Game class, containing a static nested class for generating random values
     public static partial class Game
     {
         // A static class for generating random values
