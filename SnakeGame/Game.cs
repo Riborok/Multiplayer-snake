@@ -54,7 +54,7 @@ namespace SnakeGame
 
         // Fields storing the amount of snakes and food
         private static int _amountSnakes;
-        private const int AmountSimpleFood = 250;
+        private const int AmountSimpleFood = 400;
         
         // Amount of points to win
         private const int ScoreToWin = 200;

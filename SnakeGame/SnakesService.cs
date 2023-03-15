@@ -13,7 +13,7 @@ namespace SnakeGame
         {
             _colorsForSnakes = colorsForSnakes;
             _snakeList = new List<Snake>(amount);
-            _snakesPointsDict = new Dictionary<(int x, int y), Point>(amount * 150);
+            _snakesPointsDict = new Dictionary<(int x, int y), Point>(amount * 300);
             Spawn(amount);
         }
 

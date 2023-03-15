@@ -16,7 +16,7 @@ namespace SnakeGame
                 // Checking that randomX is in an even position
                 var randomX = Random.Next(_bordersTuple.LeftBorder + 1, _bordersTuple.RightBorder - 1);
                 return (x: randomX % 2 == 1 ? ++randomX : randomX,
-                    y: Random.Next(_bordersTuple.UpBorder + 1, _bordersTuple.DownBorder - 1));
+                    y: Random.Next(_bordersTuple.UpBorder + 1, _bordersTuple.DownBorder));
             }
 
             // Generates a random direction

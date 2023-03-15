@@ -13,6 +13,7 @@ namespace SnakeGame
             _foodAmount = amount;
             _snakePointsDict = snakePointsDict;
             EnsureFoodQuantity();
+            _foodDict = new Dictionary<(int x, int y), Food>(amount * 2);
         }
 
         // Information about snake points to avoid spawning food in them
@@ -25,7 +26,7 @@ namespace SnakeGame
         private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Cyan;
 
         // Stores a list of all food on the field
-        private readonly Dictionary<(int x, int y), Food> _foodDict = new(300);
+        private readonly Dictionary<(int x, int y), Food> _foodDict;
         public IReadOnlyDictionary<(int x, int y), Food> FoodDict => _foodDict; 
 
         // Adds food to the field only if there is no other food at this position
