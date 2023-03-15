@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SnakeGame
 {
@@ -22,16 +21,16 @@ namespace SnakeGame
         private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Cyan;
 
         // Stores a list of all food on the field.
-        private readonly List<Food> _foodList = new(300);
-        public IEnumerable<Food> GetFoodList => _foodList;
+        private readonly Dictionary<(int x, int y), Food> _foodDict = new(300);
+        public IReadOnlyDictionary<(int x, int y), Food> FoodDict => _foodDict; 
 
         // Adds food to the field only if there is no other food at this position
         private void Add(Food food)
         {
-            if (!_foodList.Any(existingFood => existingFood.IsEquals(food)))
+            if (!_foodDict.ContainsKey((food.X, food.Y)))
             {
                 food.Draw();
-                _foodList.Add(food);
+                _foodDict.Add((food.X, food.Y), food);
             }
         }
 
@@ -46,7 +45,7 @@ namespace SnakeGame
         // Removes food from the field and checks whether new food needs to be added to maintain its quantity
         public void Eaten(Food food)
         {
-            _foodList.Remove(food);
+            _foodDict.Remove((food.X, food.Y));
 
             EnsureFoodQuantity();
         }
@@ -54,7 +53,7 @@ namespace SnakeGame
         // Controls the amount of food on the field
         private void EnsureFoodQuantity()
         {
-            while (_foodList.Count < _foodAmount)
+            while (_foodDict.Count < _foodAmount)
                 Add(new SimpleFood(Game.Generator.GenerateCoordinates(), ColorForGeneratedSimpleFood));   
         }
     }

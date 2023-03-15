@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace SnakeGame
 {
     // The manager checks the collision of the snake with food
@@ -14,13 +12,11 @@ namespace SnakeGame
         // Check for collision with food
         public void CollisionCheck(Snake snake)
         {
-            if (_foodService.GetFoodList
-                    .FirstOrDefault(currFood => currFood.IsEquals(snake.Head)) is { } collidingFood)
+            if (_foodService.FoodDict.TryGetValue((snake.Head.X, snake.Head.Y), out var collidingFood))
             {
                 snake.Eat(collidingFood);
                 _foodService.Eaten(collidingFood);
             }
-            
         }
     }
 }
