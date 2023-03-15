@@ -132,11 +132,15 @@ namespace SnakeGame
             Console.Clear();
             MarkBorder();
             
-            // Creating objects for managing game entities
-            _snakesService = new SnakesService(_amountSnakes, ColorsForSnakes);
-            _foodService = new FoodService(AmountSimpleFood, _snakesService.SnakesPointsDict);
+            // Creation of services for the control of snakes and food
+            _snakesService = new SnakesService(ColorsForSnakes);
+            _foodService = new FoodService();
+            
+            // Spawn objects
+            _snakesService.Spawn(_amountSnakes);
+            _foodService.SpawnSimpleFood(AmountSimpleFood);
 
-            // Creating objects for managing game entities
+            // Creating collision control managers
             _foodCollisionManager = new FoodCollisionManager(_foodService);
             _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakesService, _bordersTuple);
         }
@@ -177,7 +181,7 @@ namespace SnakeGame
             while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(45);
+                var delayTask = Task.Delay(40);
                 
                 // Key handling asynchronous
                 var handlingKeysTask = HandlingKeysAsync();

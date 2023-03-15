@@ -8,21 +8,18 @@ namespace SnakeGame
     {
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private readonly ConsoleColor[] _colorsForSnakes;
-        // When a service is created, he will spawn amount snakes
-        public SnakesService(int amount, ConsoleColor[] colorsForSnakes)
+        
+        public SnakesService(ConsoleColor[] colorsForSnakes)
         {
             _colorsForSnakes = colorsForSnakes;
-            _snakeList = new List<Snake>(amount);
-            _snakesPointsDict = new Dictionary<(int x, int y), Point>(amount * 300);
-            Spawn(amount);
         }
 
         // Stores the amount of snakes
-        private readonly List<Snake> _snakeList;
+        private readonly List<Snake> _snakeList = new(3);
         public IReadOnlyList<Snake> GetSnakeList => _snakeList;
         
         // Stores a list snake points
-        private readonly Dictionary<(int x, int y), Point> _snakesPointsDict;
+        private readonly Dictionary<(int x, int y), Point> _snakesPointsDict = new (600);
         public IReadOnlyDictionary<(int x, int y), Point> SnakesPointsDict => _snakesPointsDict;
 
         // Updates the _snakesPointsDict dictionary with the new positions of the snake's
@@ -31,6 +28,13 @@ namespace SnakeGame
             _snakesPointsDict[(lastBodyPoint.X, lastBodyPoint.Y)] = lastBodyPoint;
             _snakesPointsDict.Remove((previousTail.X, previousTail.Y));
             _snakesPointsDict[(head.X, head.Y)] = head;
+        }
+        
+        // Spawn snakes
+        public void Spawn(int amount)
+        {
+            for (var i = 0; i < amount; i++)
+                _snakeList.Add(Create(i));
         }
         
         // This method respawn the snake under its id. The id corresponds to the number in the list
@@ -51,21 +55,20 @@ namespace SnakeGame
                 _snakesPointsDict.Remove((bodyPoint.X, bodyPoint.Y));     
             _snakesPointsDict.Remove((snake.Head.X, snake.Head.Y)); 
         }
-        
-        // Spawner in the game amount snakes
-        private void Spawn(int amount)
-        {
-            for (var i = 0; i < amount; i++)
-                _snakeList.Add(Create(i));
-        }
-        
+
         // Method to create a snake with a generated position and direction,
         // add its head to the points dictionary, and return it.
         private Snake Create(int id)
         {
-            var snake = new Snake(Game.Generator.GenerateCoordinates(), Game.Generator.GenerateDirection(),
+            // Create the new snake with the randomly generated coordinates, a random direction,
+            // a specific color, and the specified ID
+            var snake = new Snake(Game.Generator.GenerateFreeCoordinates(), Game.Generator.GenerateDirection(),
                 color: _colorsForSnakes[id], id: id);
+            
+            // Add the head of the new snake to the dictionary of snake points
             _snakesPointsDict[(snake.Head.X, snake.Head.Y)] = snake.Head;
+            
+            // Return the created snake
             return snake;
         }
     }

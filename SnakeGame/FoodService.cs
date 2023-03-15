@@ -6,60 +6,59 @@ namespace SnakeGame
     // Service working with food information 
     public class FoodService
     {
-        // When a service is created, he will spawn amount simple food.
-        // Further, he always controls that there is this amount on the field
-        public FoodService(int amount, IReadOnlyDictionary<(int x, int y), Point> snakePointsDict)
-        {
-            _foodAmount = amount;
-            _foodDict = new Dictionary<(int x, int y), Food>(_foodAmount * 2);
-            _snakePointsDict = snakePointsDict;
-            EnsureFoodQuantity();
-        }
-
-        // Information about snake points to avoid spawning food in them
-        private readonly IReadOnlyDictionary<(int x, int y), Point> _snakePointsDict;
         
         // Stores the amount of food that needs to be maintained on the field
-        private readonly int _foodAmount;
+        private int _foodAmount;
 
         // Generated food is always one color
         private const ConsoleColor ColorForGeneratedSimpleFood = ConsoleColor.Cyan;
 
         // Stores a list of all food on the field
-        private readonly Dictionary<(int x, int y), Food> _foodDict;
+        private readonly Dictionary<(int x, int y), Food> _foodDict = new(600);
         public IReadOnlyDictionary<(int x, int y), Food> FoodDict => _foodDict; 
-
-        // Adds food to the field only if there is no other food at this position
-        private void Add(Food food)
+        
+        // Spawn simple food. This amount of food will be maintained
+        public void SpawnSimpleFood(int amount)
         {
-            if (!_foodDict.ContainsKey((food.X, food.Y)) && !_snakePointsDict.ContainsKey((food.X, food.Y)))
-            {
-                food.Draw();
-                _foodDict.Add((food.X, food.Y), food);
-            }
+            for (var i = 0; i < amount; i++)
+                Add(CreateSimpleFood());   
+            
+            _foodAmount = amount;
         }
 
         // Processing a snake into food
         public void ProcessIntoFood(Snake snake)
         {
-            Add(new SnakeHeadFood(snake.Head, snake.BodyPoints.Count));
+            // Processing a body points into simple food
             foreach (var snakeBodyPoint in snake.BodyPoints)
                 Add(new SimpleFood(snakeBodyPoint));
+            
+            // Processing a head into sneak head food
+            Add(new SnakeHeadFood(snake.Head, snake.BodyPoints.Count));
         }
 
-        // Removes food from the field and checks whether new food needs to be added to maintain its quantity
+        // Removes food from the field and if the amount of food on the field is less than
+        // the initial, add new simple food
         public void Eaten(Food food)
         {
             _foodDict.Remove((food.X, food.Y));
 
-            EnsureFoodQuantity();
+            if (_foodDict.Count < _foodAmount)
+                Add(CreateSimpleFood());
+        }
+        
+        // Add food to _foodDict and draw on the field
+        private void Add(Food food)
+        {
+            _foodDict[(food.X, food.Y)] = food;
+            food.Draw();
         }
 
-        // Controls the amount of food on the field
-        private void EnsureFoodQuantity()
+        // This method creates a simple food with randomly coordinates
+        private Food CreateSimpleFood()
         {
-            while (_foodDict.Count < _foodAmount)
-                Add(new SimpleFood(Game.Generator.GenerateCoordinates(), ColorForGeneratedSimpleFood));   
+            // Return SimpleFood with the generated coordinates and a specified color
+            return new SimpleFood(Game.Generator.GenerateFreeCoordinates(), ColorForGeneratedSimpleFood);
         }
     }
     
