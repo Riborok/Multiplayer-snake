@@ -11,9 +11,9 @@ namespace SnakeGame
         public FoodService(int amount, IReadOnlyDictionary<(int x, int y), Point> snakePointsDict)
         {
             _foodAmount = amount;
+            _foodDict = new Dictionary<(int x, int y), Food>(_foodAmount * 2);
             _snakePointsDict = snakePointsDict;
             EnsureFoodQuantity();
-            _foodDict = new Dictionary<(int x, int y), Food>(amount * 2);
         }
 
         // Information about snake points to avoid spawning food in them
