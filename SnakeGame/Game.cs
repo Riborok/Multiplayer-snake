@@ -199,18 +199,20 @@ namespace SnakeGame
                 for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
                 {
                     var snake = _snakesService.GetSnakeList[i];
-                    
-                    snake.Move();
-                    
-                    // Checking snake collision with obstacles
-                    if (!(_obstaclesCollisionManager.HasCollisionOccurred(snake) || 
-                        _obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake)))
+
+                    // If the snake is not on the kill list, work with it
+                    if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
                     {
-                        // If there was no collusion with obstacles, draw the snake and check the collision with food
-                        snake.Draw();
-                        _foodCollisionManager.CollisionCheck(snake);
+                        snake.Move();
+
+                        // Checking snake collision with obstacles
+                        if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                        {
+                            // If there was no collusion with obstacles, draw the snake and check the collision with food
+                            snake.Draw();
+                            _foodCollisionManager.CollisionCheck(snake);
+                        }
                     }
-                    
                 }
             });
         }

@@ -34,10 +34,9 @@ namespace SnakeGame
             // Check for collision with an obstacle or another snake (and with their parts)
             if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
-                // If the snake collided with an obstacle or another snake, roll the snake back.
-                // If a snake has not been added to the list, add
+                // If the snake collided with an obstacle or another snake, roll the snake back and add to the list
                 snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
-                AddIfNotContains(snake);
+                _listOfSnakesToKill.Add(snake);
                 
                 result = true;
             }
@@ -61,9 +60,9 @@ namespace SnakeGame
             if (_snakesService.GetListPointsOfSnakes().FirstOrDefault(point => point.IsEquals(snake.Head)
                  && point != snake.Head) is { } snakePart)
             {
-                // If the snakes collided head to head and was not already added to the list
+                // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)
-                    AddIfNotContains(_snakesService.GetSnakeList.Single(
+                    _listOfSnakesToKill.Add(_snakesService.GetSnakeList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
                 
                 result = true;
@@ -71,13 +70,5 @@ namespace SnakeGame
             
             return result;
         }
-        
-        // Add to the list if the snake has not been added before
-        private void AddIfNotContains(Snake snake)
-        {
-            if (!_listOfSnakesToKill.Contains(snake))
-                _listOfSnakesToKill.Add(snake);
-        }
-        
     }
 }
