@@ -181,7 +181,7 @@ namespace SnakeGame
             while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(42);
+                var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
                 var handlingKeysTask = HandlingKeysAsync();
@@ -190,11 +190,14 @@ namespace SnakeGame
                 var handlingSnakesTask = HandlingSnakesAsync();
 
                 // Wait for both tasks to complete
-                await Task.WhenAll(handlingSnakesTask, handlingKeysTask, delayTask);
+                await Task.WhenAll(handlingSnakesTask, handlingKeysTask);
                 
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.ListOfSnakesToKill.Count() != 0)
                     KillSnakes();
+                
+                // Waiting for completion delay
+                await delayTask;
             }
 
             GameOver();
