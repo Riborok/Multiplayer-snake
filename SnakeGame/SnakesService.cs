@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SnakeGame
 {
     // Service working with snake information 
-    public class SnakesService : IComplexObjList<Snake> 
+    public class SnakesService : IComplexObjectList<Snake> 
     {
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private readonly ConsoleColor[] _colorsForSnakes;

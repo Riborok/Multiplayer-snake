@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SnakeGame
 {
     // Service working with food information 
-    public class FoodService : IObjDict<Food>
+    public class FoodService : IObjectDictionary<Food>
     {
 
         // Stores the amount of food that needs to be maintained on the field

@@ -4,10 +4,10 @@ namespace SnakeGame
     public class FoodCollisionManager
     {
         // A reference to the FoodService, used to manipulate food
-        private readonly IObjDict<Food> _foodDict;
+        private readonly IObjectDictionary<Food> _foodDict;
         
         // Constructor for the FoodCollisionManager, requires a FoodService
-        public FoodCollisionManager(IObjDict<Food> foodDict)
+        public FoodCollisionManager(IObjectDictionary<Food> foodDict)
         {
             _foodDict = foodDict;
         }
