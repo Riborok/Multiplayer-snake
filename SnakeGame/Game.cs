@@ -181,7 +181,7 @@ namespace SnakeGame
             while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(40);
+                var delayTask = Task.Delay(42);
                 
                 // Key handling asynchronous
                 var handlingKeysTask = HandlingKeysAsync();

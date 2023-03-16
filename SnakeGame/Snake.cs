@@ -17,9 +17,6 @@ namespace SnakeGame
         {
             // Add new points of the body and set _isDigestingFood 
             _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
-            
-            // The last part after being eaten will be the digested part
-            LastBodyPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
             _isDigestingFood = true;
         }
 
@@ -41,7 +38,7 @@ namespace SnakeGame
             Direction = direction;
             Id = id;
             
-            // Initialize Head, LastBodyPart and RemovedBodyPart
+            // Initialize Head, LastBodyPart and PreviousTail
             Head = new SnakeHeadPoint(head.x, head.y, color);
             LastBodyPart = new SnakeBodyPoint(Head);
             PreviousTail = LastBodyPart;
@@ -56,9 +53,17 @@ namespace SnakeGame
         // Movement of the snake
         public void Move()
         {
-            // Save the coordinates of the previous head
-            // If the food has been eaten, then the last body part has already been assigned
-            if (!_isDigestingFood)
+            
+            // If the food has been eaten, then the last body part is already
+            // in the list - it's the digest part (he is last on the list)
+            if (_isDigestingFood)
+            {
+                LastBodyPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+                _isDigestingFood = false;
+            }
+            
+            // If the food has not been eaten, then the last part is the head
+            else
                 LastBodyPart = new SnakeBodyPoint(Head);
 
             // Moving the head
@@ -77,9 +82,6 @@ namespace SnakeGame
                     Head.Y--;
                     break;
             }
-            
-            // Resetting the flag _isDigestingFood
-            _isDigestingFood = false;
         }
 
         // Drawing a snake 
