@@ -44,7 +44,7 @@ namespace SnakeGame
         }
 
         // Remove the snake from the list
-        public void Kill(Snake snake)
+        public void RemoveFromComplexObjList(Snake snake)
         {
             // Remove the snake from the list and verify that the provided snake is in the list
             if (!_snakeList.Remove(snake))

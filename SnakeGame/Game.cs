@@ -209,7 +209,7 @@ namespace SnakeGame
         {
             foreach (var snakeToKill in _obstaclesCollisionManager.ListOfSnakesToKill)
             {
-                _snakesService.Kill(snakeToKill);
+                _snakesService.RemoveFromComplexObjList(snakeToKill);
                 _foodService.ProcessIntoFood(snakeToKill);
                 _snakesService.SpawnSnake(snakeToKill.Id);
             }
