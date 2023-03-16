@@ -41,6 +41,8 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="FoodService.cs" />
+        <Compile Include="IComplexObjList.cs" />
+        <Compile Include="IObjDict.cs" />
         <Compile Include="ObstaclesCollisionManager.cs" />
         <Compile Include="FoodCollisionManager.cs" />
         <Compile Include="Generator.cs" />

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SnakeGame
 {
     // Service working with snake information 
-    public class SnakesService
+    public class SnakesService : IComplexObjList<Snake> 
     {
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private readonly ConsoleColor[] _colorsForSnakes;
@@ -16,11 +16,11 @@ namespace SnakeGame
 
         // Stores the amount of snakes
         private readonly List<Snake> _snakeList = new(3);
-        public IReadOnlyList<Snake> GetSnakeList => _snakeList;
+        public IReadOnlyList<Snake> ComplexObjList => _snakeList;
         
         // Stores a list snake points
         private readonly Dictionary<(int x, int y), Point> _snakesPointsDict = new (600);
-        public IReadOnlyDictionary<(int x, int y), Point> SnakesPointsDict => _snakesPointsDict;
+        public IReadOnlyDictionary<(int x, int y), Point> ObjDict => _snakesPointsDict;
 
         // Updates the _snakesPointsDict dictionary with the new positions of the snake's
         public void UpdateSnakePointsDict(SnakeBodyPoint previousTail, SnakeBodyPoint lastBodyPoint, SnakeHeadPoint head)
@@ -31,29 +31,35 @@ namespace SnakeGame
         }
         
         // Spawn snakes
-        public void Spawn(int amount)
+        public void SpawnSnakes(int amount)
         {
             for (var i = 0; i < amount; i++)
-                _snakeList.Add(Create(i));
+                SpawnSnake(i);
         }
         
-        // This method respawn the snake under its id. The id corresponds to the number in the list
-        public void Respawn(Snake snake)
+        // Spawn a snake
+        public void SpawnSnake(int id)
         {
-            if (!_snakeList.Contains(snake))
-                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
-
-            DeleteFromSnakesPointsDict(snake);
-            
-            _snakeList[snake.Id] = Create(snake.Id);
+            _snakeList.Add(Create(id));
         }
 
-        // Delete all snake points from _snakePointsDict
-        private void DeleteFromSnakesPointsDict(Snake snake)
+        // Remove the snake from the list
+        public void Kill(Snake snake)
         {
+            // Remove the snake from the list and verify that the provided snake is in the list
+            if (!_snakeList.Remove(snake))
+                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
+            
+            // Remove all of the snake's body points and head from the dictionary
             foreach (var bodyPoint in snake.BodyPoints)
-                _snakesPointsDict.Remove((bodyPoint.X, bodyPoint.Y));     
-            _snakesPointsDict.Remove((snake.Head.X, snake.Head.Y)); 
+                RemoveFromObjDict(bodyPoint);
+            RemoveFromObjDict(snake.Head);
+        }
+
+        // Remove point from the dictionary
+        public void RemoveFromObjDict(Point point)
+        {
+            _snakesPointsDict.Remove((point.X, point.Y));
         }
 
         // Method to create a snake with a generated position and direction,

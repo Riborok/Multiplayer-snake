@@ -6,18 +6,18 @@ namespace SnakeGame
     // The manager checks the collision of the snake with some object
     public class ObstaclesCollisionManager
     {
-        // A reference to the SnakesService, used to manipulate snakes
-        private readonly SnakesService _snakesService;
+        // Snakes points dictionary
+        private readonly IComplexObjList<Snake> _complexObjList;
         
         // Tuple with borders of the game field
         private readonly (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) _bordersTuple;
-        
+
         // Constructor for the ObstaclesCollisionManager, requires a SnakesService and the field borders
-        public ObstaclesCollisionManager(SnakesService snakesService, 
+        public ObstaclesCollisionManager(IComplexObjList<Snake>  complexObjList,
             (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple)
         {
-            _snakesService = snakesService;
-            _listOfSnakesToKill = new List<Snake>(_snakesService.GetSnakeList.Count);
+            _complexObjList = complexObjList;
+            _listOfSnakesToKill = new List<Snake>(_complexObjList.ObjDict.Count);
             _bordersTuple = bordersTuple;
         }
 
@@ -62,11 +62,11 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (_snakesService.SnakesPointsDict.TryGetValue((snake.Head.X, snake.Head.Y), out var snakePart))
+            if (_complexObjList.ObjDict.TryGetValue((snake.Head.X, snake.Head.Y), out var snakePart))
             {
                 // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)
-                    _listOfSnakesToKill.Add(_snakesService.GetSnakeList.Single(
+                    _listOfSnakesToKill.Add(_complexObjList.ComplexObjList.Single(
                         snakeOnTheList => snakeOnTheList.Head == snakePart));
                 
                 result = true;

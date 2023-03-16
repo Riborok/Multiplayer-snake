@@ -137,7 +137,7 @@ namespace SnakeGame
             _foodService = new FoodService();
             
             // Spawn objects
-            _snakesService.Spawn(_amountSnakes);
+            _snakesService.SpawnSnakes(_amountSnakes);
             _foodService.SpawnSimpleFood(AmountSimpleFood);
 
             // Creating collision control managers
@@ -157,7 +157,7 @@ namespace SnakeGame
             Console.Write($"Score {ScoreToWin} has been reached");
 
             // Sort the list of snakes by score and output the results
-            var playerArray = _snakesService.GetSnakeList.OrderByDescending(snake => 
+            var playerArray = _snakesService.ComplexObjList.OrderByDescending(snake => 
                 snake.BodyPoints.Count).ToList();
 
             // Output the results of the game
@@ -178,7 +178,7 @@ namespace SnakeGame
             await Task.Delay(2000);
 
             // The game will continue until all players have points less than ScoreToWin
-            while (_snakesService.GetSnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (_snakesService.ComplexObjList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -209,8 +209,9 @@ namespace SnakeGame
         {
             foreach (var snakeToKill in _obstaclesCollisionManager.ListOfSnakesToKill)
             {
-                _snakesService.Respawn(snakeToKill);
+                _snakesService.Kill(snakeToKill);
                 _foodService.ProcessIntoFood(snakeToKill);
+                _snakesService.SpawnSnake(snakeToKill.Id);
             }
             _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
@@ -221,9 +222,9 @@ namespace SnakeGame
             await Task.Run(() =>
             {
                 // Can't use foreach here, because if the snake dies will be an error
-                for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
+                for (var i = 0; i < _snakesService.ComplexObjList.Count; i++)
                 {
-                    var snake = _snakesService.GetSnakeList[i];
+                    var snake = _snakesService.ComplexObjList[i];
 
                     // If the snake is not on the kill list, work with it
                     if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
@@ -249,7 +250,7 @@ namespace SnakeGame
         private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_snakesService.GetSnakeList.Count];  
+            var hasDirectionChanged = new bool[_snakesService.ComplexObjList.Count];  
             
             await Task.Run(() =>
             {
@@ -257,10 +258,10 @@ namespace SnakeGame
                 while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
                 {
                     var key = Console.ReadKey(true).Key;
-                    for (var i = 0; i < _snakesService.GetSnakeList.Count; i++)
+                    for (var i = 0; i < _snakesService.ComplexObjList.Count; i++)
                         if (!hasDirectionChanged[i])
                         {
-                            var snake = _snakesService.GetSnakeList[i];
+                            var snake = _snakesService.ComplexObjList[i];
                             hasDirectionChanged[i] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
                         }
                 }

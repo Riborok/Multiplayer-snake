@@ -50,7 +50,7 @@ namespace SnakeGame
         }
     }
 
-    // Interface for movement keys
+    // An interface for movement keys
     public interface IMovementKeys
     {
         ConsoleKey Right { get; }

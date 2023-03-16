@@ -27,8 +27,8 @@ namespace SnakeGame
                 // Generate new coordinates until they don't overlap with existing food or snakes
                 do
                     randomCoords = GenerateCoordinates();
-                while (_foodService.FoodDict.ContainsKey(randomCoords) || 
-                       _snakesService.SnakesPointsDict.ContainsKey(randomCoords));
+                while (_foodService.ObjDict.ContainsKey(randomCoords) || 
+                       _snakesService.ObjDict.ContainsKey(randomCoords));
                 
                 return randomCoords;
             }
