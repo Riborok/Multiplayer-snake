@@ -14,21 +14,20 @@ namespace SnakeGame
             private static (int x, int y) GenerateCoordinates()
             {
                 // Checking that randomX is in an even position
-                var randomX = Random.Next(_bordersTuple.LeftBorder + 1, _bordersTuple.RightBorder - 1);
+                var randomX = Random.Next(_canvas.BordersTuple.LeftBorder + 1, _canvas.BordersTuple.RightBorder - 1);
                 return (x: randomX % 2 == 1 ? ++randomX : randomX,
-                    y: Random.Next(_bordersTuple.UpBorder + 1, _bordersTuple.DownBorder));
+                    y: Random.Next(_canvas.BordersTuple.UpBorder + 1, _canvas.BordersTuple.DownBorder));
             }
 
             // Generates random coordinates that do not overlap with existing food or snakes
             public static (int x, int y) GenerateFreeCoordinates()
             {
-                (int, int) randomCoords;
+                (int x, int y) randomCoords;
                 
                 // Generate new coordinates until they don't overlap with existing food or snakes
                 do
                     randomCoords = GenerateCoordinates();
-                while (_foodService.ObjDict.ContainsKey(randomCoords) || 
-                       _snakesService.ObjDict.ContainsKey(randomCoords));
+                while (_canvas.GetMap[randomCoords.x, randomCoords.y] != null);
                 
                 return randomCoords;
             }

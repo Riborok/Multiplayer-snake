@@ -1,5 +1,3 @@
-using System;
-
 namespace SnakeGame
 {
     // Class for a point on the game field
@@ -10,10 +8,12 @@ namespace SnakeGame
         public int Y { get; set; }
 
         // Symbol for drawing the point and its color
-        protected abstract char Symbol { get; }
-        public ConsoleColor Color { get; }
+        public abstract char Symbol { get; }
+        
+        // Point color on the canvas
+        public Color Color { get; }
              
-        protected Point(int x, int y, ConsoleColor color)
+        protected Point(int x, int y, Color color)
         {
             X = x;
             Y = y;
@@ -27,19 +27,5 @@ namespace SnakeGame
             Y = other.Y;
         }
         
-        // Draw the point on the console
-        public void Draw()
-        {
-            Console.ForegroundColor = Color;
-            Console.SetCursorPosition(X, Y);
-            Console.Write(Symbol);
-        }
-
-        // Remove the point from the console
-        public void Remove()
-        {
-            Console.SetCursorPosition(X, Y);
-            Console.Write(" ");
-        }
     }
 }

@@ -1,13 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SnakeGame
 {
-    public class SnakeBodyPoint : Point
+    // This class represents a part of the snake body
+    public abstract class SnakePart : Point
+    {
+        protected SnakePart(int x, int y, Color color) : base(x, y, color)
+        {
+        }
+    }
+    
+    public class SnakeBodyPoint : SnakePart
     {
         // Symbol used to represent the SnakeBodyPoint
-        protected override char Symbol => '■';
+        public override char Symbol => '■';
         public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.X, snakeHeadPoint.Y, 
             snakeHeadPoint.Color)
         {
@@ -20,7 +27,7 @@ namespace SnakeGame
     public class DigestibleBody : SnakeBodyPoint
     {
         // Symbol used to represent the DigestibleBody
-        protected override char Symbol => '█';
+        public override char Symbol => '█';
         private DigestibleBody(Food food) : base(food)
         {
         }
@@ -32,11 +39,11 @@ namespace SnakeGame
         }
     }
     
-    public class SnakeHeadPoint : Point
+    public class SnakeHeadPoint : SnakePart
     {
         // Symbol used to represent the SnakeHeadPoint
-        protected override char Symbol => '☻';
-        public SnakeHeadPoint(int x, int y, ConsoleColor color) : base(x, y, color)
+        public override char Symbol => '☻';
+        public SnakeHeadPoint(int x, int y, Color color) : base(x, y, color)
         {
         }
     }

@@ -40,16 +40,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="FoodService.cs" />
-        <Compile Include="IComplexObjectList.cs" />
-        <Compile Include="IObjectDictionary.cs" />
+        <Compile Include="Canvas.cs" />
+        <Compile Include="Color.cs" />
+        <Compile Include="FullScreen.cs" />
+        <Compile Include="IColorRecycle.cs" />
+        <Compile Include="IFoodService.cs" />
         <Compile Include="ObstaclesCollisionManager.cs" />
         <Compile Include="FoodCollisionManager.cs" />
         <Compile Include="Generator.cs" />
         <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
-        <Compile Include="SnakesService.cs" />
+        <Compile Include="ISnakeService.cs" />
         <Compile Include="Point.cs" />
         <Compile Include="Game.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

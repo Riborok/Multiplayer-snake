@@ -6,19 +6,17 @@ namespace SnakeGame
     // The manager checks the collision of the snake with some object
     public class ObstaclesCollisionManager
     {
-        // Snakes points dictionary
-        private readonly IComplexObjectList<Snake> _complexObjectList;
-        
-        // Tuple with borders of the game field
-        private readonly (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) _bordersTuple;
+        // Store the map to check for collisions
+        private readonly IPointMap _pointMap;
 
-        // Constructor for the ObstaclesCollisionManager, requires a SnakesService and the field borders
-        public ObstaclesCollisionManager(IComplexObjectList<Snake>  complexObjectList,
-            (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple)
+        // List of snakes on the map
+        private readonly IEnumerable<Snake> _snakes;
+        
+        public ObstaclesCollisionManager(IEnumerable<Snake> snakes, IPointMap pointMap)
         {
-            _complexObjectList = complexObjectList;
-            _listOfSnakesToKill = new List<Snake>(_complexObjectList.ObjDict.Count);
-            _bordersTuple = bordersTuple;
+            _snakes = snakes;
+            _pointMap = pointMap;
+            _listOfSnakesToKill = new List<Snake>(_snakes.Count());
         }
 
         // List of snakes to kill
@@ -39,7 +37,8 @@ namespace SnakeGame
             // Check for collision with an obstacle or another snake (and with their parts)
             if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
-                // If the snake collided with an obstacle or another snake, roll the snake back and add to the list
+                // If the snake collided with an obstacle or another snake,
+                // roll back the snake head and add to the list
                 snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
                 _listOfSnakesToKill.Add(snake);
                 
@@ -52,8 +51,10 @@ namespace SnakeGame
         // Check collision with border 
         private bool CheckCollisionWithBorder(Snake snake)
         {
-            return snake.Head.X <= _bordersTuple.LeftBorder || snake.Head.X >= _bordersTuple.RightBorder || 
-                   snake.Head.Y <= _bordersTuple.UpBorder || snake.Head.Y >= _bordersTuple.DownBorder;
+            return snake.Head.X <= _pointMap.BordersTuple.LeftBorder || 
+                   snake.Head.X >= _pointMap.BordersTuple.RightBorder || 
+                   snake.Head.Y <= _pointMap.BordersTuple.UpBorder || 
+                   snake.Head.Y >= _pointMap.BordersTuple.DownBorder;
         }
         
         // Check collision with parts of snakes
@@ -61,17 +62,16 @@ namespace SnakeGame
         {
             bool result = false;
             
-            // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (_complexObjectList.ObjDict.TryGetValue((snake.Head.X, snake.Head.Y), out var snakePart))
+            // Checking for collisions with other parts of the snakes and own parts
+            if (_pointMap.GetMap[snake.Head.X, snake.Head.Y] is SnakePart collidingFood)
             {
                 // If the snakes collided head to head, add to the list
-                if (snakePart is SnakeHeadPoint)
-                    _listOfSnakesToKill.Add(_complexObjectList.ComplexObjList.Single(
-                        snakeOnTheList => snakeOnTheList.Head == snakePart));
+                if (_pointMap.GetMap[snake.Head.X, snake.Head.Y] is SnakeHeadFood)
+                    _listOfSnakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == collidingFood));
                 
                 result = true;
             }
-            
+
             return result;
         }
     }

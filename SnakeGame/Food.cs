@@ -5,7 +5,7 @@ namespace SnakeGame
     // Abstract class for food
     public abstract class Food : Point
     {
-        protected Food(int x, int y, ConsoleColor color) : base(x, y, color)
+        protected Food(int x, int y, Color color) : base(x, y, color)
         {
         }
         
@@ -17,12 +17,12 @@ namespace SnakeGame
     public class SimpleFood : Food
     {
         // Symbol used to represent the SimpleFood
-        protected override char Symbol => '☼';   
+        public override char Symbol => '☼';   
         
         // Nutritional value of simple food
         public override int NutritionalValue => 1;
         
-        public SimpleFood((int x, int y) randomCoord, ConsoleColor color) : base(randomCoord.x, randomCoord.y, color)
+        public SimpleFood((int x, int y) randomCoord, Color color) : base(randomCoord.x, randomCoord.y, color)
         {
         }
         
@@ -38,7 +38,7 @@ namespace SnakeGame
         private readonly int _amountOfBodyPoints;
         
         // Symbol used to represent the SnakeHeadFood
-        protected override char Symbol => '†'; 
+        public override char Symbol => '†'; 
         
         // Nutritional value of snake head food
         public override int NutritionalValue => Math.Min(3, _amountOfBodyPoints / 20) * 10 + 1;

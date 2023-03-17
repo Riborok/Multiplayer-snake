@@ -1,25 +1,29 @@
 namespace SnakeGame
 {
-    // The manager checks the collision of the snake with food
+    // This class manages collisions between the snake's head and food objects on the canvas
     public class FoodCollisionManager
     {
-        // A reference to the FoodService, used to manipulate food
-        private readonly IObjectDictionary<Food> _foodDict;
+        // Store the map to check for collisions
+        private readonly IPointMap _pointMap;
+
+        // Service for managing food objects
+        private readonly IFoodService _foodService;
         
-        // Constructor for the FoodCollisionManager, requires a FoodService
-        public FoodCollisionManager(IObjectDictionary<Food> foodDict)
+        public FoodCollisionManager(IFoodService foodService, IPointMap pointMap)
         {
-            _foodDict = foodDict;
+            _foodService = foodService;
+            _pointMap = pointMap;
         }
         
-        // Check for collision with food
+        // Checks for collisions between the snake's head and food
         public void CollisionCheck(Snake snake)
         {
-            if (_foodDict.ObjDict.TryGetValue((snake.Head.X, snake.Head.Y), out var collidingFood))
+            // If a collision occurs, the snake eats the food and the food is removed
+            if (_pointMap.GetMap[snake.Head.X, snake.Head.Y] is Food collidingFood)
             {
-                // Make the snake eat the food and remove it from the FoodService
+                // Make the snake eat the food and remove it from the Map
                 snake.Eat(collidingFood);
-                _foodDict.RemoveFromObjDict(collidingFood);
+                _foodService.Remove(collidingFood);
             }
         }
     }
