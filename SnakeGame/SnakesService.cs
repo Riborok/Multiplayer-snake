@@ -25,9 +25,9 @@ namespace SnakeGame
         // Updates the _snakesPointsDict dictionary with the new positions of the snake's
         public void UpdateSnakePointsDict(SnakeBodyPoint previousTail, SnakeBodyPoint lastBodyPoint, SnakeHeadPoint head)
         {
-            _snakesPointsDict[lastBodyPoint.Coords] = lastBodyPoint;
-            _snakesPointsDict.Remove(previousTail.Coords);
-            _snakesPointsDict[head.Coords] = head;
+            _snakesPointsDict[(lastBodyPoint.X, lastBodyPoint.Y)] = lastBodyPoint;
+            _snakesPointsDict.Remove((previousTail.X, previousTail.Y));
+            _snakesPointsDict[(head.X, head.Y)] = head;
         }
         
         // Spawn snakes
@@ -59,7 +59,7 @@ namespace SnakeGame
         // Remove point from the dictionary
         public void RemoveFromObjDict(Point point)
         {
-            _snakesPointsDict.Remove(point.Coords);
+            _snakesPointsDict.Remove((point.X, point.Y));
         }
 
         // Method to create a snake with a generated position and direction,
@@ -72,7 +72,7 @@ namespace SnakeGame
                 color: _colorsForSnakes[id], id: id);
             
             // Add the head of the new snake to the dictionary of snake points
-            _snakesPointsDict[snake.Head.Coords] = snake.Head;
+            _snakesPointsDict[(snake.Head.X, snake.Head.Y)] = snake.Head;
             
             // Return the created snake
             return snake;

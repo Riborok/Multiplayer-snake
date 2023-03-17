@@ -41,7 +41,7 @@ namespace SnakeGame
         // the initial, add new simple food
         public void RemoveFromObjDict(Food food)
         {
-            _foodDict.Remove(food.Coords);
+            _foodDict.Remove((food.X, food.Y));
 
             if (_foodDict.Count < _foodAmount)
                 Add(CreateSimpleFood());
@@ -50,7 +50,7 @@ namespace SnakeGame
         // Add food to _foodDict and draw on the field
         private void Add(Food food)
         {
-            _foodDict[food.Coords] = food;
+            _foodDict[(food.X, food.Y)] = food;
             food.Draw();
         }
 

@@ -32,14 +32,14 @@ namespace SnakeGame
         // Id (Id number corresponds to a specific color and direction manager)
         public int Id { get; }
         
-        public Snake((int x, int y) headCoords, Direction direction, ConsoleColor color, int id)
+        public Snake((int x, int y) head, Direction direction, ConsoleColor color, int id)
         {
             // Set Id and Direction
             Direction = direction;
             Id = id;
             
             // Initialize Head, LastBodyPart and PreviousTail
-            Head = new SnakeHeadPoint(headCoords, color);
+            Head = new SnakeHeadPoint(head.x, head.y, color);
             LastBodyPart = new SnakeBodyPoint(Head);
             PreviousTail = LastBodyPart;
         }
@@ -70,16 +70,16 @@ namespace SnakeGame
             switch (Direction)
             {
                 case Direction.Right:
-                    Head.Coords = (Head.Coords.x + 2, Head.Coords.y);
+                    Head.X += 2;
                     break;
                 case Direction.Down:
-                    Head.Coords = (Head.Coords.x, Head.Coords.y + 1);
+                    Head.Y++;
                     break;
                 case Direction.Left:
-                    Head.Coords = (Head.Coords.x - 2, Head.Coords.y);
+                    Head.X -= 2;
                     break;
                 case Direction.Up:
-                    Head.Coords = (Head.Coords.x, Head.Coords.y - 1);
+                    Head.Y--;
                     break;
             }
         }

@@ -15,7 +15,7 @@ namespace SnakeGame
         // Check for collision with food
         public void CollisionCheck(Snake snake)
         {
-            if (_foodDict.ObjDict.TryGetValue(snake.Head.Coords, out var collidingFood))
+            if (_foodDict.ObjDict.TryGetValue((snake.Head.X, snake.Head.Y), out var collidingFood))
             {
                 // Make the snake eat the food and remove it from the FoodService
                 snake.Eat(collidingFood);
