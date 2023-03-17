@@ -1,24 +1,27 @@
 namespace SnakeGame
 {
-    // Interface for managing food in the game
-    public interface IFoodService
+    // Interface for adding and removing food on the playing field
+    public interface IFoodAddRemove
     {
-        // Spawn a specified amount of food on the canvas
-        void SpawnFood(int amount);
-        
-        // Processe the snake's body and head into food
-        void ProcessIntoFood(Snake snake);
-        
         // Remove food from the game canvas
         void Remove(Food food);
-        
+    
         // Add food to the game canvas
         void Add(Food food);
     }
     
-    
+    // Creating food and turning a snake into food
+    public interface IFoodProcessSpawn
+    {
+        // Spawn a specified amount of food on the canvas
+        void SpawnFood(int amount);
+        
+        // Processes the snake's body and head into food
+        void ProcessIntoFood(Snake snake);
+    }
+
     // Service working with food
-    public class FoodService : IFoodService
+    public class FoodService : IFoodProcessSpawn, IFoodAddRemove
     {
 
         // The amount of food that needs to be maintained on the canvas

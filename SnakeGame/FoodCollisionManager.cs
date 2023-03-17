@@ -7,9 +7,9 @@ namespace SnakeGame
         private readonly IPointMap _pointMap;
 
         // Service for managing food objects
-        private readonly IFoodService _foodService;
+        private readonly IFoodAddRemove _foodService;
         
-        public FoodCollisionManager(IFoodService foodService, IPointMap pointMap)
+        public FoodCollisionManager(IFoodAddRemove foodService, IPointMap pointMap)
         {
             _foodService = foodService;
             _pointMap = pointMap;

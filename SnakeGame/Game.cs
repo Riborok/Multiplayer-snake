@@ -43,7 +43,7 @@ namespace SnakeGame
         private static ObstaclesCollisionManager _obstaclesCollisionManager;
         
         // Services are responsible for the correct drawing and storage of points on the canvas
-        private static IFoodService _foodService;
+        private static IFoodProcessSpawn _foodService;
         private static SnakeService _snakeService;
 
         // Creating the playing field 
@@ -84,7 +84,7 @@ namespace SnakeGame
             _foodService.SpawnFood(AmountSimpleFood);
 
             // Creating collision control managers
-            _foodCollisionManager = new FoodCollisionManager(_foodService, _canvas);
+            _foodCollisionManager = new FoodCollisionManager((IFoodAddRemove)_foodService, _canvas);
             _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeService.SnakeList, _canvas);
         }
 
