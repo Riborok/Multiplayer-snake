@@ -8,11 +8,10 @@ namespace SnakeGame
     {
         // Symbol used to represent the SnakeBodyPoint
         protected override char Symbol => '■';
-        public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.X, snakeHeadPoint.Y, 
-            snakeHeadPoint.Color)
+        public SnakeBodyPoint(SnakeHeadPoint snakeHeadPoint) : base(snakeHeadPoint.Coords, snakeHeadPoint.Color)
         {
         }
-        protected SnakeBodyPoint(Food food) : base(food.X, food.Y, food.Color)
+        protected SnakeBodyPoint(Food food) : base(food.Coords, food.Color)
         {
         }
     }
@@ -36,7 +35,7 @@ namespace SnakeGame
     {
         // Symbol used to represent the SnakeHeadPoint
         protected override char Symbol => '☻';
-        public SnakeHeadPoint(int x, int y, ConsoleColor color) : base(x, y, color)
+        public SnakeHeadPoint((int x, int y) coords, ConsoleColor color) : base(coords, color)
         {
         }
     }

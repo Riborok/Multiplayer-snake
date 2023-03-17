@@ -52,8 +52,10 @@ namespace SnakeGame
         // Check collision with border 
         private bool CheckCollisionWithBorder(Snake snake)
         {
-            return snake.Head.X <= _bordersTuple.LeftBorder || snake.Head.X >= _bordersTuple.RightBorder || 
-                   snake.Head.Y <= _bordersTuple.UpBorder || snake.Head.Y >= _bordersTuple.DownBorder;
+            return snake.Head.Coords.x <= _bordersTuple.LeftBorder || 
+                   snake.Head.Coords.x >= _bordersTuple.RightBorder || 
+                   snake.Head.Coords.y <= _bordersTuple.UpBorder ||
+                   snake.Head.Coords.y >= _bordersTuple.DownBorder;
         }
         
         // Check collision with parts of snakes
@@ -62,7 +64,7 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts (except head)    
-            if (_complexObjectList.ObjDict.TryGetValue((snake.Head.X, snake.Head.Y), out var snakePart))
+            if (_complexObjectList.ObjDict.TryGetValue(snake.Head.Coords, out var snakePart))
             {
                 // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)
