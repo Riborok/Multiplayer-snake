@@ -6,16 +6,16 @@ namespace SnakeGame;
 public interface IPointMap
 {
     // 2D array of points
-    Point[,] GetMap { get; }
+    IPoint[,] GetMap { get; }
     
     // Tuple with the borders of the map
     (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BordersTuple { get; }
     
     // Add a point to the map
-    void AddToMap(Point point);
+    void AddToMap(IPoint point);
     
     // Remove a point from the map
-    void RemoveFromMap(Point point);
+    void RemoveFromMap(IPoint point);
 }
 
 // This is an interface for a canvas that implements IPointMap
@@ -25,10 +25,10 @@ public interface ICanvas : IPointMap
     void SetBackgroundColor(Color color);
     
     // Draw a point on the canvas
-    void DrawPoint(Point point);
+    void DrawPoint(IPoint point);
     
     // Clear a point from the canvas
-    void ClearPoint(Point point);
+    void ClearPoint(IPoint point);
     
     // Write a message on the canvas
     void WriteMessage(int x, int y, Color color, string line);
@@ -47,7 +47,7 @@ public sealed class ConsoleCanvas : ICanvas
     private readonly IColorRecycle<ConsoleColor> _recycler;
     
     // 2D array of points that represents the canvas
-    public Point[,] GetMap { get; }
+    public IPoint[,] GetMap { get; }
     
     // Borders of the canvas
     public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BordersTuple { get; }
@@ -56,7 +56,7 @@ public sealed class ConsoleCanvas : ICanvas
         IColorRecycle<ConsoleColor> recycler)
     {
         BordersTuple = bordersTuple;
-        GetMap = new Point[BordersTuple.RightBorder, BordersTuple.DownBorder];
+        GetMap = new IPoint[BordersTuple.RightBorder, BordersTuple.DownBorder];
         _recycler = recycler;
         SetConsoleSettings();
     }
@@ -68,19 +68,19 @@ public sealed class ConsoleCanvas : ICanvas
     }
     
     // Add a point to the map
-    public void AddToMap(Point point)
+    public void AddToMap(IPoint point)
     {
         GetMap[point.X, point.Y] = point;
     }
 
     // Remove a point from the map
-    public void RemoveFromMap(Point point)
+    public void RemoveFromMap(IPoint point)
     {
         GetMap[point.X, point.Y] = null;
     }
 
     // Write a point to the console
-    public void DrawPoint(Point point)
+    public void DrawPoint(IPoint point)
     {
         Console.SetCursorPosition(point.X, point.Y);
         Console.ForegroundColor = _recycler.Get(point.Color);
@@ -88,7 +88,7 @@ public sealed class ConsoleCanvas : ICanvas
     }
     
     // Write a blank space to the console
-    public void ClearPoint(Point point)
+    public void ClearPoint(IPoint point)
     {
         Console.SetCursorPosition(point.X, point.Y);
         Console.Write(' ');

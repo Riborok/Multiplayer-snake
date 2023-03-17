@@ -39,7 +39,8 @@ namespace SnakeGame
             {
                 // If the snake collided with an obstacle or another snake,
                 // roll back the snake head and add to the list
-                snake.Head.CopyCoordinatesFrom(snake.LastBodyPart);
+                snake.Head.X = snake.LastBodyPart.X;
+                snake.Head.Y = snake.LastBodyPart.Y;
                 _listOfSnakesToKill.Add(snake);
                 
                 result = true;

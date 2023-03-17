@@ -3,10 +3,18 @@ using System;
 namespace SnakeGame
 {
     // Abstract class for food
-    public abstract class Food : Point
+    public abstract class Food : IPoint
     {
-        protected Food(int x, int y, Color color) : base(x, y, color)
+        public int X { get; set; }
+        public int Y { get; set; }
+        public abstract char Symbol { get; }
+        public Color Color { get; }
+        
+        protected Food(int x, int y, Color color)
         {
+            X = x;
+            Y = y;
+            Color = color;
         }
         
         // The nutritional value of the food

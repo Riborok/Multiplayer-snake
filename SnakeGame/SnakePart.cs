@@ -4,10 +4,17 @@ using System.Linq;
 namespace SnakeGame
 {
     // This class represents a part of the snake body
-    public abstract class SnakePart : Point
+    public abstract class SnakePart : IPoint
     {
-        protected SnakePart(int x, int y, Color color) : base(x, y, color)
+        public int X { get; set; }
+        public int Y { get; set; }
+        public abstract char Symbol { get; }
+        public Color Color { get; }
+        protected SnakePart(int x, int y, Color color)
         {
+            X = x;
+            Y = y;
+            Color = color;
         }
     }
     
