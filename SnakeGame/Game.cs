@@ -33,7 +33,7 @@ namespace SnakeGame
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private static readonly Color[] ColorsForSnakes =
         {
-            Color.White,
+            Color.DarkBlue,
             Color.Magenta,
             Color.DarkYellow
         };
