@@ -1,12 +1,18 @@
 namespace SnakeGame
 {
-    // This class manages collisions between the snake's head and food objects on the canvas
-    public class FoodCollisionManager
+    // Interface for checking collisions between snake and food
+    public interface IFoodCollisionManager
+    {
+        void CollisionCheck(Snake snake);
+    }
+    
+    // This class manages collisions between the snake's head and food on the canvas
+    public class FoodCollisionManager : IFoodCollisionManager
     {
         // Store the map to check for collisions
         private readonly IPointMap _pointMap;
 
-        // Service for managing food objects
+        // Service for managing food
         private readonly IFoodAddRemove _foodService;
         
         public FoodCollisionManager(IFoodAddRemove foodService, IPointMap pointMap)

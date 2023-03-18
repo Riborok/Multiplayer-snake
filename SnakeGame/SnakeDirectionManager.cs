@@ -5,41 +5,47 @@ namespace SnakeGame
     // This is an abstract base class for managing the direction of the snake in the game
     public abstract class SnakeDirectionManager<TKey>
     {
-        // It has a protected field MovementKeys, which holds an instance of IMovementKeys interface
-        protected readonly IMovementKeys MovementKeys;
-
-        protected SnakeDirectionManager(IMovementKeys iMovementKeys)
-        {
-            MovementKeys = iMovementKeys;
-        }
         
         // This is an abstract method to change the direction of the snake
         // Returns true if the direction was changed, else returns false
-        public abstract bool TryChangeDirection(Snake snake, TKey key);
+        public abstract bool TryChangeDirection(Snake snake, IMovementKeys movementKeys, TKey key);
+
+        // Read the key
+        public abstract TKey ReadKey();
+
+        // Determines if the key is pressed
+        public abstract bool IsKeyPress();
     }
 
     // This class manages the direction of the snakes in the game
     public class SnakeDirectionManagerForConsole : SnakeDirectionManager<ConsoleKey>
     {
-        // Constructor that takes an instance of IMovementKeys to be used by the SnakeDirectionManager
-        public SnakeDirectionManagerForConsole(IMovementKeys iMovementKeys) : base(iMovementKeys)
+        // Read the console key
+        public override ConsoleKey ReadKey()
         {
+            return Console.ReadKey(true).Key;
+        }
+        
+        // Determines if the console key is pressed
+        public override bool IsKeyPress()
+        {
+            return Console.KeyAvailable;
         }
 
         // Trying to change direction. Returns true if it succeeded, else returns false
-        public override bool TryChangeDirection(Snake snake, ConsoleKey key)
+        public override bool TryChangeDirection(Snake snake, IMovementKeys movementKeys, ConsoleKey key)
         {
             bool result = false;
             switch (snake.Direction)
             {
                 case Direction.Left:
                 case Direction.Right:
-                    if (key == MovementKeys.Down)
+                    if (key == movementKeys.Down)
                     {
                         snake.Direction = Direction.Down; 
                         result = true;
                     }
-                    else if (key == MovementKeys.Up)
+                    else if (key == movementKeys.Up)
                     {
                         snake.Direction = Direction.Up; 
                         result = true;    
@@ -47,12 +53,12 @@ namespace SnakeGame
                     break;
                 case Direction.Up:
                 case Direction.Down:
-                    if (key == MovementKeys.Left)
+                    if (key == movementKeys.Left)
                     {
                         snake.Direction = Direction.Left; 
                         result = true;
                     }
-                    else if (key == MovementKeys.Right)
+                    else if (key == movementKeys.Right)
                     {
                         snake.Direction = Direction.Right; 
                         result = true;    

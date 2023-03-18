@@ -42,14 +42,14 @@ namespace SnakeGame
 
     // This interface combines the functionality of IPointMap and ICanvas,
     // allowing for the manipulation and display of a 2D map of points on a canvas. 
-    public interface IPointMapCanvas : IPointMap, ICanvas
+    public interface IMapCanvas : IPointMap, ICanvas
     {
         // Draw a borders
         void MarkWalls(Color color);
     }
 
     // This is a concrete implementation of ICanvas that draws on the console
-    public sealed class ConsoleCanvas : IPointMapCanvas
+    public sealed class ConsoleCanvas : IMapCanvas
     {
         // Recycle colors
         private readonly IColorRecycle<ConsoleColor> _recycler;

@@ -8,7 +8,7 @@ namespace SnakeGame
     public static partial class Game
     {
         // Canvas for the game
-        private static IPointMapCanvas _canvas;
+        private static IMapCanvas _canvas;
 
         // Fields storing the amount of snakes and food
         private static int _amountSnakes;
@@ -20,14 +20,17 @@ namespace SnakeGame
         // Colors for background, text and border
         private const Color BackgroundColor = Color.Black; 
         private const Color TextColor = Color.Cyan; 
-        private const Color BorderColor = Color.DarkGray; 
-        
-        // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
-        private static readonly SnakeDirectionManager<ConsoleKey>[] SnakeDirectionManagers =
+        private const Color BorderColor = Color.DarkGray;
+
+        // Manager is responsible for changing the direction of the snakes
+        private static SnakeDirectionManager<ConsoleKey> _snakeDirectionManagers;
+
+        // Array of movement keys. The number in the array corresponds to the id of the snake
+        private static readonly IMovementKeys[] MovementKeys =
         {
-            new SnakeDirectionManagerForConsole (new ArrowsMovementKey()),
-            new SnakeDirectionManagerForConsole (new WasdMovementKey()),
-            new SnakeDirectionManagerForConsole (new UhjkMovementKey())
+            new ArrowsMovementKey(),
+            new WasdMovementKey(),
+            new UhjkMovementKey()
         };
         
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
@@ -39,8 +42,8 @@ namespace SnakeGame
         };
         
         // Managers are responsible for collisions with obstacles and food
-        private static FoodCollisionManager _foodCollisionManager;
-        private static ObstaclesCollisionManager _obstaclesCollisionManager;
+        private static IFoodCollisionManager _foodCollisionManager;
+        private static IObstaclesCollisionManager _obstaclesCollisionManager;
         
         // Services are responsible for the correct drawing and storage of points on the canvas
         private static IFoodProcessSpawn _foodService;
@@ -66,10 +69,13 @@ namespace SnakeGame
                 TextColor,
                 "Enter the amount of players. Amount can be from 1 to 3"
             );
+            
+            // Creating manager for changing the direction of the snakes
+            _snakeDirectionManagers = new SnakeDirectionManagerForConsole();
 
             // Waiting for the user to enter a valid number of players
             do
-                _amountSnakes = (int)Console.ReadKey(true).Key - '0';
+                _amountSnakes = (int)_snakeDirectionManagers.ReadKey() - '0';
             while (_amountSnakes is < 1 or > 3 ); 
             
             // Clear the canvas and draw the game borders
@@ -198,14 +204,15 @@ namespace SnakeGame
             await Task.Run(() =>
             {
                 // Processing user input
-                while (Console.KeyAvailable)
+                while (_snakeDirectionManagers.IsKeyPress())
                 {
-                    var key = Console.ReadKey(true).Key;
+                    var key = _snakeDirectionManagers.ReadKey();
                     for (var i = 0; i < _snakeService.SnakeList.Count; i++)
                         if (!hasDirectionChanged[i])
                         {
                             var snake = _snakeService.SnakeList[i];
-                            hasDirectionChanged[i] = SnakeDirectionManagers[snake.Id].TryChangeDirection(snake, key);
+                            hasDirectionChanged[i] = _snakeDirectionManagers
+                                .TryChangeDirection(snake, MovementKeys[snake.Id], key);
                         }
                 }
             });

@@ -3,8 +3,22 @@ using System.Linq;
 
 namespace SnakeGame
 {
+    // Interface for checking collisions between snake and obstacles
+    public interface IObstaclesCollisionManager
+    {
+        // Get the list of snakes that collided with obstacles and should be killed
+        IEnumerable<Snake> ListOfSnakesToKill { get; }
+
+        // Clears the list of snakes that collided and should be killed
+        void ClearListOfSnakesToKill();
+
+        // Checks if a collision occurred for the given snake and handles it
+        // returns true if a collision occurred, false otherwise. Also generates a kill list
+        bool HasCollisionOccurred(Snake snake);
+    }
+    
     // The manager checks the collision of the snake with some object
-    public class ObstaclesCollisionManager
+    public class ObstaclesCollisionManager : IObstaclesCollisionManager
     {
         // Store the map to check for collisions
         private readonly IPointMap _pointMap;

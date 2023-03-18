@@ -40,13 +40,13 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Canvas.cs" />
+        <Compile Include="IMapCanvas.cs" />
         <Compile Include="Color.cs" />
         <Compile Include="FullScreen.cs" />
         <Compile Include="IColorRecycle.cs" />
         <Compile Include="IFoodService.cs" />
-        <Compile Include="ObstaclesCollisionManager.cs" />
-        <Compile Include="FoodCollisionManager.cs" />
+        <Compile Include="IObstaclesCollisionManager.cs" />
+        <Compile Include="IFoodCollisionManager.cs" />
         <Compile Include="Generator.cs" />
         <Compile Include="SnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />

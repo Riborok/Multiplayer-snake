@@ -30,11 +30,11 @@ namespace SnakeGame
         private readonly Color[] _colorsForSnakes;
         
         // Game canvas
-        private readonly IPointMapCanvas _pointMapCanvas;
+        private readonly IMapCanvas _mapCanvas;
         
-        public SnakeService(IPointMapCanvas pointMapCanvas, Color[] colorsForSnakes)
+        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes)
         {
-            _pointMapCanvas = pointMapCanvas;
+            _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
         }
 
@@ -46,16 +46,16 @@ namespace SnakeGame
         public void UpdateSnakeOnCanvas(Snake snake)
         {
             // Add the last body part to the map and draw it
-            _pointMapCanvas.AddToMap(snake.LastBodyPart);
-            _pointMapCanvas.DrawPoint(snake.LastBodyPart);
+            _mapCanvas.AddToMap(snake.LastBodyPart);
+            _mapCanvas.DrawPoint(snake.LastBodyPart);
             
             // Remove the previous tail from the map and clear it
-            _pointMapCanvas.RemoveFromMap(snake.PreviousTail);
-            _pointMapCanvas.ClearPoint(snake.PreviousTail);
+            _mapCanvas.RemoveFromMap(snake.PreviousTail);
+            _mapCanvas.ClearPoint(snake.PreviousTail);
             
             // Add the head to the map and draw it
-            _pointMapCanvas.AddToMap(snake.Head);
-            _pointMapCanvas.DrawPoint(snake.Head);
+            _mapCanvas.AddToMap(snake.Head);
+            _mapCanvas.DrawPoint(snake.Head);
         }
         
         // Spawn multiple snakes
@@ -85,8 +85,8 @@ namespace SnakeGame
             
             // Remove all of the snake's body points and head from the canvas
             foreach (var bodyPoint in snake.BodyPoints)
-                _pointMapCanvas.RemoveFromMap(bodyPoint);
-            _pointMapCanvas.RemoveFromMap(snake.Head);
+                _mapCanvas.RemoveFromMap(bodyPoint);
+            _mapCanvas.RemoveFromMap(snake.Head);
         }
 
         // Create a snake on the canvas and the map
@@ -98,8 +98,8 @@ namespace SnakeGame
             var sleepingPart = new SleepingPart(snake.Head);
 
             // Add the sleepingPart to the map and draw it
-            _pointMapCanvas.AddToMap(sleepingPart);
-            _pointMapCanvas.DrawPoint(sleepingPart);
+            _mapCanvas.AddToMap(sleepingPart);
+            _mapCanvas.DrawPoint(sleepingPart);
             
             return snake;
         }
