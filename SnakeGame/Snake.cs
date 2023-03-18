@@ -35,7 +35,7 @@ namespace SnakeGame
             Direction = direction;
             Id = id;
             
-            // Initialize Head, LastBodyPart and PreviousTail
+            // Head initialization
             Head = new SnakeHeadPoint(head.x, head.y, color);
         }
         

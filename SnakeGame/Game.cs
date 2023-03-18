@@ -126,13 +126,12 @@ namespace SnakeGame
         {
             // Create a game
             GameCreation();
-            await Task.Delay(2000);
 
             // The game will continue until all players have points less than ScoreToWin
-            while (_snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (_snakeService.SnakeList.ToList().All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Key handling asynchronous
-                HandlingKeysAsync();
+                var handlingKeysTask  = HandlingKeysAsync();
                 
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -145,7 +144,7 @@ namespace SnakeGame
                     KillSnakes();
                 
                 // Waiting for completion delay
-                await delayTask;
+                await Task.WhenAll(delayTask, handlingKeysTask);
             }
 
             GameOver();
@@ -168,8 +167,11 @@ namespace SnakeGame
         // Handling snakes asynchronously 
         private static void HandlingSnakes()
         {
-            foreach (var snake in _snakeService.SnakeList)
+            // Can't use foreach here, because the collection is changed
+            for (var i = 0; i < _snakeService.SnakeList.Count; i++)
             {
+                var snake = _snakeService.SnakeList[i];
+                
                 // If the snake is not on the kill list, work with it
                 if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
                 {
@@ -189,7 +191,7 @@ namespace SnakeGame
         }
         
         // Handling keys asynchronously 
-        private static async void HandlingKeysAsync()
+        private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
             var hasDirectionChanged = new bool[_snakeService.SnakeList.Count];

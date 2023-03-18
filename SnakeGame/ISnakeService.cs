@@ -68,8 +68,12 @@ namespace SnakeGame
         // Spawn a single snake with a given id
         public void SpawnSnake(int id)
         {
-            _snakeList.Add(new Snake(Game.Generator.GenerateFreeCoordinates(), 
-                Game.Generator.GenerateDirection(), color: _colorsForSnakes[id], id: id));
+            var snake = CreateSnake(id);
+            
+            var timer = new System.Timers.Timer(5000);
+            timer.Elapsed += (_,_) => _snakeList.Add(snake);
+            timer.AutoReset = false;
+            timer.Enabled = true;
         }
 
         // Remove a snake from the list and the canvas
@@ -84,6 +88,22 @@ namespace SnakeGame
                 _pointMapCanvas.RemoveFromMap(bodyPoint);
             _pointMapCanvas.RemoveFromMap(snake.Head);
         }
+
+        // Create a snake on the canvas and the map
+        private Snake CreateSnake(int id)
+        {
+            var snake = new Snake(Game.Generator.GenerateFreeCoordinates(),
+                Game.Generator.GenerateDirection(), color: _colorsForSnakes[id], id: id);
+
+            var sleepingPart = new SleepingPart(snake.Head);
+
+            // Add the sleepingPart to the map and draw it
+            _pointMapCanvas.AddToMap(sleepingPart);
+            _pointMapCanvas.DrawPoint(sleepingPart);
+            
+            return snake;
+        }
+        
         
     }
 }
