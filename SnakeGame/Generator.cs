@@ -14,9 +14,9 @@ namespace SnakeGame
             private static (int x, int y) GenerateCoordinates()
             {
                 // Checking that randomX is in an even position
-                var randomX = Random.Next(_canvas.BordersTuple.LeftBorder + 1, _canvas.BordersTuple.RightBorder - 1);
+                var randomX = Random.Next(_canvas.WallTuple.LeftWall + 1, _canvas.WallTuple.RightWall - 1);
                 return (x: randomX % 2 == 1 ? ++randomX : randomX,
-                    y: Random.Next(_canvas.BordersTuple.UpBorder + 1, _canvas.BordersTuple.DownBorder));
+                    y: Random.Next(_canvas.WallTuple.UpWall + 1, _canvas.WallTuple.DownWall));
             }
 
             // Generates random coordinates that do not overlap with existing food or snakes

@@ -52,10 +52,10 @@ namespace SnakeGame
         // Check collision with border 
         private bool CheckCollisionWithBorder(Snake snake)
         {
-            return snake.Head.X <= _pointMap.BordersTuple.LeftBorder || 
-                   snake.Head.X >= _pointMap.BordersTuple.RightBorder || 
-                   snake.Head.Y <= _pointMap.BordersTuple.UpBorder || 
-                   snake.Head.Y >= _pointMap.BordersTuple.DownBorder;
+            return snake.Head.X <= _pointMap.WallTuple.LeftWall || 
+                   snake.Head.X >= _pointMap.WallTuple.RightWall || 
+                   snake.Head.Y <= _pointMap.WallTuple.UpWall || 
+                   snake.Head.Y >= _pointMap.WallTuple.DownWall;
         }
         
         // Check collision with parts of snakes

@@ -9,7 +9,7 @@ public interface IPointMap
     IPoint[,] GetMap { get; }
     
     // Tuple with the borders of the map
-    (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BordersTuple { get; }
+    (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
     
     // Add a point to the map
     void AddToMap(IPoint point);
@@ -19,8 +19,11 @@ public interface IPointMap
 }
 
 // This is an interface for a canvas that implements IPointMap
-public interface ICanvas : IPointMap
+public interface ICanvas 
 {
+    // Tuple with the borders of the map
+    (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BorderTuple { get; }
+    
     // Set the background color of the canvas
     void SetBackgroundColor(Color color);
     
@@ -32,16 +35,21 @@ public interface ICanvas : IPointMap
     
     // Write a message on the canvas
     void WriteMessage(int x, int y, Color color, string line);
-    
-    // Draw a borders
-    void MarkBorders(Color color);
-    
+
     // Clear the entire canvas
     void ClearCanvas();
 }
 
+// This interface combines the functionality of IPointMap and ICanvas,
+// allowing for the manipulation and display of a 2D map of points on a canvas. 
+public interface IPointMapCanvas : IPointMap, ICanvas
+{
+    // Draw a borders
+    void MarkWalls(Color color);
+}
+
 // This is a concrete implementation of ICanvas that draws on the console
-public sealed class ConsoleCanvas : ICanvas
+public sealed class ConsoleCanvas : IPointMapCanvas
 {
     // Recycle colors
     private readonly IColorRecycle<ConsoleColor> _recycler;
@@ -49,14 +57,18 @@ public sealed class ConsoleCanvas : ICanvas
     // 2D array of points that represents the canvas
     public IPoint[,] GetMap { get; }
     
+    // Walls of the map
+    public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
+    
     // Borders of the canvas
-    public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BordersTuple { get; }
+    public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BorderTuple { get; }
 
-    public ConsoleCanvas((int UpBorder, int DownBorder, int LeftBorder, int RightBorder) bordersTuple, 
+    public ConsoleCanvas((int UpWall, int DownWall, int LeftWall, int RightWall) bordersTuple, 
         IColorRecycle<ConsoleColor> recycler)
     {
-        BordersTuple = bordersTuple;
-        GetMap = new IPoint[BordersTuple.RightBorder, BordersTuple.DownBorder];
+        WallTuple = bordersTuple;
+        GetMap = new IPoint[WallTuple.RightWall, WallTuple.DownWall];
+        BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
         _recycler = recycler;
         SetConsoleSettings();
     }
@@ -103,23 +115,23 @@ public sealed class ConsoleCanvas : ICanvas
     }
     
     // Write borders to the console
-    public void MarkBorders(Color color)
+    public void MarkWalls(Color color)
     {
         Console.ForegroundColor = _recycler.Get(color);
 
-        Console.SetCursorPosition(BordersTuple.LeftBorder, BordersTuple.UpBorder);
-        Console.Write(new string('▄', Console.BufferWidth - BordersTuple.LeftBorder));
+        Console.SetCursorPosition(WallTuple.LeftWall, WallTuple.UpWall);
+        Console.Write(new string('▄', Console.BufferWidth - WallTuple.LeftWall));
 
-        for (var i = BordersTuple.UpBorder + 1; i < BordersTuple.DownBorder; i++)
+        for (var i = WallTuple.UpWall + 1; i < WallTuple.DownWall; i++)
         {
-            Console.SetCursorPosition(BordersTuple.RightBorder, i);
+            Console.SetCursorPosition(WallTuple.RightWall, i);
             Console.Write('█');
-            Console.SetCursorPosition(BordersTuple.LeftBorder, i);
+            Console.SetCursorPosition(WallTuple.LeftWall, i);
             Console.Write('█');
         }
 
-        Console.SetCursorPosition(BordersTuple.LeftBorder, BordersTuple.DownBorder);
-        Console.Write(new string('▀', Console.BufferWidth - BordersTuple.LeftBorder));
+        Console.SetCursorPosition(WallTuple.LeftWall, WallTuple.DownWall);
+        Console.Write(new string('▀', Console.BufferWidth - WallTuple.LeftWall));
     }
     
     // Clears the console

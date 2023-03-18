@@ -30,11 +30,11 @@ namespace SnakeGame
         private readonly Color[] _colorsForSnakes;
         
         // Game canvas
-        private readonly ICanvas _canvas;
+        private readonly IPointMapCanvas _pointMapCanvas;
         
-        public SnakeService(ICanvas canvas, Color[] colorsForSnakes)
+        public SnakeService(IPointMapCanvas pointMapCanvas, Color[] colorsForSnakes)
         {
-            _canvas = canvas;
+            _pointMapCanvas = pointMapCanvas;
             _colorsForSnakes = colorsForSnakes;
         }
 
@@ -46,16 +46,16 @@ namespace SnakeGame
         public void UpdateSnakeOnCanvas(Snake snake)
         {
             // Add the last body part to the map and draw it
-            _canvas.AddToMap(snake.LastBodyPart);
-            _canvas.DrawPoint(snake.LastBodyPart);
+            _pointMapCanvas.AddToMap(snake.LastBodyPart);
+            _pointMapCanvas.DrawPoint(snake.LastBodyPart);
             
             // Remove the previous tail from the map and clear it
-            _canvas.RemoveFromMap(snake.PreviousTail);
-            _canvas.ClearPoint(snake.PreviousTail);
+            _pointMapCanvas.RemoveFromMap(snake.PreviousTail);
+            _pointMapCanvas.ClearPoint(snake.PreviousTail);
             
             // Add the head to the map and draw it
-            _canvas.AddToMap(snake.Head);
-            _canvas.DrawPoint(snake.Head);
+            _pointMapCanvas.AddToMap(snake.Head);
+            _pointMapCanvas.DrawPoint(snake.Head);
         }
         
         // Spawn multiple snakes
@@ -81,8 +81,8 @@ namespace SnakeGame
             
             // Remove all of the snake's body points and head from the canvas
             foreach (var bodyPoint in snake.BodyPoints)
-                _canvas.RemoveFromMap(bodyPoint);
-            _canvas.RemoveFromMap(snake.Head);
+                _pointMapCanvas.RemoveFromMap(bodyPoint);
+            _pointMapCanvas.RemoveFromMap(snake.Head);
         }
         
     }

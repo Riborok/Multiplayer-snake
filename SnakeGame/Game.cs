@@ -8,7 +8,7 @@ namespace SnakeGame
     public static partial class Game
     {
         // Canvas for the game
-        private static ICanvas _canvas;
+        private static IPointMapCanvas _canvas;
 
         // Fields storing the amount of snakes and food
         private static int _amountSnakes;
@@ -23,11 +23,11 @@ namespace SnakeGame
         private const Color BorderColor = Color.DarkGray; 
         
         // Array of SnakeDirectionManager. The number in the array corresponds to the id of the snake
-        private static readonly SnakeDirectionManager[] SnakeDirectionManagers =
+        private static readonly SnakeDirectionManager<ConsoleKey>[] SnakeDirectionManagers =
         {
-            new (new ArrowsMovementKey()),
-            new (new WasdMovementKey()),
-            new (new UhjkMovementKey())
+            new SnakeDirectionManagerForConsole (new ArrowsMovementKey()),
+            new SnakeDirectionManagerForConsole (new WasdMovementKey()),
+            new SnakeDirectionManagerForConsole (new UhjkMovementKey())
         };
         
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
@@ -44,7 +44,7 @@ namespace SnakeGame
         
         // Services are responsible for the correct drawing and storage of points on the canvas
         private static IFoodProcessSpawn _foodService;
-        private static SnakeService _snakeService;
+        private static ISnakeService _snakeService;
 
         // Creating the playing field 
         private static void GameCreation()
@@ -53,15 +53,16 @@ namespace SnakeGame
             FullScreen.Set();
             _canvas = new ConsoleCanvas(bordersTuple: (1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1), 
                 new ColorRecycle());
-            
+
             // Set background color
             _canvas.SetBackgroundColor(BackgroundColor);
-            
+
             // Output message about entering the number of players
+            _canvas.ClearCanvas();
             _canvas.WriteMessage
             ( 
-                (_canvas.BordersTuple.RightBorder - _canvas.BordersTuple.LeftBorder)/ 2 - 23,
-                 (_canvas.BordersTuple.DownBorder - _canvas.BordersTuple.UpBorder) / 2,
+                (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 23,
+                (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2,
                 TextColor,
                 "Enter the amount of players. Amount can be from 1 to 3"
             );
@@ -73,7 +74,7 @@ namespace SnakeGame
             
             // Clear the canvas and draw the game borders
             _canvas.ClearCanvas();
-            _canvas.MarkBorders(BorderColor);
+            _canvas.MarkWalls(BorderColor);
             
             // Service creation
             _snakeService = new SnakeService(_canvas, ColorsForSnakes);
@@ -97,8 +98,8 @@ namespace SnakeGame
             // Output message about the end of the game
             _canvas.WriteMessage
             ( 
-                (_canvas.BordersTuple.RightBorder - _canvas.BordersTuple.LeftBorder)/ 2 - 13,
-                (_canvas.BordersTuple.DownBorder - _canvas.BordersTuple.UpBorder) / 2 - 3,
+                (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 13,
+                (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2 - 3,
                 TextColor,
                 $"Score {ScoreToWin} has been reached"
             );
@@ -112,8 +113,8 @@ namespace SnakeGame
             {
                 _canvas.WriteMessage
                 ( 
-                    (_canvas.BordersTuple.RightBorder - _canvas.BordersTuple.LeftBorder)/ 2 - 15,
-                    (_canvas.BordersTuple.DownBorder - _canvas.BordersTuple.UpBorder) / 2 + 3 + i * 2,
+                    (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 15,
+                    (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2 + 3 + i * 2,
                     TextColor,
                     $"{playerArray[i].Head.Color}, you are {i}! Your score: {playerArray[i].BodyPoints.Count}"
                 );

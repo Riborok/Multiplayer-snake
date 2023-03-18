@@ -34,11 +34,11 @@ namespace SnakeGame
         private const Color ColorForGeneratedSimpleFood = Color.Cyan;
 
         // Game canvas
-        private readonly ICanvas _canvas;
+        private readonly IPointMapCanvas _pointMapCanvas;
         
-        public FoodService(ICanvas canvas)
+        public FoodService(IPointMapCanvas pointMapCanvas)
         {
-            _canvas = canvas;
+            _pointMapCanvas = pointMapCanvas;
         }
 
         // Spawn simple food. This amount of food will be maintained
@@ -66,8 +66,8 @@ namespace SnakeGame
         // the initial, add new simple food
         public void Remove(Food food)
         {
-            _canvas.RemoveFromMap(food);
-            _canvas.ClearPoint(food);
+            _pointMapCanvas.RemoveFromMap(food);
+            _pointMapCanvas.ClearPoint(food);
             _foodAmountOnMap--;
 
             if (_foodAmountOnMap < _foodAmount)
@@ -78,8 +78,8 @@ namespace SnakeGame
         public void Add(Food food)
         {
             _foodAmountOnMap++;
-            _canvas.AddToMap(food);
-            _canvas.DrawPoint(food);
+            _pointMapCanvas.AddToMap(food);
+            _pointMapCanvas.DrawPoint(food);
         }
 
         // This method creates a simple food with randomly coordinates
