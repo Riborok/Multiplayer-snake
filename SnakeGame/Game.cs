@@ -194,11 +194,11 @@ namespace SnakeGame
         private static async Task HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_snakeService.SnakeList.Count];
+            var hasDirectionChanged = new bool[_amountSnakes];
             await Task.Run(() =>
             {
                 // Processing user input
-                while (Console.KeyAvailable && !hasDirectionChanged.All(hasChanged => hasChanged))
+                while (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     for (var i = 0; i < _snakeService.SnakeList.Count; i++)
