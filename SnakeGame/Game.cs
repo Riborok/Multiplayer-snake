@@ -168,11 +168,8 @@ namespace SnakeGame
         // Handling snakes asynchronously 
         private static void HandlingSnakes()
         {
-            // Can't use foreach here, because if the snake dies will be an error
-            for (var i = 0; i < _snakeService.SnakeList.Count; i++)
+            foreach (var snake in _snakeService.SnakeList)
             {
-                var snake = _snakeService.SnakeList[i];
-
                 // If the snake is not on the kill list, work with it
                 if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
                 {
@@ -189,7 +186,6 @@ namespace SnakeGame
                     }
                 }
             }
-
         }
         
         // Handling keys asynchronously 
