@@ -63,10 +63,10 @@ public sealed class ConsoleCanvas : IPointMapCanvas
     // Borders of the canvas
     public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BorderTuple { get; }
 
-    public ConsoleCanvas((int UpWall, int DownWall, int LeftWall, int RightWall) bordersTuple, 
+    public ConsoleCanvas((int UpWall, int DownWall, int LeftWall, int RightWall) wallTuple, 
         IColorRecycle<ConsoleColor> recycler)
     {
-        WallTuple = bordersTuple;
+        WallTuple = wallTuple;
         GetMap = new IPoint[WallTuple.RightWall, WallTuple.DownWall];
         BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
         _recycler = recycler;

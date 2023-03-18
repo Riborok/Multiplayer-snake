@@ -51,7 +51,7 @@ namespace SnakeGame
         {
             // Setting Full Screen for the console and create a canvas
             FullScreen.Set();
-            _canvas = new ConsoleCanvas(bordersTuple: (1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1), 
+            _canvas = new ConsoleCanvas(wallTuple: (1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1), 
                 new ColorRecycle());
 
             // Set background color
