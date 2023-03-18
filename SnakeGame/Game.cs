@@ -131,18 +131,15 @@ namespace SnakeGame
             // The game will continue until all players have points less than ScoreToWin
             while (_snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
+                // Key handling asynchronous
+                HandlingKeysAsync();
+                
                 // Frame delay
                 var delayTask = Task.Delay(45);
-                
-                // Key handling asynchronous
-                var handlingKeysTask = HandlingKeysAsync();
-                
-                // Snake movement handling asynchronous
-                var handlingSnakesTask = HandlingSnakesAsync();
 
-                // Wait for both tasks to complete
-                await Task.WhenAll(handlingSnakesTask, handlingKeysTask);
-                
+                // Snake movement handling asynchronous
+                HandlingSnakes();
+
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.ListOfSnakesToKill.Count() != 0)
                     KillSnakes();
@@ -164,44 +161,42 @@ namespace SnakeGame
                 _foodService.ProcessIntoFood(snakeToKill);
                 _snakeService.SpawnSnake(snakeToKill.Id);
             }
+
             _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
         
         // Handling snakes asynchronously 
-        private static async Task HandlingSnakesAsync()
+        private static void HandlingSnakes()
         {
-            await Task.Run(() =>
+            // Can't use foreach here, because if the snake dies will be an error
+            for (var i = 0; i < _snakeService.SnakeList.Count; i++)
             {
-                // Can't use foreach here, because if the snake dies will be an error
-                for (var i = 0; i < _snakeService.SnakeList.Count; i++)
+                var snake = _snakeService.SnakeList[i];
+
+                // If the snake is not on the kill list, work with it
+                if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
                 {
-                    var snake = _snakeService.SnakeList[i];
+                    snake.Move();
 
-                    // If the snake is not on the kill list, work with it
-                    if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
+                    // Checking snake collision with obstacles
+                    if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
                     {
-                        snake.Move();
-
-                        // Checking snake collision with obstacles
-                        if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
-                        {
-                            // If there was no collusion with obstacles, update the snake,
-                            // then draw it and check the collision with food
-                            snake.BodyUpdate();
-                            _foodCollisionManager.CollisionCheck(snake);
-                            _snakeService.UpdateSnakeOnCanvas(snake);
-                        }
+                        // If there was no collusion with obstacles, update the snake,
+                        // then draw it and check the collision with food
+                        snake.BodyUpdate();
+                        _foodCollisionManager.CollisionCheck(snake);
+                        _snakeService.UpdateSnakeOnCanvas(snake);
                     }
                 }
-            });
+            }
+
         }
         
         // Handling keys asynchronously 
-        private static async Task HandlingKeysAsync()
+        private static async void HandlingKeysAsync()
         {
             // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_snakeService.SnakeList.Count];  
-            
+            var hasDirectionChanged = new bool[_snakeService.SnakeList.Count];
             await Task.Run(() =>
             {
                 // Processing user input
