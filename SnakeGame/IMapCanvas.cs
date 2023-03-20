@@ -5,8 +5,8 @@ namespace SnakeGame
     // This is an interface for a map of points
     public interface IPointMap
     {
-        // 2D array of points
-        IPoint[,] GetMap { get; }
+        // Get a point on the map
+        IPoint GetPointOnMap(int x, int y);
 
         // Tuple with the borders of the map
         (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -55,8 +55,16 @@ namespace SnakeGame
         private readonly IColorRecycle<ConsoleColor> _recycler;
 
         // 2D array of points that represents the canvas
-        public IPoint[,] GetMap { get; }
+        // Since in the console the snake moves along the X coordinates +2,
+        // in all calls to X, perform the >>1 operation to reduce memory
+        private readonly IPoint[,] _getMap;
 
+        // Get a point on the map
+        public IPoint GetPointOnMap(int x, int y)
+        {
+            return _getMap[x >>1, y];
+        }
+        
         // Walls of the map
         public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
 
@@ -67,7 +75,7 @@ namespace SnakeGame
             IColorRecycle<ConsoleColor> recycler)
         {
             WallTuple = wallTuple;
-            GetMap = new IPoint[WallTuple.RightWall, WallTuple.DownWall];
+            _getMap = new IPoint[WallTuple.RightWall >>1, WallTuple.DownWall];
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
             SetConsoleSettings();
@@ -82,13 +90,13 @@ namespace SnakeGame
         // Add a point to the map
         public void AddToMap(IPoint point)
         {
-            GetMap[point.X, point.Y] = point;
+            _getMap[point.X >>1, point.Y] = point;
         }
 
         // Remove a point from the map
         public void RemoveFromMap(IPoint point)
         {
-            GetMap[point.X, point.Y] = null;
+            _getMap[point.X >>1, point.Y] = null;
         }
 
         // Write a point to the console
