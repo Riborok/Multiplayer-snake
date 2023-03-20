@@ -6,14 +6,15 @@ namespace SnakeGame
     public class Snake 
     {
         // List of points that composed a snake body
-        private readonly List<SnakeBodyPoint> _snakeBodyPoints = new(300);
-        public IReadOnlyList<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
+        private readonly LinkedList<SnakeBodyPoint> _snakeBodyPoints = new();
+        public IReadOnlyCollection<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
         
         // Eat food (add a new points to the _snakeBodyPoints) 
         public void Eat(Food food)
         {
             // Add new points of the body and set _isDigestingFood 
-            _snakeBodyPoints.AddRange(DigestibleBody.GetListOfAddedBody(food));
+            foreach (var digestibleBody in DigestibleBody.GetListOfAddedBody(food))
+                _snakeBodyPoints.AddLast(digestibleBody);
             _isDigestingFood = true;
         }
         
@@ -53,7 +54,7 @@ namespace SnakeGame
             // in the list - it's the digest part (he is last on the list)
             if (_isDigestingFood)
             {
-                LastBodyPart = _snakeBodyPoints[_snakeBodyPoints.Count - 1];
+                LastBodyPart = _snakeBodyPoints.Last.Value;
                 _isDigestingFood = false;
             }
             
@@ -83,11 +84,11 @@ namespace SnakeGame
         public void BodyUpdate()
         {
             // Update the list of body points
-            _snakeBodyPoints.Add(LastBodyPart);
+            _snakeBodyPoints.AddLast(LastBodyPart);
 
             // The first body part is the part that was removed
-            PreviousTail = _snakeBodyPoints[0];
-            _snakeBodyPoints.RemoveAt(0);
+            PreviousTail = _snakeBodyPoints.First.Value;
+            _snakeBodyPoints.RemoveFirst();
         }
     }
 }

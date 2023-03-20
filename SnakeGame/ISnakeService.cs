@@ -39,7 +39,7 @@ namespace SnakeGame
         }
 
         // A list of all snakes in the game
-        private readonly List<Snake> _snakeList = new(3);
+        private readonly List<Snake> _snakeList = new();
         public IReadOnlyList<Snake> SnakeList => _snakeList;
 
         // Update the snake on the canvas with its new position
