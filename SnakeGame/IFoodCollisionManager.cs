@@ -25,7 +25,7 @@ namespace SnakeGame
         public void CollisionCheck(Snake snake)
         {
             // If a collision occurs, the snake eats the food and the food is removed
-            if (_pointMap.GetPointOnMap.TryGetValue((snake.Head.X, snake.Head.Y), out var point) && 
+            if (_pointMap.Map.TryGetValue((snake.Head.X, snake.Head.Y), out var point) && 
                 point is Food collidingFood)
             {
                 // Make the snake eat the food and remove it from the Map

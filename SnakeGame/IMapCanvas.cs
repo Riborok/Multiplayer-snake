@@ -8,7 +8,7 @@ namespace SnakeGame
     public interface IPointMap
     {
         // Get a point on the map
-        IReadOnlyDictionary<(int x, int y), IPoint> GetPointOnMap { get; }
+        IReadOnlyDictionary<(int x, int y), IPoint> Map { get; }
 
         // Tuple with the borders of the map
         (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -57,10 +57,10 @@ namespace SnakeGame
         private readonly IColorRecycle<ConsoleColor> _recycler;
 
         // 2D Hash Table of points that represents the canvas
-        private readonly ConcurrentDictionary<(int x, int y), IPoint> _getMap = new ();
+        private readonly ConcurrentDictionary<(int x, int y), IPoint> _map = new ();
 
         // Get a point on the map
-        public IReadOnlyDictionary<(int x, int y), IPoint> GetPointOnMap => _getMap;
+        public IReadOnlyDictionary<(int x, int y), IPoint> Map => _map;
         
         // Walls of the map
         public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -86,13 +86,13 @@ namespace SnakeGame
         // Add a point to the map
         public void AddToMap(IPoint point)
         {
-            _getMap.AddOrUpdate((point.X, point.Y), point, (key, oldValue) => point);
+            _map.AddOrUpdate((point.X, point.Y), point, (key, oldValue) => point);
         }
 
         // Remove a point from the map
         public void RemoveFromMap(IPoint point)
         {
-            _getMap.TryRemove((point.X, point.Y), out _ );
+            _map.TryRemove((point.X, point.Y), out _ );
         }
 
         // Write a point to the console

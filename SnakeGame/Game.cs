@@ -111,18 +111,18 @@ namespace SnakeGame
             );
 
             // Sort the list of snakes by score and output the results
-            var playerArray = _snakeService.SnakeList.OrderByDescending(snake => 
+            var snakeResultList = _snakeService.SnakeList.OrderByDescending(snake => 
                 snake.BodyPoints.Count).ToList();
 
             // Output the results of the game
-            for (var i = 0; i < playerArray.Count; i++)
+            for (var i = 0; i < snakeResultList.Count; i++)
             {
                 _canvas.WriteMessage
                 ( 
                     (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 15,
                     (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2 + 3 + i * 2,
                     TextColor,
-                    $"{playerArray[i].Head.Color}, you are {i}! Your score: {playerArray[i].BodyPoints.Count}"
+                    $"{snakeResultList[i].Head.Color}, you are {i}! Your score: {snakeResultList[i].BodyPoints.Count}"
                 );
             }
         }
