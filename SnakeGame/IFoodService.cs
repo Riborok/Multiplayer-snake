@@ -1,3 +1,5 @@
+using Timer = System.Timers.Timer;
+
 namespace SnakeGame
 {
     // Interface for adding and removing food on the playing field
@@ -14,10 +16,16 @@ namespace SnakeGame
     public interface IFoodProcessSpawn
     {
         // Spawn a specified amount of food on the canvas
-        void SpawnFood(int amount);
+        void SpawnSimpleFood(int amount);
         
         // Processes the snake's body and head into food
         void ProcessIntoFood(Snake snake);
+
+        // Enable periodic food spawn
+        void EnablePeriodicSpawn();
+
+        // Disable periodic food spawn
+        void DisablePeriodicSpawn();
     }
 
     // Service working with food
@@ -34,8 +42,25 @@ namespace SnakeGame
             _mapCanvas = mapCanvas;
         }
 
+        // Food spawn timer
+        private Timer _timer;
+        
+        // Enable periodic food spawn
+        public void EnablePeriodicSpawn()
+        {
+            _timer = new Timer(7000);
+            _timer.Elapsed += (_, _) => Add(CreateSimpleFood());
+            _timer.Enabled = true;
+        }
+        
+        // Disable periodic food spawn
+        public void DisablePeriodicSpawn()
+        {
+            _timer.Enabled = false;
+        }
+
         // Spawn simple food
-        public void SpawnFood(int amount)
+        public void SpawnSimpleFood(int amount)
         {
             for (var i = 0; i < amount; i++)
                 Add(CreateSimpleFood());

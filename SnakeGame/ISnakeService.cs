@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace SnakeGame
 {
@@ -36,10 +37,11 @@ namespace SnakeGame
         {
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
+            _snakeList = new List<Snake>();
         }
 
         // A list of all snakes in the game
-        private readonly List<Snake> _snakeList = new();
+        private readonly List<Snake> _snakeList;
         public IReadOnlyList<Snake> SnakeList => _snakeList;
 
         // Update the snake on the canvas with its new position
@@ -71,9 +73,29 @@ namespace SnakeGame
             var snake = CreateSnake(id);
             
             var timer = new System.Timers.Timer(2500);
-            timer.Elapsed += (_,_) => _snakeList.Add(snake);
+            timer.Elapsed += (_,_) => AddSnake(snake);
             timer.AutoReset = false;
             timer.Enabled = true;
+        }
+
+        // A mutex object to synchronize access to the shared resource
+        private static readonly Mutex Mutex = new ();
+        
+        // Add the snake to the list
+        private void AddSnake(Snake snake)
+        {
+            // Wait for ownership of the mutex
+            Mutex.WaitOne();
+
+            try
+            {
+                _snakeList.Add(snake);
+            }
+            finally
+            {
+                // Release the mutex ownership
+                Mutex.ReleaseMutex();
+            }
         }
 
         // Remove a snake from the list and the canvas
@@ -103,7 +125,5 @@ namespace SnakeGame
             
             return snake;
         }
-        
-        
     }
 }

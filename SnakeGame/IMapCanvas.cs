@@ -57,7 +57,7 @@ namespace SnakeGame
         private readonly IColorRecycle<ConsoleColor> _recycler;
 
         // 2D Hash Table of points that represents the canvas
-        private readonly ConcurrentDictionary<(int x, int y), IPoint> _map = new ();
+        private readonly ConcurrentDictionary<(int x, int y), IPoint> _map;
 
         // Get a point on the map
         public IReadOnlyDictionary<(int x, int y), IPoint> Map => _map;
@@ -74,6 +74,7 @@ namespace SnakeGame
             WallTuple = wallTuple;
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
+            _map = new ConcurrentDictionary<(int x, int y), IPoint>();
             SetConsoleSettings();
         }
 
@@ -94,13 +95,20 @@ namespace SnakeGame
         {
             _map.TryRemove((point.X, point.Y), out _ );
         }
+        
+        // Object to use as a lock object to synchronize access to the shared resource
+        private static readonly object Lock = new();
 
         // Write a point to the console
         public void DrawPoint(IPoint point)
         {
-            Console.SetCursorPosition(point.X, point.Y);
-            Console.ForegroundColor = _recycler.Get(point.Color);
-            Console.Write(point.Symbol);
+            // Access synchronization
+            lock (Lock)
+            {
+                Console.SetCursorPosition(point.X, point.Y);
+                Console.ForegroundColor = _recycler.Get(point.Color);
+                Console.Write(point.Symbol);   
+            }
         }
 
         // Write a blank space to the console

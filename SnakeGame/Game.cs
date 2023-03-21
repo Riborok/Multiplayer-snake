@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SnakeGame
@@ -88,7 +89,7 @@ namespace SnakeGame
             
             // Spawn objects
             _snakeService.SpawnSnakes(_amountSnakes);
-            _foodService.SpawnFood(AmountSimpleFood);
+            _foodService.SpawnSimpleFood(AmountSimpleFood);
 
             // Creating collision control managers
             _foodCollisionManager = new FoodCollisionManager((IFoodAddRemove)_foodService, _canvas);
@@ -133,8 +134,11 @@ namespace SnakeGame
             // Create a game
             GameCreation();
 
+            // Enable food spawn
+            _foodService.EnablePeriodicSpawn();
+
             // The game will continue until all players have points less than ScoreToWin
-            while (_snakeService.SnakeList.ToList().All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (IsNotGameOver())
             {
                 // Key handling asynchronous
                 var handlingKeysTask  = HandlingKeysAsync();
@@ -146,28 +150,49 @@ namespace SnakeGame
                 HandlingSnakes();
 
                 // If there are snakes to kill, kill them
-                if (_obstaclesCollisionManager.ListOfSnakesToKill.Count() != 0)
+                if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
                     KillSnakes();
                 
                 // Waiting for completion delay
                 await Task.WhenAll(delayTask, handlingKeysTask);
             }
+            
+            // Disable food spawn
+            _foodService.DisablePeriodicSpawn();
 
             GameOver();
             await Task.Delay(60000);
+        }
+        
+        // A mutex object to synchronize access to the shared resource
+        private static readonly Mutex Mutex = new ();
+        
+        // A method that checks if the game is not over
+        private static bool IsNotGameOver()
+        {
+            // Wait for ownership of the mutex
+            Mutex.WaitOne(); 
+
+            try
+            {
+                return _snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin);
+            }
+            finally
+            {
+                // Release the mutex ownership
+                Mutex.ReleaseMutex(); 
+            }
         }
 
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
         private static void KillSnakes()
         {
-            foreach (var snakeToKill in _obstaclesCollisionManager.ListOfSnakesToKill)
+            while (_obstaclesCollisionManager.TryTake(out var snakeToKill))
             {
                 _snakeService.RemoveSnake(snakeToKill);
                 _foodService.ProcessIntoFood(snakeToKill);
                 _snakeService.SpawnSnake(snakeToKill.Id);
             }
-
-            _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
         
         // Handling snakes asynchronously 
@@ -179,7 +204,7 @@ namespace SnakeGame
                 var snake = _snakeService.SnakeList[i];
                 
                 // If the snake is not on the kill list, work with it
-                if (!_obstaclesCollisionManager.ListOfSnakesToKill.Contains(snake))
+                if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
                 {
                     snake.Move();
 

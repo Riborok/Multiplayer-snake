@@ -6,7 +6,7 @@ namespace SnakeGame
     public class Snake 
     {
         // List of points that composed a snake body
-        private readonly LinkedList<SnakeBodyPoint> _snakeBodyPoints = new();
+        private readonly LinkedList<SnakeBodyPoint> _snakeBodyPoints;
         public IReadOnlyCollection<SnakeBodyPoint> BodyPoints => _snakeBodyPoints;
         
         // Eat food (add a new points to the _snakeBodyPoints) 
@@ -35,6 +35,8 @@ namespace SnakeGame
             // Set Id and Direction
             Direction = direction;
             Id = id;
+            
+            _snakeBodyPoints = new LinkedList<SnakeBodyPoint>();
             
             // Head initialization
             Head = new SnakeHeadPoint(head.x, head.y, color);

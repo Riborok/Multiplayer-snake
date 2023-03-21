@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,10 +8,10 @@ namespace SnakeGame
     public interface IObstaclesCollisionManager
     {
         // Get the list of snakes that collided with obstacles and should be killed
-        IEnumerable<Snake> ListOfSnakesToKill { get; }
+        IEnumerable<Snake> SnakesToKill { get; }
 
-        // Clears the list of snakes that collided and should be killed
-        void ClearListOfSnakesToKill();
+        // If there are snakes in the collection, then returns it and true. Otherwise - false
+        public bool TryTake(out Snake snake);
 
         // Checks if a collision occurred for the given snake and handles it
         // returns true if a collision occurred, false otherwise. Also generates a kill list
@@ -23,24 +24,25 @@ namespace SnakeGame
         // Store the map to check for collisions
         private readonly IPointMap _pointMap;
 
-        // List of snakes on the map
+        // Enumeration of snakes on the map
         private readonly IEnumerable<Snake> _snakes;
         
         public ObstaclesCollisionManager(IEnumerable<Snake> snakes, IPointMap pointMap)
         {
             _snakes = snakes;
             _pointMap = pointMap;
-            _listOfSnakesToKill = new List<Snake>(_snakes.Count());
+            
+            _snakesToKill = new ConcurrentBag<Snake>();
         }
 
-        // List of snakes to kill
-        private readonly List<Snake> _listOfSnakesToKill;
-        public IEnumerable<Snake> ListOfSnakesToKill => _listOfSnakesToKill;
-        
-        // Clear the list _listOfSnakesToKill
-        public void ClearListOfSnakesToKill()
+        // A bag of snakes to kill
+        private readonly ConcurrentBag<Snake> _snakesToKill;
+        public IEnumerable<Snake> SnakesToKill => _snakesToKill;
+
+        // Take object from a bag
+        public bool TryTake(out Snake snake)
         {
-            _listOfSnakesToKill.Clear();
+            return _snakesToKill.TryTake(out snake);
         }
 
         // Check for collision with objects 
@@ -55,7 +57,7 @@ namespace SnakeGame
                 // roll back the snake head and add to the list
                 snake.Head.X = snake.LastBodyPart.X;
                 snake.Head.Y = snake.LastBodyPart.Y;
-                _listOfSnakesToKill.Add(snake);
+                _snakesToKill.Add(snake);
                 
                 result = true;
             }
@@ -83,7 +85,7 @@ namespace SnakeGame
             {
                 // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)
-                    _listOfSnakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == snakePart));
+                    _snakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == snakePart));
                 
                 result = true;
             }
