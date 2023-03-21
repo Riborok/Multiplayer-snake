@@ -23,13 +23,6 @@ namespace SnakeGame
     // Service working with food
     public class FoodService : IFoodProcessSpawn, IFoodAddRemove
     {
-
-        // The amount of food that needs to be maintained on the canvas
-        private int _foodAmount;
-        
-        // The current amount of food on the canvas
-        private int _foodAmountOnMap;
-
         // Color for generated simple food
         private const Color ColorForGeneratedSimpleFood = Color.Cyan;
 
@@ -41,12 +34,9 @@ namespace SnakeGame
             _mapCanvas = mapCanvas;
         }
 
-        // Spawn simple food. This amount of food will be maintained
+        // Spawn simple food
         public void SpawnFood(int amount)
         {
-            _foodAmount = amount;
-            _foodAmountOnMap += amount;
-            
             for (var i = 0; i < amount; i++)
                 Add(CreateSimpleFood());
         }
@@ -62,22 +52,16 @@ namespace SnakeGame
             Add(new SnakeHeadFood(snake.Head, snake.BodyPoints.Count));
         }
 
-        // Removes food from the canvas and if the current amount is less than
-        // the initial, add new simple food
+        // Removes food from the canvas and erase it
         public void Remove(Food food)
         {
             _mapCanvas.RemoveFromMap(food);
             _mapCanvas.ClearPoint(food);
-            _foodAmountOnMap--;
-
-            if (_foodAmountOnMap < _foodAmount)
-                Add(CreateSimpleFood());
         }
 
         // Add food to the canvas and draw it
         public void Add(Food food)
         {
-            _foodAmountOnMap++;
             _mapCanvas.AddToMap(food);
             _mapCanvas.DrawPoint(food);
         }

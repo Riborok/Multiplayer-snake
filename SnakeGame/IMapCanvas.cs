@@ -86,7 +86,7 @@ namespace SnakeGame
         // Add a point to the map
         public void AddToMap(IPoint point)
         {
-            _map.AddOrUpdate((point.X, point.Y), point, (key, oldValue) => point);
+            _map.AddOrUpdate((point.X, point.Y), point, (_, _) => point);
         }
 
         // Remove a point from the map
