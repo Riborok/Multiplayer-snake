@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace SnakeGame
 {
@@ -6,7 +8,7 @@ namespace SnakeGame
     public interface IPointMap
     {
         // Get a point on the map
-        IPoint GetPointOnMap(int x, int y);
+        IReadOnlyDictionary<(int x, int y), IPoint> GetPointOnMap { get; }
 
         // Tuple with the borders of the map
         (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -57,13 +59,10 @@ namespace SnakeGame
         // 2D array of points that represents the canvas
         // Since in the console the snake moves along the X coordinates +2,
         // in all calls to X, perform the >>1 operation to reduce memory
-        private readonly IPoint[,] _getMap;
+        private readonly ConcurrentDictionary<(int x, int y), IPoint> _getMap = new ();
 
         // Get a point on the map
-        public IPoint GetPointOnMap(int x, int y)
-        {
-            return _getMap[x >>1, y];
-        }
+        public IReadOnlyDictionary<(int x, int y), IPoint> GetPointOnMap => _getMap;
         
         // Walls of the map
         public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -75,7 +74,6 @@ namespace SnakeGame
             IColorRecycle<ConsoleColor> recycler)
         {
             WallTuple = wallTuple;
-            _getMap = new IPoint[WallTuple.RightWall >>1, WallTuple.DownWall];
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
             SetConsoleSettings();
@@ -90,13 +88,13 @@ namespace SnakeGame
         // Add a point to the map
         public void AddToMap(IPoint point)
         {
-            _getMap[point.X >>1, point.Y] = point;
+            _getMap.AddOrUpdate((point.X, point.Y), point, (key, oldValue) => point);
         }
 
         // Remove a point from the map
         public void RemoveFromMap(IPoint point)
         {
-            _getMap[point.X >>1, point.Y] = null;
+            _getMap.TryRemove((point.X, point.Y), out _ );
         }
 
         // Write a point to the console

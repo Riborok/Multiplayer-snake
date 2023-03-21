@@ -78,11 +78,12 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts
-            if (_pointMap.GetPointOnMap(snake.Head.X, snake.Head.Y) is SnakePart collidingFood)
+            if (_pointMap.GetPointOnMap.TryGetValue((snake.Head.X, snake.Head.Y), out var point) && 
+                point is SnakePart snakePart)
             {
                 // If the snakes collided head to head, add to the list
-                if (collidingFood is SnakeHeadPoint)
-                    _listOfSnakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == collidingFood));
+                if (snakePart is SnakeHeadPoint)
+                    _listOfSnakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == snakePart));
                 
                 result = true;
             }

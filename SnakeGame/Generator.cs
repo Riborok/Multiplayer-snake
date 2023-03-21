@@ -27,7 +27,7 @@ namespace SnakeGame
                 // Generate new coordinates until they don't overlap with existing food or snakes
                 do
                     randomCoords = GenerateCoordinates();
-                while (_canvas.GetPointOnMap(randomCoords.x, randomCoords.y) != null);
+                while (_canvas.GetPointOnMap.TryGetValue(randomCoords, out _ ));
                 
                 return randomCoords;
             }
