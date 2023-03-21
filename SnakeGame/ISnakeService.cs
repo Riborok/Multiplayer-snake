@@ -70,7 +70,7 @@ namespace SnakeGame
         {
             var snake = CreateSnake(id);
             
-            var timer = new System.Timers.Timer(5000);
+            var timer = new System.Timers.Timer(2500);
             timer.Elapsed += (_,_) => _snakeList.Add(snake);
             timer.AutoReset = false;
             timer.Enabled = true;

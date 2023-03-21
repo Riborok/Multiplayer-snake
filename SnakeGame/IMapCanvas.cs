@@ -56,9 +56,7 @@ namespace SnakeGame
         // Recycle colors
         private readonly IColorRecycle<ConsoleColor> _recycler;
 
-        // 2D array of points that represents the canvas
-        // Since in the console the snake moves along the X coordinates +2,
-        // in all calls to X, perform the >>1 operation to reduce memory
+        // 2D Hash Table of points that represents the canvas
         private readonly ConcurrentDictionary<(int x, int y), IPoint> _getMap = new ();
 
         // Get a point on the map
