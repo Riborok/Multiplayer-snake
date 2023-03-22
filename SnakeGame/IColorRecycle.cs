@@ -2,7 +2,6 @@ using System;
 
 namespace SnakeGame
 {
-
     // This interface defines a generic method for returning a color of a specified type
     public interface IColorRecycle<out TColor>
     {

@@ -92,7 +92,7 @@ namespace SnakeGame
         }
 
         // This method creates a simple food with randomly coordinates
-        private Food CreateSimpleFood()
+        private static Food CreateSimpleFood()
         {
             // Return SimpleFood with the generated coordinates and a specified color
             return new SimpleFood(Game.Generator.GenerateFreeCoordinates(), ColorForGeneratedSimpleFood);

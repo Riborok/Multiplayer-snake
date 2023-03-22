@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SnakeGame
@@ -7,7 +8,7 @@ namespace SnakeGame
     public interface ISnakeService
     {
         // A read-only list of snakes
-        public IReadOnlyList<Snake> SnakeList { get; }
+        IReadOnlyDictionary<int, Snake> SnakeList { get; }
         
         // Update the snake on the canvas with its new position
         void UpdateSnakeOnCanvas(Snake snake);
@@ -32,20 +33,16 @@ namespace SnakeGame
         // Game canvas
         private readonly IMapCanvas _mapCanvas;
         
-        // Object to use as a lock for the SnakeList
-        private readonly object _snakeListLock;
-        
-        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes, object snakeListLock)
+        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes)
         {
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
-            _snakeList = new List<Snake>();
-            _snakeListLock = snakeListLock;
+            _snakeList = new ConcurrentDictionary<int, Snake>();
         }
 
-        // A list of all snakes in the game
-        private readonly List<Snake> _snakeList;
-        public IReadOnlyList<Snake> SnakeList => _snakeList;
+        // Hash table of snakes. The key is the snake's id
+        private readonly ConcurrentDictionary<int, Snake> _snakeList;
+        public IReadOnlyDictionary<int, Snake> SnakeList => _snakeList;
 
         // Update the snake on the canvas with its new position
         public void UpdateSnakeOnCanvas(Snake snake)
@@ -84,15 +81,14 @@ namespace SnakeGame
         // Add the snake to the list
         private void AddSnake(Snake snake)
         {
-            lock (_snakeListLock)
-                _snakeList.Add(snake);
+            _snakeList.TryAdd(snake.Id, snake);
         }
 
         // Remove a snake from the list and the canvas
         public void RemoveSnake(Snake snake)
         {
             // Remove the snake from the list and verify that the provided snake is in the list
-            if (!_snakeList.Remove(snake))
+            if (!_snakeList.TryRemove(snake.Id, out _))
                 throw new ArgumentException("The provided snake does not exist in the list of snakes.");
             
             // Remove all of the snake's body points and head from the canvas

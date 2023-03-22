@@ -48,9 +48,6 @@ namespace SnakeGame
         // Services are responsible for the correct drawing and storage of points on the canvas
         private static IFoodProcessSpawn _foodService;
         private static ISnakeService _snakeService;
-        
-        // Create an object to use as a lock for the SnakeList
-        private static object _snakeListLock;
 
         // Creating the playing field 
         private static void GameCreation()
@@ -85,11 +82,8 @@ namespace SnakeGame
             _canvas.ClearCanvas();
             _canvas.MarkWalls(BorderColor);
 
-            // Create a lock object
-            _snakeListLock = new object();
-            
             // Service creation
-            _snakeService = new SnakeService(_canvas, ColorsForSnakes, _snakeListLock);
+            _snakeService = new SnakeService(_canvas, ColorsForSnakes);
             _foodService = new FoodService(_canvas);
             
             // Spawn objects
@@ -98,7 +92,7 @@ namespace SnakeGame
 
             // Creating collision control managers
             _foodCollisionManager = new FoodCollisionManager((IFoodAddRemove)_foodService, _canvas);
-            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeService.SnakeList, _canvas);
+            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeService.SnakeList.Values, _canvas);
         }
 
         // End of game caption
@@ -117,7 +111,7 @@ namespace SnakeGame
             );
 
             // Sort the list of snakes by score and output the results
-            var snakeResultList = _snakeService.SnakeList.OrderByDescending(snake => 
+            var snakeResultList = _snakeService.SnakeList.Values.OrderByDescending(snake => 
                 snake.BodyPoints.Count).ToList();
 
             // Output the results of the game
@@ -143,7 +137,7 @@ namespace SnakeGame
             _foodService.EnablePeriodicSpawn();
 
             // The game will continue until all players have points less than ScoreToWin
-            while (IsNotGameOver())
+            while (_snakeService.SnakeList.All(snake => snake.Value.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -168,14 +162,7 @@ namespace SnakeGame
             GameOver();
             await Task.Delay(60000);
         }
-        
-        // A method that checks if the game is not over
-        private static bool IsNotGameOver()
-        {
-            lock (_snakeListLock)
-                return _snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin);
-        }
-        
+
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
         private static void KillSnakes()
         {
@@ -192,11 +179,8 @@ namespace SnakeGame
         {
             await Task.Run(() =>
             {
-                // Can't use foreach here, because the collection is changed
-                for (var i = 0; i < _snakeService.SnakeList.Count; i++)
+                foreach (var snake in _snakeService.SnakeList.Values)
                 {
-                    var snake = _snakeService.SnakeList[i];
-
                     // If the snake is not on the kill list, work with it
                     if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
                     {
@@ -227,13 +211,10 @@ namespace SnakeGame
                 while (_snakeDirectionManagers.IsKeyPress())
                 {
                     var key = _snakeDirectionManagers.ReadKey();
-                    for (var i = 0; i < _snakeService.SnakeList.Count; i++)
-                        if (!hasDirectionChanged[i])
-                        {
-                            var snake = _snakeService.SnakeList[i];
-                            hasDirectionChanged[i] = _snakeDirectionManagers
+                    foreach (var snake in _snakeService.SnakeList.Values)
+                        if (!hasDirectionChanged[snake.Id])
+                            hasDirectionChanged[snake.Id] = _snakeDirectionManagers
                                 .TryChangeDirection(snake, MovementKeys[snake.Id], key);
-                        }
                 }
             });
         }
