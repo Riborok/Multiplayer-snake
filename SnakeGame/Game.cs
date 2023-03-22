@@ -92,7 +92,7 @@ namespace SnakeGame
 
             // Creating collision control managers
             _foodCollisionManager = new FoodCollisionManager((IFoodAddRemove)_foodService, _canvas);
-            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeService.SnakeList.Values, _canvas);
+            _obstaclesCollisionManager = new ObstaclesCollisionManager(_snakeService.Snakes, _canvas);
         }
 
         // End of game caption
@@ -111,7 +111,7 @@ namespace SnakeGame
             );
 
             // Sort the list of snakes by score and output the results
-            var snakeResultList = _snakeService.SnakeList.Values.OrderByDescending(snake => 
+            var snakeResultList = _snakeService.Snakes.Values.OrderByDescending(snake => 
                 snake.BodyPoints.Count).ToList();
 
             // Output the results of the game
@@ -137,7 +137,7 @@ namespace SnakeGame
             _foodService.EnablePeriodicSpawn();
 
             // The game will continue until all players have points less than ScoreToWin
-            while (_snakeService.SnakeList.All(snake => snake.Value.BodyPoints.Count < ScoreToWin))
+            while (_snakeService.Snakes.Values.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
                 var delayTask = Task.Delay(45);
@@ -150,7 +150,7 @@ namespace SnakeGame
 
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
-                    KillSnakes();
+                    await KillSnakes();
                 
                 // Waiting for completion delay
                 await delayTask;
@@ -164,14 +164,17 @@ namespace SnakeGame
         }
 
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
-        private static void KillSnakes()
+        private static async Task KillSnakes()
         {
-            while (_obstaclesCollisionManager.TryTake(out var snakeToKill))
+            await Task.Run(() =>
             {
-                _snakeService.RemoveSnake(snakeToKill);
-                _foodService.ProcessIntoFood(snakeToKill);
-                _snakeService.SpawnSnake(snakeToKill.Id);
-            }
+                while (_obstaclesCollisionManager.TryTake(out var snakeToKill))
+                {
+                    _snakeService.RemoveSnake(snakeToKill);
+                    _foodService.ProcessIntoFood(snakeToKill);
+                    _snakeService.SpawnSnake(snakeToKill.Id);
+                }
+            });
         }
         
         // Handling snakes asynchronously 
@@ -179,7 +182,7 @@ namespace SnakeGame
         {
             await Task.Run(() =>
             {
-                foreach (var snake in _snakeService.SnakeList.Values)
+                foreach (var snake in _snakeService.Snakes.Values)
                 {
                     // If the snake is not on the kill list, work with it
                     if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
@@ -211,7 +214,7 @@ namespace SnakeGame
                 while (_snakeDirectionManagers.IsKeyPress())
                 {
                     var key = _snakeDirectionManagers.ReadKey();
-                    foreach (var snake in _snakeService.SnakeList.Values)
+                    foreach (var snake in _snakeService.Snakes.Values)
                         if (!hasDirectionChanged[snake.Id])
                             hasDirectionChanged[snake.Id] = _snakeDirectionManagers
                                 .TryChangeDirection(snake, MovementKeys[snake.Id], key);

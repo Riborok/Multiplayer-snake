@@ -75,9 +75,12 @@ namespace SnakeGame
             IColorRecycle<ConsoleColor> recycler)
         {
             WallTuple = wallTuple;
+            
+            // Since a dynamic array starts at 0 and ends at length-1, add 1 to make the last element the length
+            _getMap = new IPoint[(WallTuple.RightWall >>1) + 1, WallTuple.DownWall];
+            
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
-            _getMap = new IPoint[WallTuple.RightWall >>1, WallTuple.DownWall];
             SetConsoleSettings();
         }
 

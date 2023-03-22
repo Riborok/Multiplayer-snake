@@ -7,14 +7,14 @@ namespace SnakeGame
     // Interface for checking collisions between snake and obstacles
     public interface IObstaclesCollisionManager
     {
-        // Get the list of snakes that collided with obstacles and should be killed
+        // Get the collection of snakes that collided with obstacles and should be killed
         IEnumerable<Snake> SnakesToKill { get; }
 
         // If there are snakes in the collection, then returns it and true. Otherwise - false
         public bool TryTake(out Snake snake);
 
         // Checks if a collision occurred for the given snake and handles it
-        // returns true if a collision occurred, false otherwise. Also generates a kill list
+        // returns true if a collision occurred, false otherwise. Also adds to snakes to kill
         bool HasCollisionOccurred(Snake snake);
     }
     
@@ -25,9 +25,9 @@ namespace SnakeGame
         private readonly IPointMap _pointMap;
 
         // Enumeration of snakes on the map
-        private readonly IEnumerable<Snake> _snakes;
+        private readonly IReadOnlyDictionary<int, Snake> _snakes;
         
-        public ObstaclesCollisionManager(IEnumerable<Snake> snakes, IPointMap pointMap)
+        public ObstaclesCollisionManager(IReadOnlyDictionary<int, Snake> snakes, IPointMap pointMap)
         {
             _snakes = snakes;
             _pointMap = pointMap;
@@ -54,7 +54,7 @@ namespace SnakeGame
             if (CheckCollisionWithBorder(snake) || CheckCollisionWithPartsOfSnakes(snake))
             {
                 // If the snake collided with an obstacle or another snake,
-                // roll back the snake head and add to the list
+                // roll back the snake head and add to the snakes to kill
                 snake.Head.X = snake.LastBodyPart.X;
                 snake.Head.Y = snake.LastBodyPart.Y;
                 _snakesToKill.Add(snake);
@@ -82,9 +82,9 @@ namespace SnakeGame
             // Checking for collisions with other parts of the snakes and own parts
             if (_pointMap.GetPoint(snake.Head.X, snake.Head.Y) is SnakePart snakePart)
             {
-                // If the snakes collided head to head, add to the list
+                // If the snakes collided head to head, add to the snakes to kill
                 if (snakePart is SnakeHeadPoint)
-                    _snakesToKill.Add(_snakes.Single(snakeOnTheList => snakeOnTheList.Head == snakePart));
+                    _snakesToKill.Add(_snakes.Values.Single(otherSnake => otherSnake.Head == snakePart));
                 
                 result = true;
             }

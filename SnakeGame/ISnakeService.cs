@@ -7,8 +7,8 @@ namespace SnakeGame
     // Interface for managing snakes in the game
     public interface ISnakeService
     {
-        // A read-only list of snakes
-        IReadOnlyDictionary<int, Snake> SnakeList { get; }
+        // A read-only dictionary of snakes
+        IReadOnlyDictionary<int, Snake> Snakes { get; }
         
         // Update the snake on the canvas with its new position
         void UpdateSnakeOnCanvas(Snake snake);
@@ -19,7 +19,7 @@ namespace SnakeGame
         // Spawn a single snake with a given id
         void SpawnSnake(int id);
         
-        // Remove a snake from the list and the canvas
+        // Remove a snake from the dictionary and the canvas
         void RemoveSnake(Snake snake);
     }
     
@@ -37,12 +37,12 @@ namespace SnakeGame
         {
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
-            _snakeList = new ConcurrentDictionary<int, Snake>();
+            _snakes = new ConcurrentDictionary<int, Snake>();
         }
 
         // Hash table of snakes. The key is the snake's id
-        private readonly ConcurrentDictionary<int, Snake> _snakeList;
-        public IReadOnlyDictionary<int, Snake> SnakeList => _snakeList;
+        private readonly ConcurrentDictionary<int, Snake> _snakes;
+        public IReadOnlyDictionary<int, Snake> Snakes => _snakes;
 
         // Update the snake on the canvas with its new position
         public void UpdateSnakeOnCanvas(Snake snake)
@@ -78,18 +78,18 @@ namespace SnakeGame
             timer.Enabled = true;
         }
 
-        // Add the snake to the list
+        // Add the snake to the dictionary
         private void AddSnake(Snake snake)
         {
-            _snakeList.TryAdd(snake.Id, snake);
+            _snakes.TryAdd(snake.Id, snake);
         }
 
-        // Remove a snake from the list and the canvas
+        // Remove a snake from the dictionary and the canvas
         public void RemoveSnake(Snake snake)
         {
-            // Remove the snake from the list and verify that the provided snake is in the list
-            if (!_snakeList.TryRemove(snake.Id, out _))
-                throw new ArgumentException("The provided snake does not exist in the list of snakes.");
+            // Remove the snake from the dictionary and verify that the provided snake is in the dictionary
+            if (!_snakes.TryRemove(snake.Id, out _))
+                throw new ArgumentException("The provided snake does not exist in the dictionary of snakes.");
             
             // Remove all of the snake's body points and head from the canvas
             foreach (var bodyPoint in snake.BodyPoints)
