@@ -19,24 +19,17 @@ namespace SnakeGame
                     y: Random.Next(_canvas.WallTuple.UpWall + 1, _canvas.WallTuple.DownWall));
             }
 
-            // Object to use as a lock object to synchronize access to the shared resource
-            private static readonly object Lock = new();
-            
             // Generates random coordinates that do not overlap with existing food or snakes
             public static (int x, int y) GenerateFreeCoordinates()
             {
-                // Access synchronization
-                lock (Lock)
-                {
-                    (int x, int y) randomCoords;
+                (int x, int y) randomCoords;
 
-                    // Generate new coordinates until they don't overlap with existing food or snakes
-                    do
-                        randomCoords = GenerateCoordinates();
-                    while (_canvas.Map.TryGetValue(randomCoords, out _));
+                // Generate new coordinates until they don't overlap with existing food or snakes
+                do
+                    randomCoords = GenerateCoordinates();
+                while (_canvas.Map.TryGetValue(randomCoords, out _));
 
-                    return randomCoords;
-                }
+                return randomCoords;
             }
 
             // Generates a random direction

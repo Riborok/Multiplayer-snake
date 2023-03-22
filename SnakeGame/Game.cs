@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SnakeGame
@@ -138,7 +137,7 @@ namespace SnakeGame
             _foodService.EnablePeriodicSpawn();
 
             // The game will continue until all players have points less than ScoreToWin
-            while (IsNotGameOver())
+            while (_snakeService.SnakeList.ToList().All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Key handling asynchronous
                 var handlingKeysTask  = HandlingKeysAsync();
@@ -164,26 +163,6 @@ namespace SnakeGame
             await Task.Delay(60000);
         }
         
-        // A mutex object to synchronize access to the shared resource
-        private static readonly Mutex Mutex = new ();
-        
-        // A method that checks if the game is not over
-        private static bool IsNotGameOver()
-        {
-            // Wait for ownership of the mutex
-            Mutex.WaitOne(); 
-
-            try
-            {
-                return _snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin);
-            }
-            finally
-            {
-                // Release the mutex ownership
-                Mutex.ReleaseMutex(); 
-            }
-        }
-
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
         private static void KillSnakes()
         {

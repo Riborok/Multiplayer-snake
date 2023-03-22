@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace SnakeGame
 {
@@ -78,24 +77,10 @@ namespace SnakeGame
             timer.Enabled = true;
         }
 
-        // A mutex object to synchronize access to the shared resource
-        private static readonly Mutex Mutex = new ();
-        
         // Add the snake to the list
         private void AddSnake(Snake snake)
         {
-            // Wait for ownership of the mutex
-            Mutex.WaitOne();
-
-            try
-            {
-                _snakeList.Add(snake);
-            }
-            finally
-            {
-                // Release the mutex ownership
-                Mutex.ReleaseMutex();
-            }
+            _snakeList.Add(snake);
         }
 
         // Remove a snake from the list and the canvas
