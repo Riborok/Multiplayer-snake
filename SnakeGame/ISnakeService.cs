@@ -35,7 +35,7 @@ namespace SnakeGame
         // Object to use as a lock for the SnakeList
         private readonly object _snakeListLock;
         
-        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes, Object snakeListLock)
+        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes, object snakeListLock)
         {
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;

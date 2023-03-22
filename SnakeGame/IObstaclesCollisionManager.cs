@@ -80,8 +80,7 @@ namespace SnakeGame
             bool result = false;
             
             // Checking for collisions with other parts of the snakes and own parts
-            if (_pointMap.Map.TryGetValue((snake.Head.X, snake.Head.Y), out var point) && 
-                point is SnakePart snakePart)
+            if (_pointMap.GetPoint(snake.Head.X, snake.Head.Y) is SnakePart snakePart)
             {
                 // If the snakes collided head to head, add to the list
                 if (snakePart is SnakeHeadPoint)

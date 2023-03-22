@@ -145,21 +145,21 @@ namespace SnakeGame
             // The game will continue until all players have points less than ScoreToWin
             while (IsNotGameOver())
             {
-                // Key handling asynchronous
-                var handlingKeysTask  = HandlingKeysAsync();
-                
                 // Frame delay
                 var delayTask = Task.Delay(45);
+                
+                // Key handling asynchronous
+                await HandlingKeysAsync();
 
                 // Snake movement handling asynchronous
-                HandlingSnakes();
+                await HandlingSnakes();
 
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
                     KillSnakes();
                 
                 // Waiting for completion delay
-                await Task.WhenAll(delayTask, handlingKeysTask);
+                await delayTask;
             }
             
             // Disable food spawn
@@ -188,29 +188,32 @@ namespace SnakeGame
         }
         
         // Handling snakes asynchronously 
-        private static void HandlingSnakes()
+        private static async Task HandlingSnakes()
         {
-            // Can't use foreach here, because the collection is changed
-            for (var i = 0; i < _snakeService.SnakeList.Count; i++)
+            await Task.Run(() =>
             {
-                var snake = _snakeService.SnakeList[i];
-                
-                // If the snake is not on the kill list, work with it
-                if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
+                // Can't use foreach here, because the collection is changed
+                for (var i = 0; i < _snakeService.SnakeList.Count; i++)
                 {
-                    snake.Move();
+                    var snake = _snakeService.SnakeList[i];
 
-                    // Checking snake collision with obstacles
-                    if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                    // If the snake is not on the kill list, work with it
+                    if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
                     {
-                        // If there was no collusion with obstacles, update the snake,
-                        // then draw it and check the collision with food
-                        snake.BodyUpdate();
-                        _foodCollisionManager.CollisionCheck(snake);
-                        _snakeService.UpdateSnakeOnCanvas(snake);
+                        snake.Move();
+
+                        // Checking snake collision with obstacles
+                        if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                        {
+                            // If there was no collusion with obstacles, update the snake,
+                            // then draw it and check the collision with food
+                            snake.BodyUpdate();
+                            _foodCollisionManager.CollisionCheck(snake);
+                            _snakeService.UpdateSnakeOnCanvas(snake);
+                        }
                     }
                 }
-            }
+            });
         }
         
         // Handling keys asynchronously 

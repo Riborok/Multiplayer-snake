@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace SnakeGame
 {
@@ -8,7 +6,7 @@ namespace SnakeGame
     public interface IPointMap
     {
         // Get a point on the map
-        IReadOnlyDictionary<(int x, int y), IPoint> Map { get; }
+        IPoint GetPoint(int x, int y);
 
         // Tuple with the borders of the map
         (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -56,11 +54,16 @@ namespace SnakeGame
         // Recycle colors
         private readonly IColorRecycle<ConsoleColor> _recycler;
 
-        // 2D Hash Table of points that represents the canvas
-        private readonly ConcurrentDictionary<(int x, int y), IPoint> _map;
+        // 2D array of points that represents the canvas
+        // Since in the console the snake moves along the X coordinates +2,
+        // in all calls to X, perform the >>1 operation to reduce memory
+        private readonly IPoint[,] _getMap;
 
         // Get a point on the map
-        public IReadOnlyDictionary<(int x, int y), IPoint> Map => _map;
+        public IPoint GetPoint(int x, int y)
+        {
+            return _getMap[x >>1, y];
+        }
         
         // Walls of the map
         public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
@@ -74,7 +77,7 @@ namespace SnakeGame
             WallTuple = wallTuple;
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
-            _map = new ConcurrentDictionary<(int x, int y), IPoint>();
+            _getMap = new IPoint[WallTuple.RightWall >>1, WallTuple.DownWall];
             SetConsoleSettings();
         }
 
@@ -87,13 +90,13 @@ namespace SnakeGame
         // Add a point to the map
         public void AddToMap(IPoint point)
         {
-            _map.AddOrUpdate((point.X, point.Y), point, (_, _) => point);
+            _getMap[point.X >>1, point.Y] = point;
         }
 
         // Remove a point from the map
         public void RemoveFromMap(IPoint point)
         {
-            _map.TryRemove((point.X, point.Y), out _ );
+            _getMap[point.X >>1, point.Y] = null;
         }
         
         // Object to use as a lock object to synchronize access to the shared resource
