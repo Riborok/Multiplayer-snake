@@ -32,11 +32,15 @@ namespace SnakeGame
         // Game canvas
         private readonly IMapCanvas _mapCanvas;
         
-        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes)
+        // Object to use as a lock for the SnakeList
+        private readonly object _snakeListLock;
+        
+        public SnakeService(IMapCanvas mapCanvas, Color[] colorsForSnakes, Object snakeListLock)
         {
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
             _snakeList = new List<Snake>();
+            _snakeListLock = snakeListLock;
         }
 
         // A list of all snakes in the game
@@ -80,7 +84,8 @@ namespace SnakeGame
         // Add the snake to the list
         private void AddSnake(Snake snake)
         {
-            _snakeList.Add(snake);
+            lock (_snakeListLock)
+                _snakeList.Add(snake);
         }
 
         // Remove a snake from the list and the canvas

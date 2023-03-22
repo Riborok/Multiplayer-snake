@@ -48,6 +48,9 @@ namespace SnakeGame
         // Services are responsible for the correct drawing and storage of points on the canvas
         private static IFoodProcessSpawn _foodService;
         private static ISnakeService _snakeService;
+        
+        // Create an object to use as a lock for the SnakeList
+        private static object _snakeListLock;
 
         // Creating the playing field 
         private static void GameCreation()
@@ -81,9 +84,12 @@ namespace SnakeGame
             // Clear the canvas and draw the game borders
             _canvas.ClearCanvas();
             _canvas.MarkWalls(BorderColor);
+
+            // Create a lock object
+            _snakeListLock = new object();
             
             // Service creation
-            _snakeService = new SnakeService(_canvas, ColorsForSnakes);
+            _snakeService = new SnakeService(_canvas, ColorsForSnakes, _snakeListLock);
             _foodService = new FoodService(_canvas);
             
             // Spawn objects
@@ -137,7 +143,7 @@ namespace SnakeGame
             _foodService.EnablePeriodicSpawn();
 
             // The game will continue until all players have points less than ScoreToWin
-            while (_snakeService.SnakeList.ToList().All(snake => snake.BodyPoints.Count < ScoreToWin))
+            while (IsNotGameOver())
             {
                 // Key handling asynchronous
                 var handlingKeysTask  = HandlingKeysAsync();
@@ -161,6 +167,13 @@ namespace SnakeGame
 
             GameOver();
             await Task.Delay(60000);
+        }
+        
+        // A method that checks if the game is not over
+        private static bool IsNotGameOver()
+        {
+            lock (_snakeListLock)
+                return _snakeService.SnakeList.All(snake => snake.BodyPoints.Count < ScoreToWin);
         }
         
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
