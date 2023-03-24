@@ -4,7 +4,7 @@ using System.Linq;
 namespace SnakeGame
 {
     // This class represents a part of the snake body
-    public abstract class SnakePart : IPoint
+    public abstract class SnakePart : IDrawablePoint
     {
         public int X { get; set; }
         public int Y { get; set; }

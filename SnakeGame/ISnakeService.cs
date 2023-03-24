@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SnakeGame
 {
@@ -67,13 +68,14 @@ namespace SnakeGame
                 SpawnSnake(i);
         }
         
+        // Snake spawn period
+        private const int SpawnPeriod = 4200;
+        
         // Spawn a single snake with a given id
-        public void SpawnSnake(int id)
+        public async void SpawnSnake(int id)
         {
-            var timer = new System.Timers.Timer(4200);
-            timer.Elapsed += (_,_) => AddSnake(CreateSnake(id));
-            timer.AutoReset = false;
-            timer.Enabled = true;
+            await Task.Delay(SpawnPeriod);
+            AddSnake(CreateSnake(id));
         }
 
         // Add the snake to the dictionary

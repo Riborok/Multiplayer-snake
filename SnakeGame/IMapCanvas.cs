@@ -6,16 +6,16 @@ namespace SnakeGame
     public interface IPointMap
     {
         // Get a point on the map
-        IPoint GetPoint(int x, int y);
+        ICoordinates GetPoint(int x, int y);
 
         // Tuple with the borders of the map
         (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
 
         // Add a point to the map
-        void AddToMap(IPoint point);
+        void AddToMap(ICoordinates coordinates);
 
         // Remove a point from the map
-        void RemoveFromMap(IPoint point);
+        void RemoveFromMap(ICoordinates coordinates);
     }
 
     // This is an interface for a canvas that implements IPointMap
@@ -28,10 +28,10 @@ namespace SnakeGame
         void SetBackgroundColor(Color color);
 
         // Draw a point on the canvas
-        void DrawPoint(IPoint point);
+        void DrawPoint(IDrawablePoint drawablePoint);
 
         // Clear a point from the canvas
-        void ClearPoint(IPoint point);
+        void ClearPoint(ICoordinates coordinates);
 
         // Write a message on the canvas
         void WriteMessage(int x, int y, Color color, string line);
@@ -57,10 +57,10 @@ namespace SnakeGame
         // 2D array of points that represents the canvas
         // Since in the console the snake moves along the X coordinates +2,
         // in all calls to X, perform the >>1 operation to reduce memory
-        private readonly IPoint[,] _getMap;
+        private readonly ICoordinates[,] _getMap;
 
         // Get a point on the map
-        public IPoint GetPoint(int x, int y)
+        public ICoordinates GetPoint(int x, int y)
         {
             return _getMap[x >>1, y];
         }
@@ -77,7 +77,7 @@ namespace SnakeGame
             WallTuple = wallTuple;
             
             // Since a dynamic array starts at 0 and ends at length-1, add 1 to make the last element the length
-            _getMap = new IPoint[(WallTuple.RightWall >>1) + 1, WallTuple.DownWall];
+            _getMap = new ICoordinates[(WallTuple.RightWall >>1) + 1, WallTuple.DownWall];
             
             BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
@@ -91,36 +91,36 @@ namespace SnakeGame
         }
 
         // Add a point to the map
-        public void AddToMap(IPoint point)
+        public void AddToMap(ICoordinates coordinates)
         {
-            _getMap[point.X >>1, point.Y] = point;
+            _getMap[coordinates.X >>1, coordinates.Y] = coordinates;
         }
 
         // Remove a point from the map
-        public void RemoveFromMap(IPoint point)
+        public void RemoveFromMap(ICoordinates coordinates)
         {
-            _getMap[point.X >>1, point.Y] = null;
+            _getMap[coordinates.X >>1, coordinates.Y] = null;
         }
         
         // Object to use as a lock object to synchronize access to the shared resource
         private static readonly object Lock = new();
 
         // Write a point to the console
-        public void DrawPoint(IPoint point)
+        public void DrawPoint(IDrawablePoint drawablePoint)
         {
             // Access synchronization
             lock (Lock)
             {
-                Console.SetCursorPosition(point.X, point.Y);
-                Console.ForegroundColor = _recycler.Get(point.Color);
-                Console.Write(point.Symbol);   
+                Console.SetCursorPosition(drawablePoint.X, drawablePoint.Y);
+                Console.ForegroundColor = _recycler.Get(drawablePoint.Color);
+                Console.Write(drawablePoint.Symbol);   
             }
         }
 
         // Write a blank space to the console
-        public void ClearPoint(IPoint point)
+        public void ClearPoint(ICoordinates coordinates)
         {
-            Console.SetCursorPosition(point.X, point.Y);
+            Console.SetCursorPosition(coordinates.X, coordinates.Y);
             Console.Write(' ');
         }
 

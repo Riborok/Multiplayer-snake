@@ -43,10 +43,13 @@ namespace SnakeGame
         // Food spawn timer
         private System.Timers.Timer _timer;
         
+        // Food spawn period
+        private const int SpawnPeriod = 4200;
+        
         // Enable periodic food spawn
         public void EnablePeriodicSpawn()
         {
-            _timer = new System.Timers.Timer(4200);
+            _timer = new System.Timers.Timer(SpawnPeriod);
             _timer.Elapsed += (_, _) => Add(CreateSimpleFood());
             _timer.Enabled = true;
         }
@@ -55,6 +58,7 @@ namespace SnakeGame
         public void DisablePeriodicSpawn()
         {
             _timer.Enabled = false;
+            _timer.Dispose();
         }
 
         // Spawn simple food

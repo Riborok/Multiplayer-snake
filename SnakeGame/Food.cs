@@ -3,7 +3,7 @@ using System;
 namespace SnakeGame
 {
     // Abstract class for food
-    public abstract class Food : IPoint
+    public abstract class Food : IDrawablePoint
     {
         public int X { get; }
         public int Y { get; }
