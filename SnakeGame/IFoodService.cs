@@ -1,5 +1,3 @@
-using Timer = System.Timers.Timer;
-
 namespace SnakeGame
 {
     // Interface for adding and removing food on the playing field
@@ -43,12 +41,12 @@ namespace SnakeGame
         }
 
         // Food spawn timer
-        private Timer _timer;
+        private System.Timers.Timer _timer;
         
         // Enable periodic food spawn
         public void EnablePeriodicSpawn()
         {
-            _timer = new Timer(7000);
+            _timer = new System.Timers.Timer(4200);
             _timer.Elapsed += (_, _) => Add(CreateSimpleFood());
             _timer.Enabled = true;
         }

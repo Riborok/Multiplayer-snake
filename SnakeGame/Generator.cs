@@ -31,12 +31,6 @@ namespace SnakeGame
 
                 return randomCoords;
             }
-
-            // Generates a random direction
-            public static Direction GenerateDirection()
-            {
-                return (Direction)Random.Next(4);
-            }
         }
     }
 }

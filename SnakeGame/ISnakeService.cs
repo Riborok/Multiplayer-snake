@@ -70,10 +70,8 @@ namespace SnakeGame
         // Spawn a single snake with a given id
         public void SpawnSnake(int id)
         {
-            var snake = CreateSnake(id);
-            
-            var timer = new System.Timers.Timer(2500);
-            timer.Elapsed += (_,_) => AddSnake(snake);
+            var timer = new System.Timers.Timer(4200);
+            timer.Elapsed += (_,_) => AddSnake(CreateSnake(id));
             timer.AutoReset = false;
             timer.Enabled = true;
         }
@@ -101,7 +99,7 @@ namespace SnakeGame
         private Snake CreateSnake(int id)
         {
             var snake = new Snake(Game.Generator.GenerateFreeCoordinates(),
-                Game.Generator.GenerateDirection(), color: _colorsForSnakes[id], id: id);
+                Direction.None, color: _colorsForSnakes[id], id: id);
 
             var sleepingPart = new SleepingPart(snake.Head);
 

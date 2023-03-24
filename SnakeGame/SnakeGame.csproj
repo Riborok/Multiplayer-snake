@@ -48,7 +48,7 @@
         <Compile Include="IObstaclesCollisionManager.cs" />
         <Compile Include="IFoodCollisionManager.cs" />
         <Compile Include="Generator.cs" />
-        <Compile Include="SnakeDirectionManager.cs" />
+        <Compile Include="ISnakeDirectionManager.cs" />
         <Compile Include="Food.cs" />
         <Compile Include="Direction.cs" />
         <Compile Include="ISnakeService.cs" />

@@ -23,10 +23,10 @@ namespace SnakeGame
         private const Color BorderColor = Color.DarkGray;
 
         // Manager is responsible for changing the direction of the snakes
-        private static SnakeDirectionManager<ConsoleKey> _snakeDirectionManagers;
+        private static ISnakeDirectionManager<ConsoleKey> _snakeDirectionManagers;
 
         // Array of movement keys. The number in the array corresponds to the id of the snake
-        private static readonly IMovementKeys[] MovementKeys =
+        private static readonly IMovementKeys<ConsoleKey>[] MovementKeys =
         {
             new ArrowsMovementKey(),
             new WasdMovementKey(),
@@ -182,22 +182,21 @@ namespace SnakeGame
         {
             await Task.Run(() =>
             {
-                foreach (var snake in _snakeService.Snakes.Values)
+                // If the snake has a direction and is not on the kill list, work with it
+                foreach (var snake in _snakeService.Snakes.Values
+                             .Where(snake => snake.Direction != Direction.None && 
+                                             !_obstaclesCollisionManager.SnakesToKill.Contains(snake)))
                 {
-                    // If the snake is not on the kill list, work with it
-                    if (!_obstaclesCollisionManager.SnakesToKill.Contains(snake))
-                    {
-                        snake.Move();
+                    snake.Move();
 
-                        // Checking snake collision with obstacles
-                        if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
-                        {
-                            // If there was no collusion with obstacles, update the snake,
-                            // then draw it and check the collision with food
-                            snake.BodyUpdate();
-                            _foodCollisionManager.CollisionCheck(snake);
-                            _snakeService.UpdateSnakeOnCanvas(snake);
-                        }
+                    // Checking snake collision with obstacles
+                    if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                    {
+                        // If there was no collusion with obstacles, update the snake,
+                        // then draw it and check the collision with food
+                        snake.BodyUpdate();
+                        _foodCollisionManager.CollisionCheck(snake);
+                        _snakeService.UpdateSnakeOnCanvas(snake);
                     }
                 }
             });
