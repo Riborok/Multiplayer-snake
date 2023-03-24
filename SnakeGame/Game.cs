@@ -164,12 +164,13 @@ namespace SnakeGame
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
         private static void KillSnakes()
         {
-            while (_obstaclesCollisionManager.TryTake(out var snakeToKill))
+            foreach (var snakeToKill in _obstaclesCollisionManager.SnakesToKill)
             {
                 _snakeService.RemoveSnake(snakeToKill);
                 _foodService.ProcessIntoFood(snakeToKill);
                 _snakeService.SpawnSnake(snakeToKill.Id);
             }
+            _obstaclesCollisionManager.ClearListOfSnakesToKill();
         }
         
         // Handling snakes asynchronously 

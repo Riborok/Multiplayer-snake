@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,8 +9,8 @@ namespace SnakeGame
         // Get the collection of snakes that collided with obstacles and should be killed
         IEnumerable<Snake> SnakesToKill { get; }
 
-        // If there are snakes in the collection, then returns it and true. Otherwise - false
-        public bool TryTake(out Snake snake);
+        // Clear the list of snakes to kill
+        void ClearListOfSnakesToKill();
 
         // Checks if a collision occurred for the given snake and handles it
         // returns true if a collision occurred, false otherwise. Also adds to snakes to kill
@@ -32,17 +31,17 @@ namespace SnakeGame
             _snakes = snakes;
             _pointMap = pointMap;
             
-            _snakesToKill = new ConcurrentBag<Snake>();
+            _snakesToKill = new List<Snake>();
         }
 
-        // A bag of snakes to kill
-        private readonly ConcurrentBag<Snake> _snakesToKill;
+        // The list of snakes to kill
+        private readonly List<Snake> _snakesToKill;
         public IEnumerable<Snake> SnakesToKill => _snakesToKill;
-
-        // Take object from a bag
-        public bool TryTake(out Snake snake)
+        
+        // Clear the list of snakes to kill
+        public void ClearListOfSnakesToKill()
         {
-            return _snakesToKill.TryTake(out snake);
+            _snakesToKill.Clear();
         }
 
         // Check for collision with objects 

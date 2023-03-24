@@ -89,11 +89,15 @@ namespace SnakeGame
         {
             Console.BackgroundColor = _recycler.Get(color);
         }
+        
+        // Object to use as a lock object to synchronize access to the shared resource
+        private static readonly object AddLock = new();
 
         // Add a point to the map
         public void AddToMap(ICoordinates coordinates)
         {
-            _getMap[coordinates.X >>1, coordinates.Y] = coordinates;
+            lock (AddLock)
+                _getMap[coordinates.X >>1, coordinates.Y] = coordinates;
         }
 
         // Remove a point from the map
@@ -103,13 +107,13 @@ namespace SnakeGame
         }
         
         // Object to use as a lock object to synchronize access to the shared resource
-        private static readonly object Lock = new();
+        private static readonly object DrawLock = new();
 
         // Write a point to the console
         public void DrawPoint(IDrawablePoint drawablePoint)
         {
             // Access synchronization
-            lock (Lock)
+            lock (DrawLock)
             {
                 Console.SetCursorPosition(drawablePoint.X, drawablePoint.Y);
                 Console.ForegroundColor = _recycler.Get(drawablePoint.Color);
