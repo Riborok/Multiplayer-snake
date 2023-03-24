@@ -8,11 +8,11 @@ ___
 
 ## **Elements of game**
 
-### *Sections of walls*
+### *Sections of the walls*
 
-![Element of wall Vert](https://i.imgur.com/eplSHVF.png)
+![Element of the wall Vert](https://i.imgur.com/eplSHVF.png)
 
-![Element of wall Hor](https://i.imgur.com/7xVNFgM.png)
+![Element of the wall Hor](https://i.imgur.com/7xVNFgM.png)
 
 These walls limit the playing field, if you touch it, the snake will die(((
 #
@@ -20,13 +20,13 @@ These walls limit the playing field, if you touch it, the snake will die(((
 
 ![Snakes](https://i.imgur.com/LURF0Lx.png)
 
-It's a snakes with a smiley faces at the beginning.
+It's the snakes with a smiley faces at the beginning.
 #
 ### *Simple food*
 
 ![Simple Food](https://i.imgur.com/kr3gohA.png)
 
-These dots are common food, eating one such you'll get +1 to your points. 
+These dots are common food, eating one such you'll get +1 to your points.
 #
 ### *Snake food*
 
@@ -39,6 +39,11 @@ It's the same food, only painted, because it falls off the snakes)
 ![Head Food](https://i.imgur.com/R0NIVbL.png)
 
 This food falls out of the snake's head and the longer the snake has droped it, the more points it will give to you.
+#
+### *Respawn heart*
+![Respawn heart](https://i.imgur.com/6dAPhoX.png)
+
+When you die you will respawn as a heart for a few seconds.
 
 ___
 
