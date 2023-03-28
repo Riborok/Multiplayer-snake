@@ -146,11 +146,11 @@ namespace SnakeGame
                 await HandlingKeysAsync();
 
                 // Snake movement handling asynchronous
-                HandlingSnakes();
+                await HandlingSnakes();
 
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
-                    KillSnakes();
+                    await KillSnakes();
                 
                 // Waiting for completion delay
                 await delayTask;
@@ -164,37 +164,44 @@ namespace SnakeGame
         }
 
         // Killing snakes from the list: process the snake into food and respawn, then clear the list
-        private static void KillSnakes()
+        private static async Task KillSnakes()
         {
-            foreach (var snakeToKill in _obstaclesCollisionManager.SnakesToKill)
+            await Task.Run(() =>
             {
-                _snakeService.RemoveSnake(snakeToKill);
-                _foodService.ProcessIntoFood(snakeToKill);
-                _snakeService.SpawnSnake(snakeToKill.Id);
-            }
-            _obstaclesCollisionManager.ClearListOfSnakesToKill();
+                foreach (var snakeToKill in _obstaclesCollisionManager.SnakesToKill)
+                {
+                    _snakeService.RemoveSnake(snakeToKill);
+                    _foodService.ProcessIntoFood(snakeToKill);
+                    _snakeService.SpawnSnake(snakeToKill.Id);
+                }
+
+                _obstaclesCollisionManager.ClearListOfSnakesToKill();
+            });
         }
         
         // Handling snakes asynchronously 
-        private static void HandlingSnakes()
+        private static async Task HandlingSnakes()
         {
-            // If the snake has a direction and is not on the kill list, work with it
-            foreach (var snake in _snakeService.Snakes.Values
-                         .Where(snake => snake.Direction != Direction.None &&
-                                         !_obstaclesCollisionManager.SnakesToKill.Contains(snake)))
+            await Task.Run(() =>
             {
-                snake.Move();
-
-                // Checking snake collision with obstacles
-                if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                // If the snake has a direction and is not on the kill list, work with it
+                foreach (var snake in _snakeService.Snakes.Values
+                             .Where(snake => snake.Direction != Direction.None &&
+                                             !_obstaclesCollisionManager.SnakesToKill.Contains(snake)))
                 {
-                    // If there was no collusion with obstacles, update the snake,
-                    // then draw it and check the collision with food
-                    snake.BodyUpdate();
-                    _foodCollisionManager.CollisionCheck(snake);
-                    _snakeService.UpdateSnakeOnCanvas(snake);
+                    snake.Move();
+
+                    // Checking snake collision with obstacles
+                    if (!_obstaclesCollisionManager.HasCollisionOccurred(snake))
+                    {
+                        // If there was no collusion with obstacles, update the snake,
+                        // then draw it and check the collision with food
+                        snake.BodyUpdate();
+                        _foodCollisionManager.CollisionCheck(snake);
+                        _snakeService.UpdateSnakeOnCanvas(snake);
+                    }
                 }
-            }
+            });
         }
         
         // Handling keys asynchronously 
