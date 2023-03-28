@@ -146,7 +146,7 @@ namespace SnakeGame
                 await HandlingKeysAsync();
 
                 // Snake movement handling asynchronous
-                await HandlingSnakes();
+                await HandlingSnakesAsync();
 
                 // If there are snakes to kill, kill them
                 if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
@@ -180,7 +180,7 @@ namespace SnakeGame
         }
         
         // Handling snakes asynchronously 
-        private static async Task HandlingSnakes()
+        private static async Task HandlingSnakesAsync()
         {
             await Task.Run(() =>
             {
