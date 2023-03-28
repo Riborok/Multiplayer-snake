@@ -140,7 +140,7 @@ namespace SnakeGame
             while (_snakeService.Snakes.Values.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                await Task.Delay(35);
+                var delayTask = Task.Delay(45);
                 
                 // Key handling asynchronous
                 await HandlingKeysAsync();
@@ -152,6 +152,8 @@ namespace SnakeGame
                 if (_obstaclesCollisionManager.SnakesToKill.Count() != 0)
                     KillSnakes();
                 
+                // Waiting for completion delay
+                await delayTask;
             }
             
             // Disable food spawn
