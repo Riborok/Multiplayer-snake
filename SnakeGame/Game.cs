@@ -143,7 +143,7 @@ namespace SnakeGame
                 await Task.Delay(35);
                 
                 // Key handling asynchronous
-                HandlingKeysAsync();
+                await HandlingKeysAsync();
 
                 // Snake movement handling asynchronous
                 HandlingSnakes();
@@ -196,20 +196,24 @@ namespace SnakeGame
         }
         
         // Handling keys asynchronously 
-        private static void HandlingKeysAsync()
+        private static async Task HandlingKeysAsync()
         {
-            // Boolean array, for control: the player can change direction once per iteration
-            var hasDirectionChanged = new bool[_amountSnakes];
-            
-            // Processing user input
-            while (_snakeDirectionManagers.IsKeyPress())
+            await Task.Run(() =>
             {
-                var key = _snakeDirectionManagers.ReadKey();
-                foreach (var snake in _snakeService.Snakes.Values)
-                    if (!hasDirectionChanged[snake.Id])
-                        hasDirectionChanged[snake.Id] = _snakeDirectionManagers
-                            .TryChangeDirection(snake, MovementKeys[snake.Id], key);
-            }
+
+                // Boolean array, for control: the player can change direction once per iteration
+                var hasDirectionChanged = new bool[_amountSnakes];
+
+                // Processing user input
+                while (_snakeDirectionManagers.IsKeyPress())
+                {
+                    var key = _snakeDirectionManagers.ReadKey();
+                    foreach (var snake in _snakeService.Snakes.Values)
+                        if (!hasDirectionChanged[snake.Id])
+                            hasDirectionChanged[snake.Id] = _snakeDirectionManagers
+                                .TryChangeDirection(snake, MovementKeys[snake.Id], key);
+                }
+            });
         }
     }
 }
