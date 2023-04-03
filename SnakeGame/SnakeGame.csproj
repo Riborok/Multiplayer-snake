@@ -40,6 +40,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="AttentionPoint.cs" />
         <Compile Include="IMapCanvas.cs" />
         <Compile Include="Color.cs" />
         <Compile Include="FullScreen.cs" />

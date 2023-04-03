@@ -71,11 +71,41 @@ namespace SnakeGame
         // Snake spawn period
         private const int SpawnPeriod = 4200;
         
+        // Flicker period
+        private const int FlickerPeriod = 150;
+        
         // Spawn a single snake with a given id
         public async void SpawnSnake(int id)
         {
-            await Task.Delay(SpawnPeriod);
-            AddSnake(CreateSnake(id));
+            await Task.Run(async () =>
+            {
+                // Create a new snake with the given ID
+                var snake = CreateSnake(id);
+                
+                // Create a new sleeping part for the snake's head
+                var sleepingPart = new SleepingPart(snake.Head);
+
+                // Add the sleepingPart to the map
+                _mapCanvas.AddToMap(sleepingPart);
+
+                // Create a new attention point based on the sleeping part's coordinates
+                var attentionPoint = new AttentionPoint(sleepingPart);
+
+                // Flicker the attention point for a period of time to draw attention to the new snake
+                for (var i = 0; i < SpawnPeriod / (2 * FlickerPeriod); i++)
+                {
+                    _mapCanvas.DrawPoint(attentionPoint);
+
+                    await Task.Delay(FlickerPeriod);
+                    
+                    _mapCanvas.DrawPoint(sleepingPart);
+                    
+                    await Task.Delay(FlickerPeriod);
+                }
+                
+                // Add the new snake to the game
+                AddSnake(snake);
+            });
         }
 
         // Add the snake to the dictionary
@@ -100,16 +130,8 @@ namespace SnakeGame
         // Create a snake on the canvas and the map
         private Snake CreateSnake(int id)
         {
-            var snake = new Snake(Game.Generator.GenerateFreeCoordinates(),
+            return new Snake(Game.Generator.GenerateFreeCoordinates(),
                 Direction.None, color: _colorsForSnakes[id], id: id);
-
-            var sleepingPart = new SleepingPart(snake.Head);
-
-            // Add the sleepingPart to the map and draw it
-            _mapCanvas.AddToMap(sleepingPart);
-            _mapCanvas.DrawPoint(sleepingPart);
-            
-            return snake;
         }
     }
 }
