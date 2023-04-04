@@ -62,7 +62,9 @@ namespace SnakeGame
         // Get a point on the map
         public ICoordinates GetPoint(int x, int y)
         {
-            return _getMap[x >>1, y];
+            // Access synchronization
+            lock (MapLock)
+                return _getMap[x >>1, y];
         }
         
         // Walls of the map
@@ -91,19 +93,22 @@ namespace SnakeGame
         }
         
         // Object to use as a lock object to synchronize access to the shared resource
-        private static readonly object AddLock = new();
+        private static readonly object MapLock = new();
 
         // Add a point to the map
         public void AddToMap(ICoordinates coordinates)
         {
-            lock (AddLock)
+            // Access synchronization
+            lock (MapLock)
                 _getMap[coordinates.X >>1, coordinates.Y] = coordinates;
         }
 
         // Remove a point from the map
         public void RemoveFromMap(ICoordinates coordinates)
         {
-            _getMap[coordinates.X >>1, coordinates.Y] = null;
+            // Access synchronization
+            lock (MapLock)
+                _getMap[coordinates.X >>1, coordinates.Y] = null;
         }
         
         // Object to use as a lock object to synchronize access to the shared resource
@@ -124,8 +129,12 @@ namespace SnakeGame
         // Write a blank space to the console
         public void ClearPoint(ICoordinates coordinates)
         {
-            Console.SetCursorPosition(coordinates.X, coordinates.Y);
-            Console.Write(' ');
+            // Access synchronization
+            lock (DrawLock)
+            {
+                Console.SetCursorPosition(coordinates.X, coordinates.Y);
+                Console.Write(' ');
+            }
         }
 
         // Write the message to the console

@@ -6,12 +6,13 @@ namespace SnakeGame
         public int X { get; }
         public int Y { get; }
         public char Symbol => '!';
-        public Color Color => Color.Red;
+        public Color Color { get; }
 
-        public AttentionPoint(ICoordinates coordinates)
+        public AttentionPoint(IDrawablePoint drawablePoint)
         {
-            X = coordinates.X;
-            Y = coordinates.Y;
+            X = drawablePoint.X;
+            Y = drawablePoint.Y;
+            Color = drawablePoint.Color;
         }
     }
 }
