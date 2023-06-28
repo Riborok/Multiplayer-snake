@@ -43,7 +43,6 @@
         <Compile Include="AttentionPoint.cs" />
         <Compile Include="IMapCanvas.cs" />
         <Compile Include="Color.cs" />
-        <Compile Include="FullScreen.cs" />
         <Compile Include="IColorRecycle.cs" />
         <Compile Include="IFoodService.cs" />
         <Compile Include="IObstaclesCollisionManager.cs" />

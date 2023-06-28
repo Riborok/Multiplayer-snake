@@ -19,3 +19,10 @@ D:\C#\Проекты\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.Sugg
 D:\C#\Проекты\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.CoreCompileInputs.cache
 D:\C#\Проекты\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.exe
 D:\C#\Проекты\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.pdb
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\bin\Debug\SnakeGame.exe
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\bin\Debug\SnakeGame.pdb
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.SuggestedBindingRedirects.cache
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.exe
+C:\Users\user\Desktop\Multiplayer-snake\SnakeGame\obj\Debug\SnakeGame.pdb

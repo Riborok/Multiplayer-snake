@@ -46,6 +46,8 @@ namespace SnakeGame
     {
         // Draw a borders
         void MarkWalls(Color color);
+
+        void SetBorders((int UpWall, int DownWall, int LeftWall, int RightWall) wallTuple);
     }
 
     // This is a concrete implementation of ICanvas that draws on the console
@@ -57,7 +59,7 @@ namespace SnakeGame
         // 2D array of points that represents the canvas
         // Since in the console the snake moves along the X coordinates +2,
         // in all calls to X, perform the >>1 operation to reduce memory
-        private readonly ICoordinates[,] _getMap;
+        private ICoordinates[,] _getMap;
 
         // Get a point on the map
         public ICoordinates GetPoint(int x, int y)
@@ -68,22 +70,27 @@ namespace SnakeGame
         }
         
         // Walls of the map
-        public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; }
+        public (int UpWall, int DownWall, int LeftWall, int RightWall) WallTuple { get; private set; }
 
         // Borders of the canvas
-        public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BorderTuple { get; }
+        public (int UpBorder, int DownBorder, int LeftBorder, int RightBorder) BorderTuple { get; private set; }
 
-        public ConsoleCanvas((int UpWall, int DownWall, int LeftWall, int RightWall) wallTuple,
-            IColorRecycle<ConsoleColor> recycler)
+        public ConsoleCanvas(IColorRecycle<ConsoleColor> recycler)
         {
-            WallTuple = wallTuple;
-            
-            // Since a dynamic array starts at 0 and ends at length-1, add 1 to make the last element the length
-            _getMap = new ICoordinates[(WallTuple.RightWall >>1) + 1, WallTuple.DownWall];
-            
-            BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
             _recycler = recycler;
             SetConsoleSettings();
+            BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
+        }
+
+        public void SetBorders((int UpWall, int DownWall, int LeftWall, int RightWall) wallTuple)
+        {
+            WallTuple = wallTuple; 
+            
+            // Since a dynamic array starts at 0 and ends at length-1, add 1 to make the last element the length
+            lock (MapLock)
+                _getMap = new ICoordinates[(WallTuple.RightWall >>1) + 1, WallTuple.DownWall];
+
+            BorderTuple = (0, Console.WindowHeight, 0, Console.BufferWidth);
         }
 
         // Set the background color of the console

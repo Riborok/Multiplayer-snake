@@ -25,7 +25,7 @@ namespace SnakeGame
     public class SimpleFood : Food
     {
         // Symbol used to represent the SimpleFood
-        public override char Symbol => '☼';   
+        public override char Symbol => '*';   
         
         // Nutritional value of simple food
         public override int NutritionalValue => 1;

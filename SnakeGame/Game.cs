@@ -15,12 +15,14 @@ namespace SnakeGame
         private const int AmountSimpleFood = 400;
         
         // Amount of points to win
-        private const int ScoreToWin = 200;
+        private const int ScoreToWin = 150;
         
         // Colors for background, text and border
         private const Color BackgroundColor = Color.Black; 
         private const Color TextColor = Color.Cyan; 
         private const Color BorderColor = Color.DarkGray;
+
+        private const int YIndent = 2;
 
         // Manager is responsible for changing the direction of the snakes
         private static ISnakeDirectionManager<ConsoleKey> _snakeDirectionManagers;
@@ -53,21 +55,42 @@ namespace SnakeGame
         private static void GameCreation()
         {
             // Setting Full Screen for the console and create a canvas
-            FullScreen.Set();
-            _canvas = new ConsoleCanvas(wallTuple: (1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1), 
-                new ColorRecycle());
+            _canvas = new ConsoleCanvas(new ColorRecycle());
 
             // Set background color
             _canvas.SetBackgroundColor(BackgroundColor);
 
             // Output message about entering the number of players
             _canvas.ClearCanvas();
+
+            var centralHeight = (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) >> 1;
+            var centralWidth = (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder) >> 1;
+            const string firstMsg = "Enter the amount of players. Amount can be from 1 to 3.";
+            const string secondMsg = "Set window size for game field adjustment.";
+            const string thirdMsg = "Window size cannot be changed during the game.";
+            
             _canvas.WriteMessage
             ( 
-                (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 23,
-                (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2,
+                centralWidth - (firstMsg.Length >> 1),
+                centralHeight,
                 TextColor,
-                "Enter the amount of players. Amount can be from 1 to 3"
+                firstMsg
+            );
+
+            _canvas.WriteMessage
+            (
+                centralWidth - (secondMsg.Length >> 1),
+                centralHeight - YIndent,
+                TextColor,
+                secondMsg
+            );
+            
+            _canvas.WriteMessage
+            (
+                centralWidth - (thirdMsg.Length >> 1),
+                centralHeight - (YIndent << 1),
+                TextColor,
+                thirdMsg
             );
             
             // Creating manager for changing the direction of the snakes
@@ -77,6 +100,8 @@ namespace SnakeGame
             do
                 _amountSnakes = (int)_snakeDirectionManagers.ReadKey() - '0';
             while (_amountSnakes is < 1 or > 3 );
+            
+            _canvas.SetBorders((1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1));
             
             // Initialization the boolean array that control: the player can change direction once per iteration
             _hasDirectionChanged = new bool[_amountSnakes];
@@ -104,13 +129,17 @@ namespace SnakeGame
             // Clear the canvas
             _canvas.ClearCanvas();
 
+            var currMsg = $"Score {ScoreToWin} has been reached";
+            var centralHeight = (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) >> 1;
+            var centralWidth = (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder) >> 1;
+
             // Output message about the end of the game
             _canvas.WriteMessage
             ( 
-                (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 13,
-                (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2 - 3,
+                centralWidth - (currMsg.Length >> 1),
+                centralHeight - YIndent,
                 TextColor,
-                $"Score {ScoreToWin} has been reached"
+                currMsg
             );
 
             // Sort the list of snakes by score and output the results
@@ -120,12 +149,14 @@ namespace SnakeGame
             // Output the results of the game
             for (var i = 0; i < snakeResultList.Count; i++)
             {
+                currMsg =
+                    $"{snakeResultList[i].Head.Color}, you are {i}! Your score: {snakeResultList[i].BodyPoints.Count}";
                 _canvas.WriteMessage
-                ( 
-                    (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder)/ 2 - 15,
-                    (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) / 2 + 3 + i * 2,
+                (
+                    centralWidth - (currMsg.Length >> 1),
+                    centralHeight + i * YIndent,
                     TextColor,
-                    $"{snakeResultList[i].Head.Color}, you are {i}! Your score: {snakeResultList[i].BodyPoints.Count}"
+                    currMsg
                 );
             }
         }
