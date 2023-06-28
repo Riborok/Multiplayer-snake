@@ -15,13 +15,14 @@ namespace SnakeGame
         private const int AmountSimpleFood = 400;
         
         // Amount of points to win
-        private const int ScoreToWin = 150;
+        private const int ScoreToWin = 200;
         
         // Colors for background, text and border
         private const Color BackgroundColor = Color.Black; 
         private const Color TextColor = Color.Cyan; 
         private const Color BorderColor = Color.DarkGray;
 
+        // Indent when outputting by Y coordinate
         private const int YIndent = 2;
 
         // Manager is responsible for changing the direction of the snakes
@@ -63,8 +64,11 @@ namespace SnakeGame
             // Output message about entering the number of players
             _canvas.ClearCanvas();
 
+            // Calculate the median coordinates
             var centralHeight = (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) >> 1;
             var centralWidth = (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder) >> 1;
+            
+            // Defining messages to display
             const string firstMsg = "Enter the amount of players. Amount can be from 1 to 3.";
             const string secondMsg = "Set window size for game field adjustment.";
             const string thirdMsg = "Window size cannot be changed during the game.";
@@ -129,7 +133,10 @@ namespace SnakeGame
             // Clear the canvas
             _canvas.ClearCanvas();
 
+            // Defining messages to display
             var currMsg = $"Score {ScoreToWin} has been reached";
+            
+            // Calculate the median coordinates
             var centralHeight = (_canvas.BorderTuple.DownBorder - _canvas.BorderTuple.UpBorder) >> 1;
             var centralWidth = (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder) >> 1;
 
@@ -190,8 +197,9 @@ namespace SnakeGame
                 await delayTask;
             }
             
-            // Disable food spawn
+            // Disable food spawn and snake drawing
             _foodService.DisablePeriodicSpawn();
+            _snakeService.СanDrawSnake = false;
 
             GameOver();
             await Task.Delay(60000);

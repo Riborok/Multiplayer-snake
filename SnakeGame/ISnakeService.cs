@@ -22,12 +22,16 @@ namespace SnakeGame
         
         // Remove a snake from the dictionary and the canvas
         void RemoveSnake(Snake snake);
+        
+        bool СanDrawSnake { set; }
     }
     
     
     // Service working with snakes
     public class SnakeService : ISnakeService
     {
+        public bool СanDrawSnake { get; set; }
+        
         // Array of colors that snakes can accept. The number in the array corresponds to the id of the snake 
         private readonly Color[] _colorsForSnakes;
         
@@ -39,6 +43,8 @@ namespace SnakeGame
             _mapCanvas = mapCanvas;
             _colorsForSnakes = colorsForSnakes;
             _snakes = new ConcurrentDictionary<int, Snake>();
+
+            СanDrawSnake = true;
         }
 
         // Hash table of snakes. The key is the snake's id
@@ -92,7 +98,7 @@ namespace SnakeGame
                 var attentionPoint = new AttentionPoint(sleepingPart);
 
                 // Flicker the attention point for a period of time to draw attention to the new snake
-                for (var i = 0; i < SpawnPeriod / (2 * FlickerPeriod); i++)
+                for (var i = 0; i < SpawnPeriod / (2 * FlickerPeriod) && СanDrawSnake; i++)
                 {
                     _mapCanvas.DrawPoint(attentionPoint);
 
