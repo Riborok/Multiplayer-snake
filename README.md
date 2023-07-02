@@ -14,7 +14,7 @@ ___
 
 ![Element of the wall Hor](https://i.imgur.com/7xVNFgM.png)
 
-These walls limit the playing field, if you touch it, the snake will die(((
+These walls limit the playing field, if you touch it, the snake will die
 #
 ### *Snakes*  
 
@@ -42,6 +42,7 @@ This food falls out of the snake's head and the longer the snake has droped it, 
 #
 ### *Respawn*
 ![Respawn](https://i.imgur.com/hFY0r3a.gif)
+
 When you die, you will respawn as a grid for a few seconds. (To quickly locate the respawned snake, its symbol will change to an exclamation mark)
 
 ___
