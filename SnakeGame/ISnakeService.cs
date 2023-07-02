@@ -98,7 +98,7 @@ namespace SnakeGame
                 var attentionPoint = new AttentionPoint(sleepingPart);
 
                 // Flicker the attention point for a period of time to draw attention to the new snake
-                for (var i = 0; i < SpawnPeriod / (2 * FlickerPeriod) && СanDrawSnake; i++)
+                for (var i = 0; i < SpawnPeriod / (FlickerPeriod << 1) && СanDrawSnake; i++)
                 {
                     _mapCanvas.DrawPoint(attentionPoint);
 

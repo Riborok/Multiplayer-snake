@@ -58,7 +58,7 @@ namespace SnakeGame
     public class SleepingPart : SnakePart
     {
         // Symbol used to represent the SleepingPart
-        public override char Symbol => '+';
+        public override char Symbol => '#';
         public SleepingPart(SnakeHeadPoint head) : base(head.X, head.Y, head.Color)
         {
         }

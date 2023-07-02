@@ -12,10 +12,13 @@ namespace SnakeGame
 
         // Fields storing the amount of snakes and food
         private static int _amountSnakes;
-        private const int AmountSimpleFood = 400;
+        private static int _amountSimpleFood;
         
         // Amount of points to win
         private const int ScoreToWin = 200;
+
+        // Frame Delay
+        private const int FrameDelay = 45;
         
         // Colors for background, text and border
         private const Color BackgroundColor = Color.Black; 
@@ -69,16 +72,16 @@ namespace SnakeGame
             var centralWidth = (_canvas.BorderTuple.RightBorder - _canvas.BorderTuple.LeftBorder) >> 1;
             
             // Defining messages to display
-            const string firstMsg = "Enter the amount of players. Amount can be from 1 to 3.";
-            const string secondMsg = "Set window size for game field adjustment.";
-            const string thirdMsg = "Window size cannot be changed during the game.";
+            const string firstMsg = "Set window size for game field adjustment.";
+            const string secondMsg = "Window size cannot be changed during the game!!!";
+            const string thirdMsg = "Enter the amount of players. Amount can be from 1 to 3.";            
             
             _canvas.WriteMessage
             ( 
-                centralWidth - (firstMsg.Length >> 1),
+                centralWidth - (thirdMsg.Length >> 1),
                 centralHeight,
                 TextColor,
-                firstMsg
+                thirdMsg
             );
 
             _canvas.WriteMessage
@@ -91,10 +94,10 @@ namespace SnakeGame
             
             _canvas.WriteMessage
             (
-                centralWidth - (thirdMsg.Length >> 1),
+                centralWidth - (firstMsg.Length >> 1),
                 centralHeight - (YIndent << 1),
                 TextColor,
-                thirdMsg
+                firstMsg
             );
             
             // Creating manager for changing the direction of the snakes
@@ -105,7 +108,10 @@ namespace SnakeGame
                 _amountSnakes = (int)_snakeDirectionManagers.ReadKey() - '0';
             while (_amountSnakes is < 1 or > 3 );
             
-            _canvas.SetBorders((1, Console.WindowHeight - 2, 3, Console.BufferWidth - 1));
+            // Setting boundaries
+            _canvas.SetBorders((1, Console.WindowHeight - 2, 3, Console.WindowWidth - 1));
+
+            _amountSimpleFood = (Console.WindowHeight + Console.WindowWidth) << 1;
             
             // Initialization the boolean array that control: the player can change direction once per iteration
             _hasDirectionChanged = new bool[_amountSnakes];
@@ -120,7 +126,7 @@ namespace SnakeGame
             
             // Spawn objects
             _snakeService.SpawnSnakes(_amountSnakes);
-            _foodService.SpawnSimpleFood(AmountSimpleFood);
+            _foodService.SpawnSimpleFood(_amountSimpleFood);
 
             // Creating collision control managers
             _foodCollisionManager = new FoodCollisionManager((IFoodAddRemove)_foodService, _canvas);
@@ -181,7 +187,7 @@ namespace SnakeGame
             while (_snakeService.Snakes.Values.All(snake => snake.BodyPoints.Count < ScoreToWin))
             {
                 // Frame delay
-                var delayTask = Task.Delay(45);
+                var delayTask = Task.Delay(FrameDelay);
                 
                 // Key handling asynchronous
                 HandlingKeys();
